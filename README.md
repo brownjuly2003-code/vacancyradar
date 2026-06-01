@@ -7,6 +7,8 @@ slim/aggregates artifact set to a Hugging Face Dataset mirror, and syncs a live
 read model into Neon Postgres. The frontend is a Next.js 15 executive dashboard
 with a Neon-first search/facets path and JSON-snapshot / DuckDB+httpfs fallbacks.
 
+**Live demo:** https://vacancyradar.vercel.app
+
 ## Highlights
 
 - **No-auth hh.ru ingest** via the public `hh.ru/shards/vacancy/search` endpoint
