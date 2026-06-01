@@ -1,0 +1,2715 @@
+# Top public Telegram channels for vacancy aggregation.
+# Source: TGStat.ru, telemetr.io, vc.ru, t-j.ru, moscow-hr.ru, im-konsalting.ru, kadrof.ru, habr.com, web research.
+# Date: 2026-04-27 (deduped 702 unique usernames; cleaned to 506 active public targets on 2026-04-29; 2 removed 2026-05-24 after persistent "private/banned" errors → 504 active).
+# Schema: channels[] with username (no @), role, region, audience, language.
+
+channels:
+  - username: Analysts_Jobs
+    role: analytics
+    region: ru
+    audience: 0
+    language: ru
+    notes: TgAiJobs source list
+  - username: BAJobsIND
+    role: analytics
+    region: world
+    audience: 8310
+    language: en
+  - username: analitiki_rabota
+    role: analytics
+    region: ru
+    audience: 1891
+    language: ru
+    notes: Telemetr financejobs catalog; IT analyst vacancies
+  - username: analyst_geeklink
+    role: analytics
+    region: ru
+    audience: 4838
+    language: ru
+    notes: Telemetr GeekLink analytics channel
+  - username: analyst_job_geeklink
+    role: analytics
+    region: ru
+    audience: 4838
+    language: ru
+    notes: Telemetr GeekLink analyst jobs
+  - username: analysts_hunter
+    role: analytics
+    region: ru
+    audience: 24963
+    language: ru
+    notes: Potok.io analytics jobs list; t.me verified
+  - username: baprofessionals
+    role: analytics
+    region: world
+    audience: 1450
+    language: en
+  - username: basa_job
+    role: analytics
+    region: ru
+    audience: 1009
+    language: ru
+    notes: Telemetr financejobs catalog; BaSa jobs
+  - username: data_analysis_jobs
+    role: analytics
+    region: ru
+    audience: 0
+    language: ru
+    notes: Partner group listed on analyst_job web profile
+  - username: data_hr
+    role: analytics
+    region: ru
+    audience: 9833
+    language: ru
+    notes: Telemetr IT catalog; Data Analytics Jobs
+  - username: eka_ekimova
+    role: analytics
+    region: ru
+    audience: 1157
+    language: ru
+    notes: Telemetr financejobs catalog; analytics and IT jobs
+  - username: financedatajob
+    role: analytics
+    region: ru
+    audience: 0
+    language: ru
+    notes: TGStat Finance & Data Jobs
+  - username: foranalysts
+    role: analytics
+    region: ru
+    audience: 32943
+    language: ru
+    notes: Potok.io analytics jobs list; t.me verified
+  - username: job4analyst_junior
+    role: analytics
+    region: ru
+    audience: 1333
+    language: ru
+    notes: Telemetr financejobs catalog; junior analyst vacancies
+  - username: jobs_sql
+    role: analytics
+    region: world
+    audience: 88286
+    language: en
+    notes: Telemetr IT catalog; Data Analyst Jobs
+  - username: saba_hunter
+    role: analytics
+    region: ru
+    audience: 13012
+    language: ru
+    notes: Potok.io analytics jobs list; t.me verified
+  - username: saba_sociology
+    role: analytics
+    region: ru
+    audience: 440
+    language: ru
+    notes: Telemetr SABA analyst vacancy digests
+  - username: systemanalystjob
+    role: analytics
+    region: ru
+    audience: 1174
+    language: ru
+    notes: Telemetr financejobs catalog; analyst school vacancies
+  - username: tzprofi_job
+    role: analytics
+    region: ru
+    audience: 14304
+    language: ru
+    notes: Potok.io/TgAiJobs analytics and IT architects
+  - username: blockchain_dev_ru
+    role: crypto
+    region: ru
+    audience: 2000
+    language: ru
+  - username: blockchain_jobs
+    role: crypto
+    region: ru
+    audience: 5000
+    language: ru
+  - username: cryptodevjobs
+    role: crypto
+    region: world
+    audience: 3000
+    language: en
+  - username: cryptojobs
+    role: crypto
+    region: world
+    audience: 4400
+    language: en
+  - username: ibcghr
+    role: crypto
+    region: moscow
+    audience: 3000
+    language: ru
+    notes: Blockchain & fintech
+  - username: job_web3
+    role: crypto
+    region: world
+    audience: 4000
+    language: en
+  - username: opento_crypto
+    role: crypto
+    region: world
+    audience: 3000
+    language: en
+  - username: remotejobshg
+    role: crypto
+    region: world
+    audience: 35000
+    language: en
+    notes: Remote crypto jobs
+  - username: remoteweb3jobs
+    role: crypto
+    region: world
+    audience: 13400
+    language: en
+    notes: Remote Web3, AI, crypto jobs
+  - username: solidity_jobs
+    role: crypto
+    region: world
+    audience: 3000
+    language: en
+  - username: soliditydevjobs
+    role: crypto
+    region: world
+    audience: 3000
+    language: en
+  - username: web30job
+    role: crypto
+    region: world
+    audience: 5000
+    language: en
+    notes: Blockchain jobs
+  - username: web3_dev_jobs
+    role: crypto
+    region: world
+    audience: 2000
+    language: en
+  - username: web3hiring
+    role: crypto
+    region: world
+    audience: 61400
+    language: en
+  - username: web3jobs
+    role: crypto
+    region: world
+    audience: 5000
+    language: en
+  - username: yourweb3jobs
+    role: crypto
+    region: world
+    audience: 4000
+    language: en
+  - username: ai_jobs_ru
+    role: data
+    region: ru
+    audience: 5000
+    language: ru
+  - username: aivacansii
+    role: data
+    region: remote
+    audience: 691
+    language: ru
+    notes: Telemetr AI vacancies
+  - username: bds_job
+    role: data
+    region: world
+    audience: 0
+    language: en
+    notes: Big Data Science job channel referenced by Telemetr
+  - username: data_engineer_jobs
+    role: data
+    region: world
+    audience: 3000
+    language: en
+  - username: data_remote
+    role: data
+    region: world
+    audience: 5000
+    language: ru
+    notes: Remote data jobs
+  - username: data_science_world
+    role: data
+    region: world
+    audience: 3000
+    language: en
+  - username: data_vacancy
+    role: data
+    region: ru
+    audience: 1350
+    language: ru
+    notes: Setka/Telemetr data vacancies
+  - username: dataanalytics_jobs
+    role: data
+    region: ru
+    audience: 8000
+    language: ru
+  - username: datajob
+    role: data
+    region: ru
+    audience: 0
+    language: ru
+    notes: TgAiJobs source list
+  - username: datajobs
+    role: data
+    region: ru
+    audience: 10000
+    language: ru
+  - username: datajobschannel
+    role: data
+    region: ru
+    audience: 11147
+    language: ru
+    notes: Telemetr Data jobs feed
+  - username: datasciencej
+    role: data
+    region: world
+    audience: 7815
+    language: en
+    notes: Telemetr Data Science Jobs
+  - username: datasciencejobs
+    role: data
+    region: ru
+    audience: 15000
+    language: ru
+    notes: DS / AI / ML / DL / NLP
+  - username: datascienceml_jobs
+    role: data
+    region: ru
+    audience: 0
+    language: ru
+    notes: TgAiJobs source list
+  - username: dejobs
+    role: data
+    region: world
+    audience: 3000
+    language: en
+    notes: Data Engineering + QA
+  - username: dsml_jobs
+    role: data
+    region: remote
+    audience: 2897
+    language: ru
+    notes: Telemetr DS&ML jobs
+  - username: easy_ds_job
+    role: data
+    region: remote
+    audience: 4193
+    language: ru
+    notes: Telemetr easyoffer Data Science remote jobs
+  - username: llm_jobs
+    role: data
+    region: remote
+    audience: 160
+    language: ru
+    notes: Telemetr LLM Jobs
+  - username: machinelearning_jobs
+    role: data
+    region: world
+    audience: 3000
+    language: en
+  - username: ml_data_science_job
+    role: data
+    region: ru
+    audience: 0
+    language: ru
+    notes: TgAiJobs source list
+  - username: ml_jobs
+    role: data
+    region: ru
+    audience: 4000
+    language: ru
+  - username: nlp_jobs
+    role: data
+    region: world
+    audience: 2000
+    language: en
+  - username: not_boring_ds_jobs
+    role: data
+    region: ru
+    audience: 8289
+    language: ru
+    notes: Telemetr DS jobs
+  - username: opento_data
+    role: data
+    region: world
+    audience: 5856
+    language: ru
+    notes: Telemetr/OpenTo data jobs abroad
+  - username: remote_ai_jobs
+    role: data
+    region: world
+    audience: 6830
+    language: en
+    notes: Telemetr remote AI/ML/Data Science Jobs
+  - username: Designs_job
+    role: design
+    region: ru
+    audience: 29501
+    language: ru
+    notes: Potok.io design jobs list; t.me verified
+  - username: design_jobs_uxui
+    role: design
+    region: ru
+    audience: 21702
+    language: ru
+    notes: Potok.io/Nicegram design jobs
+  - username: design_vacancy
+    role: design
+    region: ru
+    audience: 32910
+    language: ru
+    notes: Potok.io design jobs list; t.me verified
+  - username: designer_jobs
+    role: design
+    region: ru
+    audience: 18200
+    language: ru
+    notes: Potok.io/TgAiJobs design jobs
+  - username: designer_ru
+    role: design
+    region: moscow
+    audience: 12000
+    language: ru
+    notes: ИЩУ_ДИЗАЙНЕРА
+  - username: designhunters
+    role: design
+    region: ru
+    audience: 10000
+    language: ru
+  - username: designwork_vacansii
+    role: design
+    region: ru
+    audience: 36077
+    language: ru
+    notes: Telemetr creative jobs catalog; designer vacancies
+  - username: fordesigner
+    role: design
+    region: ru
+    audience: 21592
+    language: ru
+    notes: Potok.io design jobs list; t.me verified
+  - username: graphic_design_jobs
+    role: design
+    region: ru
+    audience: 3000
+    language: ru
+  - username: jobs_design
+    role: design
+    region: ru
+    audience: 1177
+    language: ru
+    notes: Potok.io design jobs list; t.me verified
+  - username: jun_hi_vacancies
+    role: design
+    region: ru
+    audience: 39018
+    language: ru
+    notes: Telemetr creative jobs catalog; design vacancies
+  - username: mnogovakansiy
+    role: design
+    region: ru
+    audience: 5740
+    language: ru
+    notes: TGStat/Telemetr design and IT vacancies
+  - username: product_design_jobs
+    role: design
+    region: ru
+    audience: 3000
+    language: ru
+  - username: uiux_jobs
+    role: design
+    region: ru
+    audience: 4000
+    language: ru
+  - username: uiux_jobs_resumes
+    role: design
+    region: ru
+    audience: 3277
+    language: ru
+    notes: Potok.io design jobs list; t.me verified
+  - username: uxui_jobs
+    role: design
+    region: ru
+    audience: 4320
+    language: ru
+    notes: Potok.io design jobs list; t.me verified
+  - username: workinart
+    role: design
+    region: ru
+    audience: 4000
+    language: ru
+  - username: worklis
+    role: design
+    region: remote
+    audience: 5000
+    language: ru
+  - username: E_Jobs_IT_and_Digital
+    role: dev
+    region: remote
+    audience: 5000
+    language: ru
+  - username: Engineeringjobsportal
+    role: dev
+    region: world
+    audience: 4500
+    language: en
+  - username: FAANGJob
+    role: dev
+    region: world
+    audience: 5000
+    language: en
+  - username: It_jobs_bnl
+    role: dev
+    region: world
+    audience: 4000
+    language: ru
+    notes: Benelux IT jobs
+  - username: Relocats
+    role: dev
+    region: world
+    audience: 29800
+    language: ru
+    notes: IT Relocation (Inflow)
+  - username: angular_jobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: angular_jobs_feed
+    role: dev
+    region: ru
+    audience: 3000
+    language: ru
+  - username: backend_frontend_jobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: codifynews
+    role: dev
+    region: world
+    audience: 3000
+    language: ru
+  - username: cpp_jobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: cyithr
+    role: dev
+    region: world
+    audience: 17400
+    language: ru
+  - username: django_jobs
+    role: dev
+    region: world
+    audience: 5000
+    language: en
+  - username: django_jobs_board
+    role: dev
+    region: world
+    audience: 3000
+    language: en
+  - username: dna325
+    role: dev
+    region: world
+    audience: 3000
+    language: ru
+    notes: Non-tech jobs in IT (game, crypto, PM)
+  - username: elixir_jobs
+    role: dev
+    region: world
+    audience: 2000
+    language: en
+  - username: findmyremote_backend
+    role: dev
+    region: world
+    audience: 1000
+    language: en
+    notes: Remote back-end jobs
+  - username: findmyremote_frontend
+    role: dev
+    region: world
+    audience: 3000
+    language: en
+    notes: Remote front-end jobs
+  - username: findmyremote_fullstack
+    role: dev
+    region: world
+    audience: 1000
+    language: en
+    notes: Remote full-stack jobs
+  - username: forcpp
+    role: dev
+    region: ru
+    audience: 3000
+    language: ru
+  - username: forfrontend
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: forpython
+    role: dev
+    region: ru
+    audience: 6000
+    language: ru
+  - username: freshershunt
+    role: dev
+    region: world
+    audience: 286000
+    language: en
+  - username: front_end_jobs
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: frontend_rabota
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: frontendinterview
+    role: dev
+    region: ru
+    audience: 3000
+    language: ru
+  - username: getitrussia
+    role: dev
+    region: ru
+    audience: 15000
+    language: ru
+  - username: golang_jobs
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: habr_career
+    role: dev
+    region: ru
+    audience: 31200
+    language: ru
+    notes: Habr Career vacancies
+  - username: haskell_job
+    role: dev
+    region: world
+    audience: 2000
+    language: en
+  - username: holder_job_devs
+    role: dev
+    region: ru
+    audience: 8000
+    language: ru
+    notes: Senior+ dev vacancies
+  - username: it_hunters
+    role: dev
+    region: ru
+    audience: 10000
+    language: ru
+  - username: java_jobs_ru
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: javascript_jobs
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: javascript_jobs_feed
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: job_python
+    role: dev
+    region: ru
+    audience: 8000
+    language: ru
+  - username: job_pythonz
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: job_react
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: job_webdev
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: jobforphp
+    role: dev
+    region: ru
+    audience: 3000
+    language: ru
+  - username: jobs_us_uk
+    role: dev
+    region: world
+    audience: 5800
+    language: en
+    notes: Global remote IT/data jobs
+  - username: jobsineu
+    role: dev
+    region: world
+    audience: 1660
+    language: en
+  - username: jscript_jobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: jsspeak
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: laravel_jobs
+    role: dev
+    region: ru
+    audience: 2000
+    language: ru
+  - username: learnnew3
+    role: dev
+    region: world
+    audience: 44000
+    language: en
+  - username: mtsfintechjobs
+    role: dev
+    region: ru
+    audience: 29000
+    language: ru
+    notes: MTS Fintech IT&Digital Jobs
+  - username: newrecruitmentserviceCIS
+    role: dev
+    region: world
+    audience: 1210
+    language: ru
+  - username: nodejs_jobs
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: nodejsjobsfeed
+    role: dev
+    region: ru
+    audience: 3000
+    language: ru
+  - username: offcampusjobs23
+    role: dev
+    region: world
+    audience: 23600
+    language: en
+  - username: offcampusjobupdateslive
+    role: dev
+    region: world
+    audience: 82800
+    language: en
+  - username: offcampusupdates
+    role: dev
+    region: world
+    audience: 17100
+    language: en
+  - username: ozon_tech
+    role: dev
+    region: ru
+    audience: 27200
+    language: ru
+    notes: Ozon Tech; includes vacancy posts
+  - username: php_jobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: placementkit
+    role: dev
+    region: world
+    audience: 157000
+    language: en
+  - username: procxx
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: procxxjobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: profunctor_jobs
+    role: dev
+    region: world
+    audience: 2000
+    language: en
+  - username: python_django_work
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: python_job
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: python_job_board
+    role: dev
+    region: world
+    audience: 3000
+    language: en
+  - username: python_jobs
+    role: dev
+    region: world
+    audience: 5000
+    language: en
+  - username: pythonpythonjobs
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: pythonrabota
+    role: dev
+    region: ru
+    audience: 7000
+    language: ru
+  - username: rabotaphp
+    role: dev
+    region: ru
+    audience: 3000
+    language: ru
+  - username: react_js_jobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: react_native_jobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: reactjs_jobs
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: refer_me_it
+    role: dev
+    region: ru
+    audience: 10000
+    language: ru
+    notes: IT referrals
+  - username: relocation_vacancies
+    role: dev
+    region: world
+    audience: 11300
+    language: ru
+  - username: remote
+    role: dev
+    region: world
+    audience: 14500
+    language: ru
+    notes: DevKG remote/projects/relocation
+  - username: remotejobpositions
+    role: dev
+    region: world
+    audience: 3400
+    language: en
+  - username: remoters
+    role: dev
+    region: world
+    audience: 13000
+    language: en
+    notes: Remote IT jobs
+  - username: remoteyeah
+    role: dev
+    region: world
+    audience: 1900
+    language: en
+    notes: Remote engineering jobs
+  - username: ru_python
+    role: dev
+    region: ru
+    audience: 10000
+    language: ru
+  - username: ru_pythonjobs
+    role: dev
+    region: ru
+    audience: 12000
+    language: ru
+  - username: ruby_jobs
+    role: dev
+    region: world
+    audience: 2000
+    language: en
+  - username: runello_rus_c20
+    role: dev
+    region: remote
+    audience: 3000
+    language: ru
+  - username: runello_rus_html
+    role: dev
+    region: remote
+    audience: 3000
+    language: ru
+  - username: runello_rus_javascript
+    role: dev
+    region: remote
+    audience: 3000
+    language: ru
+  - username: runello_rus_php
+    role: dev
+    region: remote
+    audience: 3000
+    language: ru
+  - username: runello_rus_python
+    role: dev
+    region: remote
+    audience: 3000
+    language: ru
+  - username: runello_rus_typescript
+    role: dev
+    region: remote
+    audience: 3000
+    language: ru
+  - username: runello_rus_webdevelopment
+    role: dev
+    region: remote
+    audience: 3000
+    language: ru
+  - username: rust_jobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: sap_jobs
+    role: dev
+    region: ru
+    audience: 2000
+    language: ru
+  - username: scala_jobs
+    role: dev
+    region: world
+    audience: 3000
+    language: en
+  - username: scala_jobs_feed
+    role: dev
+    region: world
+    audience: 3000
+    language: en
+  - username: sql_jobs
+    role: dev
+    region: ru
+    audience: 3000
+    language: ru
+  - username: superjob_it
+    role: dev
+    region: ru
+    audience: 5000
+    language: ru
+  - username: symfony_jobs
+    role: dev
+    region: ru
+    audience: 2000
+    language: ru
+  - username: techjobsdaily
+    role: dev
+    region: world
+    audience: 50000
+    language: en
+  - username: tproger_official
+    role: dev
+    region: ru
+    audience: 50000
+    language: ru
+    notes: IT jobs + articles
+  - username: typescript_jobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: vkjobs
+    role: dev
+    region: ru
+    audience: 25400
+    language: ru
+    notes: VK Team career channel
+  - username: vodiy_it_jobs
+    role: dev
+    region: world
+    audience: 271
+    language: ru
+  - username: vuejs_jobs
+    role: dev
+    region: ru
+    audience: 4000
+    language: ru
+  - username: webfrl
+    role: dev
+    region: remote
+    audience: 4000
+    language: ru
+    notes: WEB Freelance projects
+  - username: withpublic_channel
+    role: dev
+    region: world
+    audience: 3680
+    language: ru
+  - username: wordpress_jobs
+    role: dev
+    region: ru
+    audience: 2000
+    language: ru
+  - username: xcareers
+    role: dev
+    region: remote
+    audience: 6000
+    language: ru
+    notes: Digital jobs
+  - username: ya_jobs
+    role: dev
+    region: ru
+    audience: 32100
+    language: ru
+    notes: Yandex developer vacancies
+  - username: aws_jobs
+    role: devops
+    region: world
+    audience: 2000
+    language: en
+  - username: devops_cloud_jobs
+    role: devops
+    region: world
+    audience: 10000
+    language: en
+  - username: devops_jobs
+    role: devops
+    region: ru
+    audience: 7000
+    language: ru
+  - username: devops_jobs_feed
+    role: devops
+    region: ru
+    audience: 4000
+    language: ru
+  - username: devopssjob
+    role: devops
+    region: ru
+    audience: 3000
+    language: ru
+  - username: devopssre_jobs
+    role: devops
+    region: world
+    audience: 5000
+    language: en
+  - username: fordevops
+    role: devops
+    region: ru
+    audience: 4000
+    language: ru
+  - username: gigadevops
+    role: devops
+    region: remote
+    audience: 1220
+    language: ru
+  - username: kubernetes_jobs
+    role: devops
+    region: world
+    audience: 4000
+    language: en
+  - username: sysadm_in_job
+    role: devops
+    region: ru
+    audience: 3000
+    language: ru
+  - username: sysadmin_jobs
+    role: devops
+    region: ru
+    audience: 4000
+    language: ru
+  - username: sysadmin_rabota
+    role: devops
+    region: ru
+    audience: 3000
+    language: ru
+  - username: alfabank_career
+    role: finance
+    region: ru
+    audience: 26600
+    language: ru
+    notes: Alfa-Bank official careers
+  - username: buhjob
+    role: finance
+    region: ru
+    audience: 10979
+    language: ru
+    notes: Telemetr accountant/finance vacancies
+  - username: consulting_jobs
+    role: finance
+    region: ru
+    audience: 2000
+    language: ru
+  - username: finexecutive
+    role: finance
+    region: ru
+    audience: 10000
+    language: ru
+    notes: Finance, consulting, fintech
+  - username: leasingvak
+    role: finance
+    region: ru
+    audience: 1757
+    language: ru
+    notes: Telemetr leasing vacancies
+  - username: profinance_hr
+    role: finance
+    region: world
+    audience: 2744
+    language: ru
+    notes: Telemetr ProFinance vacancies
+  - username: top_fins
+    role: finance
+    region: ru
+    audience: 4444
+    language: ru
+    notes: Telemetr FINСОЮЗ finance vacancies
+  - username: vtb_career
+    role: finance
+    region: ru
+    audience: 63500
+    language: ru
+    notes: VTB official careers
+  - username: work_in_accounting
+    role: finance
+    region: ru
+    audience: 0
+    language: ru
+    notes: Finance/accounting vacancy group referenced by working_in_finance
+  - username: working_in_finance
+    role: finance
+    region: ru
+    audience: 6574
+    language: ru
+    notes: Telemetr finance/accounting vacancies
+  - username: devjobs
+    role: game
+    region: ru
+    audience: 5000
+    language: ru
+    notes: GameDev + dev
+  - username: devzonegd
+    role: game
+    region: ru
+    audience: 3000
+    language: ru
+  - username: devzonejunior
+    role: game
+    region: ru
+    audience: 2000
+    language: ru
+  - username: forgamedev
+    role: game
+    region: ru
+    audience: 4000
+    language: ru
+  - username: gamedev_and_tech_vacancy
+    role: game
+    region: ru
+    audience: 3000
+    language: ru
+  - username: gamedev_unity_unreal_engine_jobs
+    role: game
+    region: ru
+    audience: 3000
+    language: ru
+  - username: gamedev_vakansii
+    role: game
+    region: ru
+    audience: 3000
+    language: ru
+  - username: gamedevjob
+    role: game
+    region: ru
+    audience: 7000
+    language: ru
+  - username: gamedevjobs
+    role: game
+    region: ru
+    audience: 8000
+    language: ru
+  - username: gamedevjobtinder
+    role: game
+    region: ru
+    audience: 2000
+    language: ru
+  - username: gdjobs
+    role: game
+    region: ru
+    audience: 3000
+    language: ru
+  - username: ingamejob_marketing
+    role: game
+    region: ru
+    audience: 2000
+    language: ru
+  - username: ingamejob_producing
+    role: game
+    region: ru
+    audience: 2000
+    language: ru
+  - username: ingamejob_support
+    role: game
+    region: ru
+    audience: 2000
+    language: ru
+  - username: job_gamedev
+    role: game
+    region: ru
+    audience: 6000
+    language: ru
+  - username: jobs_unity
+    role: game
+    region: ru
+    audience: 2000
+    language: ru
+  - username: rabota_v_gamedeve
+    role: game
+    region: ru
+    audience: 3000
+    language: ru
+  - username: ue_pub
+    role: game
+    region: ru
+    audience: 2000
+    language: ru
+  - username: uejobs
+    role: game
+    region: ru
+    audience: 2000
+    language: ru
+  - username: unity_jobs
+    role: game
+    region: ru
+    audience: 3000
+    language: ru
+  - username: unityjobs_pub
+    role: game
+    region: ru
+    audience: 2000
+    language: ru
+  - username: young_gamedev
+    role: game
+    region: ru
+    audience: 3000
+    language: ru
+  - username: CyprusJobMarket
+    role: general
+    region: world
+    audience: 2690
+    language: ru
+  - username: FreeJobsInDubai
+    role: general
+    region: world
+    audience: 15700
+    language: en
+  - username: Jobs_Careers
+    role: general
+    region: world
+    audience: 6470
+    language: en
+  - username: Jobs_in_Uzbekistan
+    role: general
+    region: world
+    audience: 6
+    language: en
+  - username: RLebanon
+    role: general
+    region: world
+    audience: 4840
+    language: en
+  - username: Rabota_Kazan_116
+    role: general
+    region: regions
+    audience: 19700
+    language: ru
+  - username: Rabota_Nizhniy
+    role: general
+    region: regions
+    audience: 23800
+    language: ru
+  - username: Rabota_Voronezhj
+    role: general
+    region: regions
+    audience: 31600
+    language: ru
+  - username: RealtingUz
+    role: general
+    region: world
+    audience: 199
+    language: ru
+  - username: VIP_jobs
+    role: general
+    region: world
+    audience: 23100
+    language: en
+  - username: alenavladimirskaya
+    role: general
+    region: ru
+    audience: 8000
+    language: ru
+  - username: antirabstvoru
+    role: general
+    region: ru
+    audience: 14000
+    language: ru
+  - username: avito_career
+    role: general
+    region: ru
+    audience: 56500
+    language: ru
+    notes: Avito official careers
+  - username: barnaul_rabotaq
+    role: general
+    region: regions
+    audience: 1000
+    language: ru
+  - username: beauty_jobs
+    role: general
+    region: ru
+    audience: 2000
+    language: ru
+  - username: birzha_truda_volgograd
+    role: general
+    region: regions
+    audience: 15147
+    language: ru
+  - username: bloknot_rabota_novorossiysk
+    role: general
+    region: regions
+    audience: 2234
+    language: ru
+  - username: careercentervacancies
+    role: general
+    region: world
+    audience: 4160
+    language: ru
+  - username: careerlift
+    role: general
+    region: ru
+    audience: 18000
+    language: ru
+  - username: careersber
+    role: general
+    region: ru
+    audience: 144000
+    language: ru
+    notes: Sber official careers
+  - username: chronostg
+    role: general
+    region: remote
+    audience: 21600
+    language: ru
+  - username: connectable_jobs
+    role: general
+    region: ru
+    audience: 8000
+    language: ru
+  - username: construction_jobs
+    role: general
+    region: ru
+    audience: 2000
+    language: ru
+  - username: czech_info_rabota
+    role: general
+    region: world
+    audience: 3000
+    language: ru
+    notes: Jobs in Prague/Czech Republic
+  - username: edujobs
+    role: general
+    region: ru
+    audience: 5000
+    language: ru
+    notes: Education sector vacancies
+  - username: florjob
+    role: general
+    region: moscow
+    audience: 3000
+    language: ru
+    notes: Florist jobs Moscow
+  - username: freelance_vakansii
+    role: general
+    region: remote
+    audience: 5000
+    language: ru
+  - username: freelancekontinent
+    role: general
+    region: remote
+    audience: 23400
+    language: ru
+    notes: Public username referenced from Telegram preview
+  - username: freelanceru
+    role: general
+    region: remote
+    audience: 5000
+    language: ru
+  - username: freetasks
+    role: general
+    region: world
+    audience: 259000
+    language: ru
+    notes: Freelance, relocation, remote work
+  - username: getjobss
+    role: general
+    region: world
+    audience: 10000
+    language: en
+  - username: gulfjobs
+    role: general
+    region: world
+    audience: 1900
+    language: en
+    notes: Gulf jobs
+  - username: horseatwork
+    role: general
+    region: ru
+    audience: 12000
+    language: ru
+  - username: hr_barnaul
+    role: general
+    region: regions
+    audience: 3870
+    language: ru
+  - username: hsecareer
+    role: general
+    region: moscow
+    audience: 46900
+    language: ru
+    notes: HSE Career Center
+  - username: hsespbcareer
+    role: general
+    region: spb
+    audience: 1730
+    language: ru
+  - username: huggabletalents
+    role: general
+    region: ru
+    audience: 91300
+    language: ru
+    notes: A-Teams / SETTERS career channel
+  - username: inwork
+    role: general
+    region: remote
+    audience: 10100
+    language: ru
+    notes: Jobs from network referrals
+  - username: irkutsk_rabotae
+    role: general
+    region: regions
+    audience: 12000
+    language: ru
+  - username: it_is_mts
+    role: general
+    region: ru
+    audience: 12700
+    language: ru
+    notes: MTS careers
+  - username: job_irkutsk
+    role: general
+    region: regions
+    audience: 1660
+    language: ru
+  - username: job_khv
+    role: general
+    region: regions
+    audience: 3660
+    language: ru
+  - username: jobforjunior
+    role: general
+    region: ru
+    audience: 74274
+    language: ru
+    notes: Telemetr Job for Junior IT&Digital vacancies
+  - username: jobpower
+    role: general
+    region: moscow
+    audience: 5000
+    language: ru
+    notes: Creative jobs
+  - username: jobs_inarmenia
+    role: general
+    region: world
+    audience: 20200
+    language: ru
+  - username: jobsandinternshipsindia
+    role: general
+    region: world
+    audience: 50000
+    language: en
+    notes: Referenced in public Telegram preview
+  - username: jobsandinternshipsupdates
+    role: general
+    region: world
+    audience: 50000
+    language: en
+    notes: Referenced in public Telegram preview
+  - username: jobsearch_usa
+    role: general
+    region: world
+    audience: 4800
+    language: ru
+    notes: Job search in USA
+  - username: jobskolkovo
+    role: general
+    region: moscow
+    audience: 8000
+    language: ru
+    notes: Skolkovo ecosystem jobs
+  - username: kaliningrad_rabota
+    role: general
+    region: regions
+    audience: 3320
+    language: ru
+  - username: kzn_reklama
+    role: general
+    region: regions
+    audience: 1050
+    language: ru
+  - username: megafonjobs
+    role: general
+    region: ru
+    audience: 14800
+    language: ru
+    notes: MegaFon careers
+  - username: moskva_rabota
+    role: general
+    region: moscow
+    audience: 25691
+    language: ru
+  - username: moskvarabota
+    role: general
+    region: moscow
+    audience: 25000
+    language: ru
+  - username: moskve_vakansii
+    role: general
+    region: moscow
+    audience: 59800
+    language: ru
+  - username: omsk_rabota
+    role: general
+    region: remote
+    audience: 1000
+    language: ru
+  - username: ovdejobs
+    role: general
+    region: world
+    audience: 1020
+    language: en
+  - username: perezvonyu
+    role: general
+    region: ru
+    audience: 6000
+    language: ru
+    notes: Media & digital jobs
+  - username: perm_rabota
+    role: general
+    region: regions
+    audience: 11700
+    language: ru
+  - username: piterrabota
+    role: general
+    region: spb
+    audience: 475
+    language: ru
+  - username: podrabotkanovosibirsk
+    role: general
+    region: regions
+    audience: 2200
+    language: ru
+  - username: poisk_chlb
+    role: general
+    region: regions
+    audience: 10400
+    language: ru
+    notes: 74.RU jobs, Chelyabinsk
+  - username: poisk_ekat
+    role: general
+    region: regions
+    audience: 58200
+    language: ru
+    notes: E1.RU jobs, Ekaterinburg
+  - username: poisk_nsk
+    role: general
+    region: regions
+    audience: 12900
+    language: ru
+    notes: NGS.RU jobs, Novosibirsk
+  - username: poisk_yug
+    role: general
+    region: regions
+    audience: 9000
+    language: ru
+    notes: 161.RU / South jobs
+  - username: prodazhi_rabota
+    role: general
+    region: ru
+    audience: 3000
+    language: ru
+    notes: Sales vacancies
+  - username: profenture
+    role: general
+    region: world
+    audience: 141000
+    language: ru
+    notes: Internships and volunteering
+  - username: promopoisk
+    role: general
+    region: ru
+    audience: 25000
+    language: ru
+    notes: Interesting jobs Moscow + remote
+  - username: rabota_52
+    role: general
+    region: regions
+    audience: 15900
+    language: ru
+  - username: rabota_Ekat
+    role: general
+    region: regions
+    audience: 1350
+    language: ru
+  - username: rabota_bloknot_stavropol
+    role: general
+    region: regions
+    audience: 4990
+    language: ru
+  - username: rabota_brn
+    role: general
+    region: regions
+    audience: 8960
+    language: ru
+  - username: rabota_chelyabinsk
+    role: general
+    region: regions
+    audience: 5000
+    language: ru
+  - username: rabota_dlya_tebya
+    role: general
+    region: ru
+    audience: 46983
+    language: ru
+  - username: rabota_ekaterinburg
+    role: general
+    region: regions
+    audience: 29581
+    language: ru
+  - username: rabota_ekaterinburgs
+    role: general
+    region: regions
+    audience: 43200
+    language: ru
+  - username: rabota_irkutsk
+    role: general
+    region: regions
+    audience: 2000
+    language: ru
+  - username: rabota_kaliningrad
+    role: general
+    region: regions
+    audience: 2000
+    language: ru
+  - username: rabota_kaliningradn
+    role: general
+    region: regions
+    audience: 15000
+    language: ru
+  - username: rabota_kazan3
+    role: general
+    region: regions
+    audience: 15300
+    language: ru
+  - username: rabota_khimkii
+    role: general
+    region: regions
+    audience: 10800
+    language: ru
+  - username: rabota_krasno_dar
+    role: general
+    region: regions
+    audience: 7078
+    language: ru
+  - username: rabota_krasnodarb
+    role: general
+    region: regions
+    audience: 47600
+    language: ru
+  - username: rabota_krasnoyarsk
+    role: general
+    region: regions
+    audience: 5000
+    language: ru
+  - username: rabota_krasnoyarsk_124
+    role: general
+    region: regions
+    audience: 809
+    language: ru
+  - username: rabota_mo
+    role: general
+    region: moscow
+    audience: 4000
+    language: ru
+  - username: rabota_nizhniy_novgorod
+    role: general
+    region: regions
+    audience: 3000
+    language: ru
+  - username: rabota_nizhniyu
+    role: general
+    region: regions
+    audience: 32400
+    language: ru
+  - username: rabota_novosibirsk
+    role: general
+    region: regions
+    audience: 7000
+    language: ru
+  - username: rabota_omsk
+    role: general
+    region: regions
+    audience: 4000
+    language: ru
+  - username: rabota_omskx
+    role: general
+    region: regions
+    audience: 32600
+    language: ru
+  - username: rabota_perm
+    role: general
+    region: regions
+    audience: 4000
+    language: ru
+  - username: rabota_perm_krai
+    role: general
+    region: regions
+    audience: 497
+    language: ru
+  - username: rabota_piter
+    role: general
+    region: spb
+    audience: 26060
+    language: ru
+  - username: rabota_piterw
+    role: general
+    region: spb
+    audience: 60700
+    language: ru
+  - username: rabota_piterz
+    role: general
+    region: spb
+    audience: 33300
+    language: ru
+  - username: rabota_rf_top
+    role: general
+    region: ru
+    audience: 54577
+    language: ru
+  - username: rabota_rostov
+    role: general
+    region: regions
+    audience: 5000
+    language: ru
+  - username: rabota_rostovu
+    role: general
+    region: regions
+    audience: 53600
+    language: ru
+  - username: rabota_rostovx
+    role: general
+    region: regions
+    audience: 36300
+    language: ru
+  - username: rabota_samarax
+    role: general
+    region: regions
+    audience: 33300
+    language: ru
+  - username: rabota_saratov
+    role: general
+    region: regions
+    audience: 2000
+    language: ru
+  - username: rabota_sochy
+    role: general
+    region: regions
+    audience: 58300
+    language: ru
+  - username: rabota_taganrog
+    role: general
+    region: regions
+    audience: 3000
+    language: ru
+  - username: rabota_tomskh
+    role: general
+    region: regions
+    audience: 24900
+    language: ru
+  - username: rabota_ufa
+    role: general
+    region: regions
+    audience: 5000
+    language: ru
+  - username: rabota_ufac
+    role: general
+    region: regions
+    audience: 57000
+    language: ru
+  - username: rabota_v_bugulme
+    role: general
+    region: regions
+    audience: 10000
+    language: ru
+  - username: rabota_v_kazani_1
+    role: general
+    region: regions
+    audience: 4300
+    language: ru
+  - username: rabota_v_kazaniq
+    role: general
+    region: regions
+    audience: 45800
+    language: ru
+  - username: rabota_v_krasnodare
+    role: general
+    region: regions
+    audience: 8000
+    language: ru
+  - username: rabota_v_nizhnekamske
+    role: general
+    region: regions
+    audience: 3000
+    language: ru
+  - username: rabota_v_novorossiyske
+    role: general
+    region: regions
+    audience: 5000
+    language: ru
+  - username: rabota_v_samarew
+    role: general
+    region: regions
+    audience: 49000
+    language: ru
+  - username: rabota_v_sankt_peterburge
+    role: general
+    region: spb
+    audience: 4000
+    language: ru
+  - username: rabota_v_sochi
+    role: general
+    region: regions
+    audience: 7000
+    language: ru
+  - username: rabota_v_stavropole_1777
+    role: general
+    region: regions
+    audience: 5510
+    language: ru
+  - username: rabota_v_stolice
+    role: general
+    region: moscow
+    audience: 7000
+    language: ru
+  - username: rabota_vakansii_sochi_adler
+    role: general
+    region: regions
+    audience: 3860
+    language: ru
+  - username: rabota_vladivostok
+    role: general
+    region: regions
+    audience: 2000
+    language: ru
+  - username: rabota_vladivostokf
+    role: general
+    region: regions
+    audience: 30100
+    language: ru
+  - username: rabota_vo_vladivostokeq
+    role: general
+    region: regions
+    audience: 30200
+    language: ru
+  - username: rabota_volgograds
+    role: general
+    region: regions
+    audience: 26600
+    language: ru
+  - username: rabota_voronezhs
+    role: general
+    region: regions
+    audience: 16400
+    language: ru
+  - username: rabota_yaroslavln
+    role: general
+    region: regions
+    audience: 13600
+    language: ru
+  - username: rabotakrd_vakansiikrd
+    role: general
+    region: regions
+    audience: 2200
+    language: ru
+  - username: rabotav_tomsk
+    role: general
+    region: regions
+    audience: 48600
+    language: ru
+  - username: rabotavispanii
+    role: general
+    region: world
+    audience: 17800
+    language: ru
+    notes: Jobs in Spain
+  - username: rabotaz_chelyabinsk
+    role: general
+    region: regions
+    audience: 10200
+    language: ru
+  - username: real_estate_jobs
+    role: general
+    region: ru
+    audience: 2000
+    language: ru
+  - username: recruit_jobs
+    role: general
+    region: remote
+    audience: 3000
+    language: ru
+  - username: remocate
+    role: general
+    region: world
+    audience: 109626
+    language: ru
+    notes: Relocation + remote + worldwide
+  - username: remotejobalerts
+    role: general
+    region: world
+    audience: 2100
+    language: en
+  - username: remotejobsenglish
+    role: general
+    region: world
+    audience: 7300
+    language: en
+    notes: Remotive remote jobs
+  - username: remotejobss
+    role: general
+    region: world
+    audience: 145000
+    language: en
+  - username: remotejobsy
+    role: general
+    region: world
+    audience: 7000
+    language: en
+  - username: remoteok
+    role: general
+    region: world
+    audience: 50000
+    language: en
+  - username: rg_omsk
+    role: general
+    region: regions
+    audience: 277
+    language: ru
+  - username: robota_novorossiysk
+    role: general
+    region: regions
+    audience: 430
+    language: ru
+  - username: rostov_rabota
+    role: general
+    region: regions
+    audience: 41200
+    language: ru
+  - username: smr_rabota
+    role: general
+    region: regions
+    audience: 1600
+    language: ru
+  - username: south_work
+    role: general
+    region: world
+    audience: 136000
+    language: ru
+    notes: Internships and career opportunities
+  - username: spb_rabota
+    role: general
+    region: spb
+    audience: 2828
+    language: ru
+  - username: spb_rabota78
+    role: general
+    region: spb
+    audience: 6900
+    language: ru
+  - username: sport_jobs
+    role: general
+    region: ru
+    audience: 2000
+    language: ru
+  - username: students_jobs
+    role: general
+    region: ru
+    audience: 4000
+    language: ru
+  - username: superjob_udalenka
+    role: general
+    region: remote
+    audience: 8000
+    language: ru
+  - username: talentsjobss
+    role: general
+    region: world
+    audience: 3010
+    language: en
+  - username: teacher_jobs
+    role: general
+    region: ru
+    audience: 2000
+    language: ru
+  - username: tg_job
+    role: general
+    region: world
+    audience: 759
+    language: ru
+    notes: Uzbekistan jobs public preview
+  - username: tgwork
+    role: general
+    region: remote
+    audience: 5000
+    language: ru
+    notes: TGwork remote
+  - username: theypaywell
+    role: general
+    region: moscow
+    audience: 9000
+    language: ru
+    notes: Salary >100k
+  - username: theyseeku
+    role: general
+    region: remote
+    audience: 300000
+    language: ru
+    notes: Finder.vc remote jobs
+  - username: tutor_jobs
+    role: general
+    region: ru
+    audience: 2000
+    language: ru
+  - username: udalenka_rf
+    role: general
+    region: remote
+    audience: 5000
+    language: ru
+  - username: udalenkin
+    role: general
+    region: remote
+    audience: 5000
+    language: ru
+  - username: uneconcareer
+    role: general
+    region: spb
+    audience: 915
+    language: ru
+  - username: vacanciesbest
+    role: general
+    region: ru
+    audience: 158140
+    language: ru
+    notes: Telemetr jobs catalog / financejobs catalog
+  - username: vakanser
+    role: general
+    region: ru
+    audience: 10000
+    language: ru
+  - username: vakansii
+    role: general
+    region: ru
+    audience: 20000
+    language: ru
+  - username: vakansii_ekaterinburge
+    role: general
+    region: regions
+    audience: 35100
+    language: ru
+  - username: vakansii_nnovgorod
+    role: general
+    region: regions
+    audience: 19200
+    language: ru
+  - username: vakansii_podrabotka24
+    role: general
+    region: regions
+    audience: 8700
+    language: ru
+  - username: vakansii_spb
+    role: general
+    region: spb
+    audience: 5000
+    language: ru
+  - username: vakansiiw_podrabotkaq
+    role: general
+    region: regions
+    audience: 2500
+    language: ru
+  - username: vdhl_good
+    role: general
+    region: ru
+    audience: 49315
+    language: ru
+    notes: Вакансии для хороших людей
+  - username: vdk_rabota
+    role: general
+    region: regions
+    audience: 524
+    language: ru
+  - username: vjobvl
+    role: general
+    region: regions
+    audience: 848
+    language: ru
+  - username: well_paid_job
+    role: general
+    region: moscow
+    audience: 10000
+    language: ru
+    notes: Salary >50k
+  - username: work_at_home_jobs
+    role: general
+    region: world
+    audience: 1200
+    language: en
+  - username: workbaza
+    role: general
+    region: remote
+    audience: 5000
+    language: ru
+  - username: workin_media
+    role: general
+    region: ru
+    audience: 8000
+    language: ru
+  - username: yandex
+    role: general
+    region: ru
+    audience: 500000
+    language: ru
+    notes: Yandex official — vacancies on Wednesdays
+  - username: yojob
+    role: general
+    region: ru
+    audience: 15000
+    language: ru
+    notes: DreamJob vacancies
+  - username: young_relocate
+    role: general
+    region: world
+    audience: 4000
+    language: ru
+  - username: youngandyandex
+    role: general
+    region: ru
+    audience: 10000
+    language: ru
+    notes: Yandex internships & schools
+  - username: yourcareerchannel
+    role: general
+    region: ru
+    audience: 5810
+    language: ru
+  - username: HRArchitect
+    role: hr
+    region: ru
+    audience: 11132
+    language: ru
+    notes: Potok.io HRTech jobs/news channel; t.me verified
+  - username: HRTechRU
+    role: hr
+    region: ru
+    audience: 13789
+    language: ru
+    notes: Potok.io HRTech channel; t.me verified
+  - username: HRorHR
+    role: hr
+    region: ru
+    audience: 16100
+    language: ru
+    notes: Nicegram/Telega эйчарли HR vacancies
+  - username: digital_hr
+    role: hr
+    region: remote
+    audience: 5000
+    language: ru
+  - username: forhr
+    role: hr
+    region: world
+    audience: 0
+    language: ru
+    notes: Telemetr Job for HR IT & Digital
+  - username: hr_internship
+    role: hr
+    region: ru
+    audience: 2000
+    language: ru
+  - username: hr_recruiter_job_geeklink
+    role: hr
+    region: ru
+    audience: 3490
+    language: ru
+    notes: Telemetr GeekLink HR/recruiter jobs
+  - username: hr_uslugi
+    role: hr
+    region: ru
+    audience: 2695
+    language: ru
+    notes: Telemetr HR services job orders
+  - username: hrhubjunior
+    role: hr
+    region: ru
+    audience: 0
+    language: ru
+    notes: Nicegram HR hub junior vacancy recommendation
+  - username: hrhubvacancy300
+    role: hr
+    region: ru
+    audience: 0
+    language: ru
+    notes: Nicegram HR hub vacancy recommendation
+  - username: hrity
+    role: hr
+    region: moscow
+    audience: 5000
+    language: ru
+  - username: hrvacancies_int
+    role: hr
+    region: world
+    audience: 5705
+    language: ru
+    notes: Telemetr international HR vacancies
+  - username: hrvacancies_rff
+    role: hr
+    region: ru
+    audience: 12141
+    language: ru
+    notes: Telemetr HR vacancies by RFF
+  - username: newhr
+    role: hr
+    region: moscow
+    audience: 4000
+    language: ru
+    notes: IT & Digital HR vacancies
+  - username: work_hr
+    role: hr
+    region: remote
+    audience: 0
+    language: ru
+    notes: Nicegram recommendation; remote work for HR
+  - username: Sellerman
+    role: marketing
+    region: remote
+    audience: 1000
+    language: ru
+  - username: adgoodashell
+    role: marketing
+    region: ru
+    audience: 5000
+    language: ru
+    notes: SMM PR Marketing
+  - username: content_jobs
+    role: marketing
+    region: ru
+    audience: 3000
+    language: ru
+  - username: dddwork
+    role: marketing
+    region: ru
+    audience: 5000
+    language: ru
+    notes: Media jobs
+  - username: findmyremote_writing
+    role: marketing
+    region: world
+    audience: 1000
+    language: en
+    notes: Remote writing jobs
+  - username: glvrd_job
+    role: marketing
+    region: ru
+    audience: 4000
+    language: ru
+    notes: Editor jobs
+  - username: jobs_marketplace
+    role: marketing
+    region: remote
+    audience: 6220
+    language: ru
+  - username: marketing_jobs
+    role: marketing
+    region: ru
+    audience: 10000
+    language: ru
+  - username: marketplacejob
+    role: marketing
+    region: remote
+    audience: 2130
+    language: ru
+  - username: mediajobs_ru
+    role: marketing
+    region: ru
+    audience: 4000
+    language: ru
+  - username: mskeventjob
+    role: marketing
+    region: moscow
+    audience: 3000
+    language: ru
+    notes: Creative & event jobs Moscow
+  - username: normrabota
+    role: marketing
+    region: ru
+    audience: 8000
+    language: ru
+    notes: Digital media jobs
+  - username: reklamodromo
+    role: marketing
+    region: moscow
+    audience: 8000
+    language: ru
+  - username: seohr
+    role: marketing
+    region: moscow
+    audience: 4000
+    language: ru
+    notes: SEO & digital vacancies
+  - username: smmlancer
+    role: marketing
+    region: remote
+    audience: 3000
+    language: ru
+  - username: spbeventjob
+    role: marketing
+    region: spb
+    audience: 26800
+    language: ru
+    notes: Creative/event jobs in SPb
+  - username: surovowork
+    role: marketing
+    region: spb
+    audience: 3000
+    language: ru
+    notes: SMM jobs St.Petersburg
+  - username: textodromo
+    role: marketing
+    region: ru
+    audience: 7000
+    language: ru
+    notes: Copywriters, editors, SMM, SEO
+  - username: theblueprintcareer
+    role: marketing
+    region: ru
+    audience: 5000
+    language: ru
+    notes: Journalism & marketing
+  - username: ttargetjob
+    role: marketing
+    region: remote
+    audience: 3000
+    language: ru
+    notes: Targetologists
+  - username: vacanciesrus
+    role: marketing
+    region: ru
+    audience: 3000
+    language: ru
+    notes: Digital vacancies including sales
+  - username: vacancysmm
+    role: marketing
+    region: remote
+    audience: 5000
+    language: ru
+  - username: work4writers
+    role: marketing
+    region: world
+    audience: 4000
+    language: ru
+    notes: Writing & editing remote
+  - username: work_editor
+    role: marketing
+    region: remote
+    audience: 3000
+    language: ru
+  - username: workasap
+    role: marketing
+    region: ru
+    audience: 10000
+    language: ru
+    notes: TGStat career channel page
+  - username: dartlang_jobs
+    role: mobile
+    region: world
+    audience: 2000
+    language: en
+  - username: flutter_dart_job
+    role: mobile
+    region: ru
+    audience: 3000
+    language: ru
+  - username: flutterroles
+    role: mobile
+    region: ru
+    audience: 2000
+    language: ru
+  - username: forallmobile
+    role: mobile
+    region: ru
+    audience: 4000
+    language: ru
+  - username: ios_android_swift_kotlin_jobs
+    role: mobile
+    region: ru
+    audience: 3000
+    language: ru
+  - username: remote_mobile_jobs
+    role: mobile
+    region: world
+    audience: 1000
+    language: en
+    notes: Remote Android/iOS jobs
+  - username: runello_rus_mobileappdevelopment
+    role: mobile
+    region: remote
+    audience: 2000
+    language: ru
+  - username: Vahta_rabota4
+    role: ops
+    region: ru
+    audience: 111000
+    language: ru
+    notes: Public Telegram preview; shift-work vacancies
+  - username: dispatchhunter
+    role: ops
+    region: world
+    audience: 25300
+    language: en
+  - username: gspi_career
+    role: ops
+    region: ru
+    audience: 313
+    language: ru
+    notes: Rosatom/GSPИ career channel
+  - username: jobkz_1
+    role: ops
+    region: world
+    audience: 0
+    language: ru
+    notes: Telegram webview jobs with logistics/import-export vacancies
+  - username: jobzakupki
+    role: ops
+    region: ru
+    audience: 5000
+    language: ru
+    notes: Procurement & logistics
+  - username: marinejobs
+    role: ops
+    region: world
+    audience: 29800
+    language: en
+    notes: Marine vacancies
+  - username: rabotanornickel
+    role: ops
+    region: ru
+    audience: 13000
+    language: ru
+    notes: Norilsk Nickel official careers
+  - username: rosatom_career
+    role: ops
+    region: ru
+    audience: 11200
+    language: ru
+    notes: Rosatom official careers
+  - username: severstal_career_official
+    role: ops
+    region: ru
+    audience: 4150
+    language: ru
+    notes: Severstal official careers
+  - username: siburofficial
+    role: ops
+    region: ru
+    audience: 34300
+    language: ru
+    notes: SIBUR official; forwards career/vacancy posts
+  - username: superjob_vahta
+    role: ops
+    region: ru
+    audience: 10000
+    language: ru
+    notes: Shift work jobs
+  - username: t_crew
+    role: ops
+    region: ru
+    audience: 39300
+    language: ru
+    notes: Telegram webview T-Crew vacancies including ВЭД/operations roles
+  - username: vahtavse
+    role: ops
+    region: ru
+    audience: 5000
+    language: ru
+    notes: Referenced from Vahta public preview
+  - username: ved_logistika_perevozki_import
+    role: ops
+    region: ru
+    audience: 2400
+    language: ru
+    notes: TGSearch logistics/import/export public chat
+  - username: wildberries_vacancy
+    role: ops
+    region: ru
+    audience: 14
+    language: ru
+  - username: workfortop
+    role: ops
+    region: ru
+    audience: 17408
+    language: ru
+    notes: Telemetr executive operations/logistics vacancies
+  - username: workfortop_pro
+    role: ops
+    region: ru
+    audience: 0
+    language: ru
+    notes: Work For TOP webview project-leadership vacancies
+  - username: activemarketingjungle
+    role: product
+    region: world
+    audience: 8840
+    language: en
+    notes: Product management channel
+  - username: agile_jobs
+    role: product
+    region: ru
+    audience: 5000
+    language: ru
+  - username: forchiefs
+    role: product
+    region: world
+    audience: 0
+    language: ru
+    notes: Referenced by Job for Products and Projects for top product vacancies
+  - username: forproducts
+    role: product
+    region: ru
+    audience: 61981
+    language: ru
+    notes: Potok.io product/project jobs; t.me verified
+  - username: geekjobs
+    role: product
+    region: ru
+    audience: 0
+    language: ru
+    notes: Telemetr Job in IT&Digital with product/project roles
+  - username: hireproproduct
+    role: product
+    region: ru
+    audience: 13000
+    language: ru
+    notes: Product & project managers
+  - username: juniors_managers_jobs
+    role: product
+    region: ru
+    audience: 6101
+    language: ru
+    notes: Telemetr junior product/project jobs
+  - username: pmclub
+    role: product
+    region: ru
+    audience: 5000
+    language: ru
+  - username: product_jobs
+    role: product
+    region: ru
+    audience: 30855
+    language: ru
+    notes: Potok.io/TgAiJobs product jobs
+  - username: product_project_job
+    role: product
+    region: ru
+    audience: 5609
+    language: ru
+    notes: Telemetr GeekLink product/project jobs
+  - username: productc
+    role: product
+    region: world
+    audience: 632
+    language: en
+    notes: Product management channel
+  - username: productconsult
+    role: product
+    region: remote
+    audience: 5390
+    language: ru
+    notes: Telegram webview product consult vacancies
+  - username: productjobgo
+    role: product
+    region: ru
+    audience: 19900
+    language: ru
+    notes: Potok.io product manager jobs; t.me verified
+  - username: products_jobs
+    role: product
+    region: ru
+    audience: 17813
+    language: ru
+    notes: Potok.io product jobs list; t.me verified
+  - username: products_jobs_projects
+    role: product
+    region: ru
+    audience: 5989
+    language: ru
+    notes: Telemetr product/project vacancies
+  - username: project_manager_jobs
+    role: product
+    region: ru
+    audience: 3000
+    language: ru
+  - username: projectmanagersjob
+    role: product
+    region: ru
+    audience: 0
+    language: ru
+    notes: QaRocks jobforqa IT-vacancy channel roundup
+  - username: projects_jobs
+    role: product
+    region: ru
+    audience: 17605
+    language: ru
+    notes: Potok.io project jobs list; t.me verified
+  - username: projects_jobs_feed
+    role: product
+    region: ru
+    audience: 14215
+    language: ru
+    notes: Potok.io management jobs feed; t.me verified
+  - username: teamlead_job_it
+    role: product
+    region: ru
+    audience: 15000
+    language: ru
+    notes: Lead developer, analyst, designer jobs
+  - username: easy_qa_jobs
+    role: qa
+    region: remote
+    audience: 11200
+    language: ru
+    notes: Telemetr easyoffer tester remote jobs
+  - username: forallqa
+    role: qa
+    region: ru
+    audience: 4000
+    language: ru
+  - username: ingamejob_qa
+    role: qa
+    region: ru
+    audience: 3000
+    language: ru
+  - username: it_match_qa
+    role: qa
+    region: remote
+    audience: 2800
+    language: ru
+    notes: IT Match QA jobs
+  - username: jobforqa
+    role: qa
+    region: ru
+    audience: 12430
+    language: ru
+    notes: Telemetr QA vacancies QaRocks
+  - username: jobfortester
+    role: qa
+    region: ru
+    audience: 0
+    language: ru
+    notes: QaRocks IT-vacancy channel roundup
+  - username: latestQATestingjobs
+    role: qa
+    region: world
+    audience: 2360
+    language: en
+  - username: manual_qa_jobs
+    role: qa
+    region: ru
+    audience: 2000
+    language: ru
+  - username: qa_automation_python
+    role: qa
+    region: ru
+    audience: 2000
+    language: ru
+  - username: qa_chillout_jobs
+    role: qa
+    region: ru
+    audience: 3000
+    language: ru
+  - username: qa_job_geeklink
+    role: qa
+    region: ru
+    audience: 4354
+    language: ru
+    notes: Telemetr GeekLink QA/tester jobs
+  - username: qa_jobs
+    role: qa
+    region: ru
+    audience: 8000
+    language: ru
+  - username: qa_jobs_rabota
+    role: qa
+    region: ru
+    audience: 4100
+    language: ru
+    notes: Nicegram QA Engineer vacancies
+  - username: qa_manual_jobs
+    role: qa
+    region: ru
+    audience: 2000
+    language: ru
+  - username: qa_work
+    role: qa
+    region: ru
+    audience: 13000
+    language: ru
+  - username: qaconnect
+    role: qa
+    region: world
+    audience: 12800
+    language: en
+  - username: qajoboffer
+    role: qa
+    region: ru
+    audience: 0
+    language: ru
+    notes: QaRocks IT-vacancy channel roundup
+  - username: testerrjob
+    role: qa
+    region: ru
+    audience: 6100
+    language: ru
+    notes: Telegram webview QA testing vacancies
+  - username: vacancy_qa
+    role: qa
+    region: ru
+    audience: 3000
+    language: ru

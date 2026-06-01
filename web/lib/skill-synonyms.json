@@ -1,0 +1,2831 @@
+{
+  ".net": [
+    ".net",
+    "dot net",
+    "dotnet",
+    "dotnet core",
+    "net core"
+  ],
+  "1c-bitrix": [
+    "1c-bitrix",
+    "bitrix",
+    "битрикс"
+  ],
+  "1c:enterprise": [
+    "1c:enterprise"
+  ],
+  "active mq": [
+    "active mq",
+    "activemq"
+  ],
+  "activemq": [
+    "active mq",
+    "activemq"
+  ],
+  "actix": [
+    "actix",
+    "actix-web"
+  ],
+  "actix-web": [
+    "actix",
+    "actix-web"
+  ],
+  "adobe illustrator": [
+    "adobe illustrator",
+    "illustrator"
+  ],
+  "adobe photoshop": [
+    "adobe photoshop",
+    "photoshop",
+    "фотошоп"
+  ],
+  "adobe xd": [
+    "adobe xd"
+  ],
+  "after effects": [
+    "after effects"
+  ],
+  "agail": [
+    "agail",
+    "agile",
+    "эджайл"
+  ],
+  "agile": [
+    "agail",
+    "agile",
+    "эджайл"
+  ],
+  "aiohttp": [
+    "aiohttp"
+  ],
+  "air flow": [
+    "air flow",
+    "airflow",
+    "apache airflow"
+  ],
+  "airflow": [
+    "air flow",
+    "airflow",
+    "apache airflow"
+  ],
+  "allure": [
+    "allure",
+    "allure report"
+  ],
+  "allure report": [
+    "allure",
+    "allure report"
+  ],
+  "amazon web services": [
+    "amazon web services",
+    "aws"
+  ],
+  "android": [
+    "android",
+    "андроид"
+  ],
+  "angular": [
+    "angular",
+    "ангулар",
+    "ангуляр"
+  ],
+  "ansible": [
+    "ansible",
+    "ансибл"
+  ],
+  "apache airflow": [
+    "air flow",
+    "airflow",
+    "apache airflow"
+  ],
+  "apache arrow": [
+    "apache arrow",
+    "arrow",
+    "pyarrow"
+  ],
+  "apache beam": [
+    "apache beam",
+    "beam"
+  ],
+  "apache druid": [
+    "apache druid",
+    "druid"
+  ],
+  "apache flink": [
+    "apache flink",
+    "flink"
+  ],
+  "apache hive": [
+    "apache hive",
+    "hive"
+  ],
+  "apache hudi": [
+    "apache hudi",
+    "hudi"
+  ],
+  "apache iceberg": [
+    "apache iceberg",
+    "iceberg"
+  ],
+  "apache kafka": [
+    "apache kafka",
+    "kafka",
+    "кафка"
+  ],
+  "apache nifi": [
+    "apache nifi",
+    "nifi"
+  ],
+  "apache spark": [
+    "apache spark",
+    "pyspark",
+    "spark",
+    "спарк"
+  ],
+  "apache superset": [
+    "apache superset",
+    "superset"
+  ],
+  "appium": [
+    "appium"
+  ],
+  "arango": [
+    "arango",
+    "arangodb"
+  ],
+  "arangodb": [
+    "arango",
+    "arangodb"
+  ],
+  "argo cd": [
+    "argo cd",
+    "argocd"
+  ],
+  "argocd": [
+    "argo cd",
+    "argocd"
+  ],
+  "arrow": [
+    "apache arrow",
+    "arrow",
+    "pyarrow"
+  ],
+  "asp net": [
+    "asp net",
+    "asp.net",
+    "aspnet"
+  ],
+  "asp.net": [
+    "asp net",
+    "asp.net",
+    "aspnet"
+  ],
+  "aspnet": [
+    "asp net",
+    "asp.net",
+    "aspnet"
+  ],
+  "astro": [
+    "astro",
+    "astro.build"
+  ],
+  "astro.build": [
+    "astro",
+    "astro.build"
+  ],
+  "atlassian bamboo": [
+    "atlassian bamboo",
+    "bamboo"
+  ],
+  "aws": [
+    "amazon web services",
+    "aws"
+  ],
+  "axum": [
+    "axum",
+    "axum framework"
+  ],
+  "axum framework": [
+    "axum",
+    "axum framework"
+  ],
+  "azure": [
+    "azure",
+    "microsoft azure",
+    "ажур"
+  ],
+  "bamboo": [
+    "atlassian bamboo",
+    "bamboo"
+  ],
+  "bash": [
+    "bash",
+    "shell script",
+    "баш"
+  ],
+  "bdd": [
+    "bdd",
+    "behavior driven development"
+  ],
+  "beam": [
+    "apache beam",
+    "beam"
+  ],
+  "behavior driven development": [
+    "bdd",
+    "behavior driven development"
+  ],
+  "big query": [
+    "big query",
+    "bigquery"
+  ],
+  "bigquery": [
+    "big query",
+    "bigquery"
+  ],
+  "bitrix": [
+    "1c-bitrix",
+    "bitrix",
+    "битрикс"
+  ],
+  "blender": [
+    "blender",
+    "блендер"
+  ],
+  "bootstrap": [
+    "bootstrap",
+    "bootstrap 5"
+  ],
+  "bootstrap 5": [
+    "bootstrap",
+    "bootstrap 5"
+  ],
+  "c lang": [
+    "c lang",
+    "c-developer",
+    "c-developers",
+    "c-программист",
+    "c-разработчик",
+    "c-разработчика",
+    "c/c++",
+    "знание c",
+    "опыт c",
+    "язык c"
+  ],
+  "c++": [
+    "c++",
+    "cpp",
+    "плюсы",
+    "си++"
+  ],
+  "c-developer": [
+    "c lang",
+    "c-developer",
+    "c-developers",
+    "c-программист",
+    "c-разработчик",
+    "c-разработчика",
+    "c/c++",
+    "знание c",
+    "опыт c",
+    "язык c"
+  ],
+  "c-developers": [
+    "c lang",
+    "c-developer",
+    "c-developers",
+    "c-программист",
+    "c-разработчик",
+    "c-разработчика",
+    "c/c++",
+    "знание c",
+    "опыт c",
+    "язык c"
+  ],
+  "c-программист": [
+    "c lang",
+    "c-developer",
+    "c-developers",
+    "c-программист",
+    "c-разработчик",
+    "c-разработчика",
+    "c/c++",
+    "знание c",
+    "опыт c",
+    "язык c"
+  ],
+  "c-разработчик": [
+    "c lang",
+    "c-developer",
+    "c-developers",
+    "c-программист",
+    "c-разработчик",
+    "c-разработчика",
+    "c/c++",
+    "знание c",
+    "опыт c",
+    "язык c"
+  ],
+  "c-разработчика": [
+    "c lang",
+    "c-developer",
+    "c-developers",
+    "c-программист",
+    "c-разработчик",
+    "c-разработчика",
+    "c/c++",
+    "знание c",
+    "опыт c",
+    "язык c"
+  ],
+  "c/c++": [
+    "c lang",
+    "c-developer",
+    "c-developers",
+    "c-программист",
+    "c-разработчик",
+    "c-разработчика",
+    "c/c++",
+    "знание c",
+    "опыт c",
+    "язык c"
+  ],
+  "c4d": [
+    "c4d",
+    "cinema 4d"
+  ],
+  "cassandra": [
+    "cassandra",
+    "кассандра"
+  ],
+  "cat boost": [
+    "cat boost",
+    "catboost"
+  ],
+  "catboost": [
+    "cat boost",
+    "catboost"
+  ],
+  "cent os": [
+    "cent os",
+    "centos"
+  ],
+  "centos": [
+    "cent os",
+    "centos"
+  ],
+  "ch db": [
+    "ch db",
+    "click house",
+    "clickhouse",
+    "кликхаус"
+  ],
+  "chef": [
+    "chef",
+    "chef infra"
+  ],
+  "chef infra": [
+    "chef",
+    "chef infra"
+  ],
+  "ci/cd": [
+    "ci/cd",
+    "cicd",
+    "continuous integration"
+  ],
+  "cicd": [
+    "ci/cd",
+    "cicd",
+    "continuous integration"
+  ],
+  "cinema 4d": [
+    "c4d",
+    "cinema 4d"
+  ],
+  "click house": [
+    "ch db",
+    "click house",
+    "clickhouse",
+    "кликхаус"
+  ],
+  "clickhouse": [
+    "ch db",
+    "click house",
+    "clickhouse",
+    "кликхаус"
+  ],
+  "cloud flare": [
+    "cloud flare",
+    "cloudflare"
+  ],
+  "cloudflare": [
+    "cloud flare",
+    "cloudflare"
+  ],
+  "cockroach": [
+    "cockroach",
+    "cockroachdb"
+  ],
+  "cockroachdb": [
+    "cockroach",
+    "cockroachdb"
+  ],
+  "computer vision": [
+    "computer vision",
+    "cv engineer",
+    "cv-инженер",
+    "ml/cv",
+    "компьютерное зрение"
+  ],
+  "consul": [
+    "consul",
+    "hashicorp consul"
+  ],
+  "continuous integration": [
+    "ci/cd",
+    "cicd",
+    "continuous integration"
+  ],
+  "cpp": [
+    "c++",
+    "cpp",
+    "плюсы",
+    "си++"
+  ],
+  "csharp": [
+    "csharp",
+    "си шарп",
+    "си-шарп"
+  ],
+  "css": [
+    "css",
+    "css3",
+    "цсс"
+  ],
+  "css3": [
+    "css",
+    "css3",
+    "цсс"
+  ],
+  "cucumber": [
+    "cucumber",
+    "gherkin"
+  ],
+  "cv engineer": [
+    "computer vision",
+    "cv engineer",
+    "cv-инженер",
+    "ml/cv",
+    "компьютерное зрение"
+  ],
+  "cv-инженер": [
+    "computer vision",
+    "cv engineer",
+    "cv-инженер",
+    "ml/cv",
+    "компьютерное зрение"
+  ],
+  "cypress": [
+    "cypress"
+  ],
+  "dagster": [
+    "dagster"
+  ],
+  "dart": [
+    "dart",
+    "дарт"
+  ],
+  "dask": [
+    "dask"
+  ],
+  "data bricks": [
+    "data bricks",
+    "databricks"
+  ],
+  "data build tool": [
+    "data build tool",
+    "dbt"
+  ],
+  "data dog": [
+    "data dog",
+    "datadog"
+  ],
+  "databricks": [
+    "data bricks",
+    "databricks"
+  ],
+  "datadog": [
+    "data dog",
+    "datadog"
+  ],
+  "dbt": [
+    "data build tool",
+    "dbt"
+  ],
+  "ddd": [
+    "ddd",
+    "domain driven design",
+    "domain-driven"
+  ],
+  "debian": [
+    "debian",
+    "дебиан"
+  ],
+  "delta lake": [
+    "delta lake",
+    "deltalake"
+  ],
+  "deltalake": [
+    "delta lake",
+    "deltalake"
+  ],
+  "digital ocean": [
+    "digital ocean",
+    "digitalocean",
+    "do cloud"
+  ],
+  "digitalocean": [
+    "digital ocean",
+    "digitalocean",
+    "do cloud"
+  ],
+  "django": [
+    "django",
+    "джанго"
+  ],
+  "do cloud": [
+    "digital ocean",
+    "digitalocean",
+    "do cloud"
+  ],
+  "docker": [
+    "docker",
+    "докер"
+  ],
+  "domain driven design": [
+    "ddd",
+    "domain driven design",
+    "domain-driven"
+  ],
+  "domain-driven": [
+    "ddd",
+    "domain driven design",
+    "domain-driven"
+  ],
+  "dot net": [
+    ".net",
+    "dot net",
+    "dotnet",
+    "dotnet core",
+    "net core"
+  ],
+  "dotnet": [
+    ".net",
+    "dot net",
+    "dotnet",
+    "dotnet core",
+    "net core"
+  ],
+  "dotnet core": [
+    ".net",
+    "dot net",
+    "dotnet",
+    "dotnet core",
+    "net core"
+  ],
+  "druid": [
+    "apache druid",
+    "druid"
+  ],
+  "duck db": [
+    "duck db",
+    "duckdb"
+  ],
+  "duckdb": [
+    "duck db",
+    "duckdb"
+  ],
+  "dynamo": [
+    "dynamo",
+    "dynamodb"
+  ],
+  "dynamodb": [
+    "dynamo",
+    "dynamodb"
+  ],
+  "echo": [
+    "echo",
+    "echo framework"
+  ],
+  "echo framework": [
+    "echo",
+    "echo framework"
+  ],
+  "elastic": [
+    "elastic",
+    "elasticsearch",
+    "эластик"
+  ],
+  "elastic stack": [
+    "elastic stack",
+    "elk",
+    "elk stack"
+  ],
+  "elasticsearch": [
+    "elastic",
+    "elasticsearch",
+    "эластик"
+  ],
+  "elixir": [
+    "elixir",
+    "эликсир"
+  ],
+  "elk": [
+    "elastic stack",
+    "elk",
+    "elk stack"
+  ],
+  "elk stack": [
+    "elastic stack",
+    "elk",
+    "elk stack"
+  ],
+  "elt": [
+    "elt",
+    "extract load transform"
+  ],
+  "envoy": [
+    "envoy",
+    "envoy proxy"
+  ],
+  "envoy proxy": [
+    "envoy",
+    "envoy proxy"
+  ],
+  "erlang": [
+    "erlang",
+    "эрланг"
+  ],
+  "esbuild": [
+    "esbuild"
+  ],
+  "etl": [
+    "etl",
+    "extract transform load"
+  ],
+  "excel": [
+    "excel",
+    "ms excel"
+  ],
+  "express": [
+    "express",
+    "express.js",
+    "expressjs"
+  ],
+  "express.js": [
+    "express",
+    "express.js",
+    "expressjs"
+  ],
+  "expressjs": [
+    "express",
+    "express.js",
+    "expressjs"
+  ],
+  "extract load transform": [
+    "elt",
+    "extract load transform"
+  ],
+  "extract transform load": [
+    "etl",
+    "extract transform load"
+  ],
+  "fast api": [
+    "fast api",
+    "fastapi"
+  ],
+  "fastapi": [
+    "fast api",
+    "fastapi"
+  ],
+  "fastify": [
+    "fastify"
+  ],
+  "fiber": [
+    "fiber",
+    "fiber framework"
+  ],
+  "fiber framework": [
+    "fiber",
+    "fiber framework"
+  ],
+  "figma": [
+    "figma",
+    "фигма"
+  ],
+  "flask": [
+    "flask",
+    "фласк"
+  ],
+  "flink": [
+    "apache flink",
+    "flink"
+  ],
+  "fluent": [
+    "fluent",
+    "fluentd"
+  ],
+  "fluentd": [
+    "fluent",
+    "fluentd"
+  ],
+  "flutter": [
+    "flutter",
+    "флаттер"
+  ],
+  "flux": [
+    "flux",
+    "flux cd",
+    "fluxcd"
+  ],
+  "flux cd": [
+    "flux",
+    "flux cd",
+    "fluxcd"
+  ],
+  "fluxcd": [
+    "flux",
+    "flux cd",
+    "fluxcd"
+  ],
+  "g rpc": [
+    "g rpc",
+    "grpc"
+  ],
+  "gcp": [
+    "gcp",
+    "google cloud",
+    "google cloud platform"
+  ],
+  "gh actions": [
+    "gh actions",
+    "github actions"
+  ],
+  "gherkin": [
+    "cucumber",
+    "gherkin"
+  ],
+  "gin": [
+    "gin",
+    "gin gonic"
+  ],
+  "gin gonic": [
+    "gin",
+    "gin gonic"
+  ],
+  "git": [
+    "git",
+    "гит"
+  ],
+  "github actions": [
+    "gh actions",
+    "github actions"
+  ],
+  "gitlab ci": [
+    "gitlab ci",
+    "gitlab ci/cd",
+    "gitlab pipelines"
+  ],
+  "gitlab ci/cd": [
+    "gitlab ci",
+    "gitlab ci/cd",
+    "gitlab pipelines"
+  ],
+  "gitlab pipelines": [
+    "gitlab ci",
+    "gitlab ci/cd",
+    "gitlab pipelines"
+  ],
+  "golang": [
+    "golang"
+  ],
+  "google cloud": [
+    "gcp",
+    "google cloud",
+    "google cloud platform"
+  ],
+  "google cloud platform": [
+    "gcp",
+    "google cloud",
+    "google cloud platform"
+  ],
+  "grafana": [
+    "grafana",
+    "графана"
+  ],
+  "grafana loki": [
+    "grafana loki",
+    "loki"
+  ],
+  "grafana tempo": [
+    "grafana tempo",
+    "tempo"
+  ],
+  "graph ql": [
+    "graph ql",
+    "graphql"
+  ],
+  "graphql": [
+    "graph ql",
+    "graphql"
+  ],
+  "green plum": [
+    "green plum",
+    "greenplum",
+    "гринплам"
+  ],
+  "greenplum": [
+    "green plum",
+    "greenplum",
+    "гринплам"
+  ],
+  "groovy": [
+    "groovy",
+    "грууви"
+  ],
+  "grpc": [
+    "g rpc",
+    "grpc"
+  ],
+  "ha proxy": [
+    "ha proxy",
+    "haproxy"
+  ],
+  "hadoop": [
+    "hadoop",
+    "hdfs",
+    "хадуп"
+  ],
+  "hapi": [
+    "hapi",
+    "hapi.js"
+  ],
+  "hapi.js": [
+    "hapi",
+    "hapi.js"
+  ],
+  "haproxy": [
+    "ha proxy",
+    "haproxy"
+  ],
+  "hashi vault": [
+    "hashi vault",
+    "hashicorp vault",
+    "vault"
+  ],
+  "hashicorp consul": [
+    "consul",
+    "hashicorp consul"
+  ],
+  "hashicorp nomad": [
+    "hashicorp nomad",
+    "nomad"
+  ],
+  "hashicorp vault": [
+    "hashi vault",
+    "hashicorp vault",
+    "vault"
+  ],
+  "haskell": [
+    "haskell",
+    "хаскел",
+    "хаскель"
+  ],
+  "hbase": [
+    "hbase"
+  ],
+  "hdfs": [
+    "hadoop",
+    "hdfs",
+    "хадуп"
+  ],
+  "helm": [
+    "helm",
+    "helm chart"
+  ],
+  "helm chart": [
+    "helm",
+    "helm chart"
+  ],
+  "heroku": [
+    "heroku"
+  ],
+  "hf transformers": [
+    "hf transformers",
+    "hugging face",
+    "huggingface"
+  ],
+  "hive": [
+    "apache hive",
+    "hive"
+  ],
+  "html": [
+    "html",
+    "html5",
+    "хтмл"
+  ],
+  "html5": [
+    "html",
+    "html5",
+    "хтмл"
+  ],
+  "hudi": [
+    "apache hudi",
+    "hudi"
+  ],
+  "hugging face": [
+    "hf transformers",
+    "hugging face",
+    "huggingface"
+  ],
+  "huggingface": [
+    "hf transformers",
+    "hugging face",
+    "huggingface"
+  ],
+  "ibm spss": [
+    "ibm spss",
+    "spss"
+  ],
+  "iceberg": [
+    "apache iceberg",
+    "iceberg"
+  ],
+  "illustrator": [
+    "adobe illustrator",
+    "illustrator"
+  ],
+  "in design": [
+    "in design",
+    "indesign"
+  ],
+  "indesign": [
+    "in design",
+    "indesign"
+  ],
+  "influx": [
+    "influx",
+    "influxdb"
+  ],
+  "influxdb": [
+    "influx",
+    "influxdb"
+  ],
+  "ionic": [
+    "ionic",
+    "ionic framework"
+  ],
+  "ionic framework": [
+    "ionic",
+    "ionic framework"
+  ],
+  "ios": [
+    "ios",
+    "ios development"
+  ],
+  "ios development": [
+    "ios",
+    "ios development"
+  ],
+  "istio": [
+    "istio"
+  ],
+  "j meter": [
+    "j meter",
+    "jmeter"
+  ],
+  "j query": [
+    "j query",
+    "jquery"
+  ],
+  "j unit": [
+    "j unit",
+    "junit"
+  ],
+  "jaeger": [
+    "jaeger",
+    "ягер"
+  ],
+  "java": [
+    "java",
+    "джава"
+  ],
+  "javascript": [
+    "javascript",
+    "джаваскрипт"
+  ],
+  "jenkins": [
+    "jenkins",
+    "дженкинс"
+  ],
+  "jest": [
+    "jest"
+  ],
+  "jetpack compose": [
+    "jetpack compose",
+    "jetpack-compose"
+  ],
+  "jetpack-compose": [
+    "jetpack compose",
+    "jetpack-compose"
+  ],
+  "jmeter": [
+    "j meter",
+    "jmeter"
+  ],
+  "jquery": [
+    "j query",
+    "jquery"
+  ],
+  "json web token": [
+    "json web token",
+    "jwt"
+  ],
+  "julia": [
+    "julia",
+    "джулия"
+  ],
+  "junit": [
+    "j unit",
+    "junit"
+  ],
+  "jwt": [
+    "json web token",
+    "jwt"
+  ],
+  "k6 io": [
+    "k6 io",
+    "k6 load"
+  ],
+  "k6 load": [
+    "k6 io",
+    "k6 load"
+  ],
+  "k8s": [
+    "k8s",
+    "kubernetes",
+    "кубер",
+    "кубернетес"
+  ],
+  "kafka": [
+    "apache kafka",
+    "kafka",
+    "кафка"
+  ],
+  "kanban": [
+    "kanban",
+    "канбан"
+  ],
+  "keras": [
+    "keras"
+  ],
+  "kibana": [
+    "kibana"
+  ],
+  "koa": [
+    "koa",
+    "koa.js"
+  ],
+  "koa.js": [
+    "koa",
+    "koa.js"
+  ],
+  "kotlin": [
+    "kotlin",
+    "котлин"
+  ],
+  "ktor": [
+    "ktor"
+  ],
+  "kube flow": [
+    "kube flow",
+    "kubeflow"
+  ],
+  "kubeflow": [
+    "kube flow",
+    "kubeflow"
+  ],
+  "kubernetes": [
+    "k8s",
+    "kubernetes",
+    "кубер",
+    "кубернетес"
+  ],
+  "lang chain": [
+    "lang chain",
+    "langchain"
+  ],
+  "langchain": [
+    "lang chain",
+    "langchain"
+  ],
+  "laravel": [
+    "laravel"
+  ],
+  "large language model": [
+    "large language model",
+    "llm"
+  ],
+  "light gbm": [
+    "light gbm",
+    "lightgbm"
+  ],
+  "lightgbm": [
+    "light gbm",
+    "lightgbm"
+  ],
+  "linkerd": [
+    "linkerd"
+  ],
+  "linux": [
+    "linux",
+    "линукс"
+  ],
+  "litestar": [
+    "litestar"
+  ],
+  "llama index": [
+    "llama index",
+    "llamaindex"
+  ],
+  "llamaindex": [
+    "llama index",
+    "llamaindex"
+  ],
+  "llm": [
+    "large language model",
+    "llm"
+  ],
+  "locust": [
+    "locust",
+    "locust io"
+  ],
+  "locust io": [
+    "locust",
+    "locust io"
+  ],
+  "log stash": [
+    "log stash",
+    "logstash"
+  ],
+  "logstash": [
+    "log stash",
+    "logstash"
+  ],
+  "loki": [
+    "grafana loki",
+    "loki"
+  ],
+  "looker": [
+    "looker",
+    "looker studio"
+  ],
+  "looker studio": [
+    "looker",
+    "looker studio"
+  ],
+  "lua": [
+    "lua",
+    "луа"
+  ],
+  "luigi": [
+    "luigi",
+    "luigi pipeline"
+  ],
+  "luigi pipeline": [
+    "luigi",
+    "luigi pipeline"
+  ],
+  "mariadb": [
+    "mariadb",
+    "мария"
+  ],
+  "memcache": [
+    "memcache",
+    "memcached",
+    "мемкеш"
+  ],
+  "memcached": [
+    "memcache",
+    "memcached",
+    "мемкеш"
+  ],
+  "mercurial": [
+    "mercurial"
+  ],
+  "metabase": [
+    "metabase"
+  ],
+  "micro services": [
+    "micro services",
+    "microservices",
+    "микросервисы"
+  ],
+  "micronaut": [
+    "micronaut"
+  ],
+  "microservices": [
+    "micro services",
+    "microservices",
+    "микросервисы"
+  ],
+  "microsoft azure": [
+    "azure",
+    "microsoft azure",
+    "ажур"
+  ],
+  "microsoft sql": [
+    "microsoft sql",
+    "ms sql",
+    "ms sql server",
+    "ms-sql",
+    "mssql",
+    "sql server"
+  ],
+  "ml flow": [
+    "ml flow",
+    "mlflow"
+  ],
+  "ml/cv": [
+    "computer vision",
+    "cv engineer",
+    "cv-инженер",
+    "ml/cv",
+    "компьютерное зрение"
+  ],
+  "mlflow": [
+    "ml flow",
+    "mlflow"
+  ],
+  "mobx": [
+    "mobx"
+  ],
+  "mocha": [
+    "mocha"
+  ],
+  "modin": [
+    "modin"
+  ],
+  "mongo": [
+    "mongo",
+    "mongodb",
+    "монго"
+  ],
+  "mongodb": [
+    "mongo",
+    "mongodb",
+    "монго"
+  ],
+  "ms excel": [
+    "excel",
+    "ms excel"
+  ],
+  "ms sql": [
+    "microsoft sql",
+    "ms sql",
+    "ms sql server",
+    "ms-sql",
+    "mssql",
+    "sql server"
+  ],
+  "ms sql server": [
+    "microsoft sql",
+    "ms sql",
+    "ms sql server",
+    "ms-sql",
+    "mssql",
+    "sql server"
+  ],
+  "ms-sql": [
+    "microsoft sql",
+    "ms sql",
+    "ms sql server",
+    "ms-sql",
+    "mssql",
+    "sql server"
+  ],
+  "mssql": [
+    "microsoft sql",
+    "ms sql",
+    "ms sql server",
+    "ms-sql",
+    "mssql",
+    "sql server"
+  ],
+  "my sql": [
+    "my sql",
+    "mysql",
+    "мускул"
+  ],
+  "mysql": [
+    "my sql",
+    "mysql",
+    "мускул"
+  ],
+  "nats": [
+    "nats",
+    "nats messaging",
+    "nats.io"
+  ],
+  "nats messaging": [
+    "nats",
+    "nats messaging",
+    "nats.io"
+  ],
+  "nats.io": [
+    "nats",
+    "nats messaging",
+    "nats.io"
+  ],
+  "natural language processing": [
+    "natural language processing",
+    "nlp",
+    "нлп"
+  ],
+  "neo 4j": [
+    "neo 4j",
+    "neo4j"
+  ],
+  "neo4j": [
+    "neo 4j",
+    "neo4j"
+  ],
+  "nest js": [
+    "nest js",
+    "nest.js",
+    "nestjs"
+  ],
+  "nest.js": [
+    "nest js",
+    "nest.js",
+    "nestjs"
+  ],
+  "nestjs": [
+    "nest js",
+    "nest.js",
+    "nestjs"
+  ],
+  "net core": [
+    ".net",
+    "dot net",
+    "dotnet",
+    "dotnet core",
+    "net core"
+  ],
+  "netlify": [
+    "netlify"
+  ],
+  "new relic": [
+    "new relic",
+    "newrelic"
+  ],
+  "newrelic": [
+    "new relic",
+    "newrelic"
+  ],
+  "next js": [
+    "next js",
+    "next.js",
+    "nextjs"
+  ],
+  "next.js": [
+    "next js",
+    "next.js",
+    "nextjs"
+  ],
+  "nextjs": [
+    "next js",
+    "next.js",
+    "nextjs"
+  ],
+  "nginx": [
+    "nginx",
+    "енджин"
+  ],
+  "nifi": [
+    "apache nifi",
+    "nifi"
+  ],
+  "nlp": [
+    "natural language processing",
+    "nlp",
+    "нлп"
+  ],
+  "nltk": [
+    "nltk"
+  ],
+  "nomad": [
+    "hashicorp nomad",
+    "nomad"
+  ],
+  "numpy": [
+    "numpy"
+  ],
+  "nuxt": [
+    "nuxt",
+    "nuxt 3",
+    "nuxt.js",
+    "nuxtjs"
+  ],
+  "nuxt 3": [
+    "nuxt",
+    "nuxt 3",
+    "nuxt.js",
+    "nuxtjs"
+  ],
+  "nuxt.js": [
+    "nuxt",
+    "nuxt 3",
+    "nuxt.js",
+    "nuxtjs"
+  ],
+  "nuxtjs": [
+    "nuxt",
+    "nuxt 3",
+    "nuxt.js",
+    "nuxtjs"
+  ],
+  "oauth": [
+    "oauth",
+    "oauth 2",
+    "oauth2"
+  ],
+  "oauth 2": [
+    "oauth",
+    "oauth 2",
+    "oauth2"
+  ],
+  "oauth2": [
+    "oauth",
+    "oauth 2",
+    "oauth2"
+  ],
+  "objc": [
+    "objc",
+    "objective c",
+    "objective-c",
+    "objectivec"
+  ],
+  "objective c": [
+    "objc",
+    "objective c",
+    "objective-c",
+    "objectivec"
+  ],
+  "objective-c": [
+    "objc",
+    "objective c",
+    "objective-c",
+    "objectivec"
+  ],
+  "objectivec": [
+    "objc",
+    "objective c",
+    "objective-c",
+    "objectivec"
+  ],
+  "onnx": [
+    "onnx"
+  ],
+  "open cv": [
+    "open cv",
+    "opencv"
+  ],
+  "open search": [
+    "open search",
+    "opensearch"
+  ],
+  "open telemetry": [
+    "open telemetry",
+    "opentelemetry",
+    "otel"
+  ],
+  "opencv": [
+    "open cv",
+    "opencv"
+  ],
+  "opensearch": [
+    "open search",
+    "opensearch"
+  ],
+  "opentelemetry": [
+    "open telemetry",
+    "opentelemetry",
+    "otel"
+  ],
+  "oracle": [
+    "oracle",
+    "oracle database",
+    "oracle db",
+    "оракл"
+  ],
+  "oracle database": [
+    "oracle",
+    "oracle database",
+    "oracle db",
+    "оракл"
+  ],
+  "oracle db": [
+    "oracle",
+    "oracle database",
+    "oracle db",
+    "оракл"
+  ],
+  "otel": [
+    "open telemetry",
+    "opentelemetry",
+    "otel"
+  ],
+  "pandas": [
+    "pandas",
+    "пандас"
+  ],
+  "parquet": [
+    "parquet",
+    "паркет"
+  ],
+  "perl": [
+    "perl",
+    "перл"
+  ],
+  "phoenix": [
+    "phoenix",
+    "phoenix framework"
+  ],
+  "phoenix framework": [
+    "phoenix",
+    "phoenix framework"
+  ],
+  "photoshop": [
+    "adobe photoshop",
+    "photoshop",
+    "фотошоп"
+  ],
+  "php": [
+    "php",
+    "пхп"
+  ],
+  "playwright": [
+    "playwright"
+  ],
+  "polars": [
+    "polars"
+  ],
+  "postgre": [
+    "postgre",
+    "postgres",
+    "postgresql",
+    "постгре",
+    "постгрес"
+  ],
+  "postgres": [
+    "postgre",
+    "postgres",
+    "postgresql",
+    "постгре",
+    "постгрес"
+  ],
+  "postgresql": [
+    "postgre",
+    "postgres",
+    "postgresql",
+    "постгре",
+    "постгрес"
+  ],
+  "postman": [
+    "postman"
+  ],
+  "power bi": [
+    "power bi",
+    "powerbi"
+  ],
+  "power shell": [
+    "power shell",
+    "powershell"
+  ],
+  "powerbi": [
+    "power bi",
+    "powerbi"
+  ],
+  "powershell": [
+    "power shell",
+    "powershell"
+  ],
+  "prefect": [
+    "prefect"
+  ],
+  "premiere": [
+    "premiere",
+    "premiere pro"
+  ],
+  "premiere pro": [
+    "premiere",
+    "premiere pro"
+  ],
+  "presto": [
+    "presto",
+    "presto db"
+  ],
+  "presto db": [
+    "presto",
+    "presto db"
+  ],
+  "prometheus": [
+    "prometheus",
+    "прометей"
+  ],
+  "puppet": [
+    "puppet"
+  ],
+  "puppeteer": [
+    "puppeteer"
+  ],
+  "py test": [
+    "py test",
+    "pytest"
+  ],
+  "py torch": [
+    "py torch",
+    "pytorch"
+  ],
+  "pyarrow": [
+    "apache arrow",
+    "arrow",
+    "pyarrow"
+  ],
+  "pyramid": [
+    "pyramid"
+  ],
+  "pyspark": [
+    "apache spark",
+    "pyspark",
+    "spark",
+    "спарк"
+  ],
+  "pytest": [
+    "py test",
+    "pytest"
+  ],
+  "python": [
+    "python",
+    "пайтон",
+    "питон"
+  ],
+  "pytorch": [
+    "py torch",
+    "pytorch"
+  ],
+  "qlik": [
+    "qlik",
+    "qlik sense",
+    "qlikview"
+  ],
+  "qlik sense": [
+    "qlik",
+    "qlik sense",
+    "qlikview"
+  ],
+  "qlikview": [
+    "qlik",
+    "qlik sense",
+    "qlikview"
+  ],
+  "quarkus": [
+    "quarkus"
+  ],
+  "r-lang": [
+    "r-lang"
+  ],
+  "rabbit mq": [
+    "rabbit mq",
+    "rabbitmq",
+    "кролик"
+  ],
+  "rabbitmq": [
+    "rabbit mq",
+    "rabbitmq",
+    "кролик"
+  ],
+  "rag": [
+    "rag",
+    "retrieval augmented generation",
+    "retrieval-augmented generation"
+  ],
+  "rails": [
+    "rails",
+    "ror",
+    "ruby on rails"
+  ],
+  "react": [
+    "react",
+    "react.js",
+    "reactjs",
+    "реакт"
+  ],
+  "react native": [
+    "react native",
+    "react-native"
+  ],
+  "react-native": [
+    "react native",
+    "react-native"
+  ],
+  "react.js": [
+    "react",
+    "react.js",
+    "reactjs",
+    "реакт"
+  ],
+  "reactjs": [
+    "react",
+    "react.js",
+    "reactjs",
+    "реакт"
+  ],
+  "red hat": [
+    "red hat",
+    "red hat enterprise linux",
+    "rhel"
+  ],
+  "red hat enterprise linux": [
+    "red hat",
+    "red hat enterprise linux",
+    "rhel"
+  ],
+  "red shift": [
+    "red shift",
+    "redshift"
+  ],
+  "redash": [
+    "redash"
+  ],
+  "redis": [
+    "redis",
+    "редис"
+  ],
+  "redshift": [
+    "red shift",
+    "redshift"
+  ],
+  "redux": [
+    "redux"
+  ],
+  "reinforcement learning": [
+    "reinforcement learning",
+    "обучение с подкреплением"
+  ],
+  "remix": [
+    "remix",
+    "remix.run"
+  ],
+  "remix.run": [
+    "remix",
+    "remix.run"
+  ],
+  "rest": [
+    "rest",
+    "rest api",
+    "restful api"
+  ],
+  "rest api": [
+    "rest",
+    "rest api",
+    "restful api"
+  ],
+  "restful api": [
+    "rest",
+    "rest api",
+    "restful api"
+  ],
+  "retrieval augmented generation": [
+    "rag",
+    "retrieval augmented generation",
+    "retrieval-augmented generation"
+  ],
+  "retrieval-augmented generation": [
+    "rag",
+    "retrieval augmented generation",
+    "retrieval-augmented generation"
+  ],
+  "rhel": [
+    "red hat",
+    "red hat enterprise linux",
+    "rhel"
+  ],
+  "rollup": [
+    "rollup",
+    "rollup.js"
+  ],
+  "rollup.js": [
+    "rollup",
+    "rollup.js"
+  ],
+  "ror": [
+    "rails",
+    "ror",
+    "ruby on rails"
+  ],
+  "ruby": [
+    "ruby",
+    "руби"
+  ],
+  "ruby on rails": [
+    "rails",
+    "ror",
+    "ruby on rails"
+  ],
+  "rust": [
+    "rust",
+    "раст"
+  ],
+  "rx js": [
+    "rx js",
+    "rxjs"
+  ],
+  "rxjs": [
+    "rx js",
+    "rxjs"
+  ],
+  "safe": [
+    "safe",
+    "safe framework",
+    "scaled agile framework"
+  ],
+  "safe framework": [
+    "safe",
+    "safe framework",
+    "scaled agile framework"
+  ],
+  "salesforce": [
+    "salesforce"
+  ],
+  "sanic": [
+    "sanic"
+  ],
+  "sap": [
+    "sap",
+    "sap erp",
+    "sap hana"
+  ],
+  "sap erp": [
+    "sap",
+    "sap erp",
+    "sap hana"
+  ],
+  "sap hana": [
+    "sap",
+    "sap erp",
+    "sap hana"
+  ],
+  "sas": [
+    "sas",
+    "sas analytics"
+  ],
+  "sas analytics": [
+    "sas",
+    "sas analytics"
+  ],
+  "sass": [
+    "sass",
+    "scss"
+  ],
+  "sbercloud": [
+    "sbercloud",
+    "сбер клауд",
+    "сбер облако"
+  ],
+  "scala": [
+    "scala",
+    "скала"
+  ],
+  "scaled agile framework": [
+    "safe",
+    "safe framework",
+    "scaled agile framework"
+  ],
+  "scikit learn": [
+    "scikit learn",
+    "scikit-learn",
+    "sklearn"
+  ],
+  "scikit-learn": [
+    "scikit learn",
+    "scikit-learn",
+    "sklearn"
+  ],
+  "scrum": [
+    "scrum",
+    "скрам"
+  ],
+  "scss": [
+    "sass",
+    "scss"
+  ],
+  "scylla": [
+    "scylla",
+    "scylladb"
+  ],
+  "scylladb": [
+    "scylla",
+    "scylladb"
+  ],
+  "selectel": [
+    "selectel",
+    "селектел"
+  ],
+  "selenium": [
+    "selenium"
+  ],
+  "sentry": [
+    "sentry",
+    "sentry.io"
+  ],
+  "sentry.io": [
+    "sentry",
+    "sentry.io"
+  ],
+  "shell script": [
+    "bash",
+    "shell script",
+    "баш"
+  ],
+  "sinatra": [
+    "sinatra"
+  ],
+  "sketch": [
+    "sketch",
+    "sketch app"
+  ],
+  "sketch app": [
+    "sketch",
+    "sketch app"
+  ],
+  "sklearn": [
+    "scikit learn",
+    "scikit-learn",
+    "sklearn"
+  ],
+  "snowflake": [
+    "snowflake",
+    "сноуфлейк"
+  ],
+  "solid js": [
+    "solid js",
+    "solid.js",
+    "solidjs"
+  ],
+  "solid.js": [
+    "solid js",
+    "solid.js",
+    "solidjs"
+  ],
+  "solidity": [
+    "solidity",
+    "солидити"
+  ],
+  "solidjs": [
+    "solid js",
+    "solid.js",
+    "solidjs"
+  ],
+  "space y": [
+    "space y",
+    "spacy"
+  ],
+  "spacy": [
+    "space y",
+    "spacy"
+  ],
+  "spark": [
+    "apache spark",
+    "pyspark",
+    "spark",
+    "спарк"
+  ],
+  "splunk": [
+    "splunk"
+  ],
+  "spring": [
+    "spring",
+    "spring framework"
+  ],
+  "spring boot": [
+    "spring boot",
+    "springboot"
+  ],
+  "spring framework": [
+    "spring",
+    "spring framework"
+  ],
+  "springboot": [
+    "spring boot",
+    "springboot"
+  ],
+  "spss": [
+    "ibm spss",
+    "spss"
+  ],
+  "sql": [
+    "sql",
+    "structured query language",
+    "скуэль"
+  ],
+  "sql lite": [
+    "sql lite",
+    "sqlite"
+  ],
+  "sql server": [
+    "microsoft sql",
+    "ms sql",
+    "ms sql server",
+    "ms-sql",
+    "mssql",
+    "sql server"
+  ],
+  "sqlite": [
+    "sql lite",
+    "sqlite"
+  ],
+  "storybook": [
+    "storybook"
+  ],
+  "structured query language": [
+    "sql",
+    "structured query language",
+    "скуэль"
+  ],
+  "subversion": [
+    "subversion",
+    "svn"
+  ],
+  "superset": [
+    "apache superset",
+    "superset"
+  ],
+  "svelte": [
+    "svelte",
+    "sveltekit"
+  ],
+  "sveltekit": [
+    "svelte",
+    "sveltekit"
+  ],
+  "svn": [
+    "subversion",
+    "svn"
+  ],
+  "swift": [
+    "swift",
+    "свифт"
+  ],
+  "swift ui": [
+    "swift ui",
+    "swiftui"
+  ],
+  "swiftui": [
+    "swift ui",
+    "swiftui"
+  ],
+  "symfony": [
+    "symfony"
+  ],
+  "tableau": [
+    "tableau",
+    "табло"
+  ],
+  "tailwind": [
+    "tailwind",
+    "tailwind css",
+    "tailwindcss"
+  ],
+  "tailwind css": [
+    "tailwind",
+    "tailwind css",
+    "tailwindcss"
+  ],
+  "tailwindcss": [
+    "tailwind",
+    "tailwind css",
+    "tailwindcss"
+  ],
+  "tarantool": [
+    "tarantool",
+    "тарантул"
+  ],
+  "tdd": [
+    "tdd",
+    "test driven development",
+    "test-driven"
+  ],
+  "team city": [
+    "team city",
+    "teamcity"
+  ],
+  "teamcity": [
+    "team city",
+    "teamcity"
+  ],
+  "tempo": [
+    "grafana tempo",
+    "tempo"
+  ],
+  "tensor flow": [
+    "tensor flow",
+    "tensorflow"
+  ],
+  "tensorflow": [
+    "tensor flow",
+    "tensorflow"
+  ],
+  "terraform": [
+    "terraform",
+    "терраформ"
+  ],
+  "test driven development": [
+    "tdd",
+    "test driven development",
+    "test-driven"
+  ],
+  "test ng": [
+    "test ng",
+    "testng"
+  ],
+  "test-driven": [
+    "tdd",
+    "test driven development",
+    "test-driven"
+  ],
+  "testng": [
+    "test ng",
+    "testng"
+  ],
+  "ti db": [
+    "ti db",
+    "tidb"
+  ],
+  "tidb": [
+    "ti db",
+    "tidb"
+  ],
+  "tilda": [
+    "tilda",
+    "тильда"
+  ],
+  "timescale": [
+    "timescale",
+    "timescaledb"
+  ],
+  "timescaledb": [
+    "timescale",
+    "timescaledb"
+  ],
+  "tornado": [
+    "tornado",
+    "торнадо"
+  ],
+  "traefik": [
+    "traefik",
+    "traefik proxy"
+  ],
+  "traefik proxy": [
+    "traefik",
+    "traefik proxy"
+  ],
+  "transformers": [
+    "transformers",
+    "трансформеры"
+  ],
+  "trino": [
+    "trino",
+    "trinodb"
+  ],
+  "trinodb": [
+    "trino",
+    "trinodb"
+  ],
+  "typescript": [
+    "typescript",
+    "тайпскрипт"
+  ],
+  "ubuntu": [
+    "ubuntu",
+    "убунту"
+  ],
+  "vault": [
+    "hashi vault",
+    "hashicorp vault",
+    "vault"
+  ],
+  "vercel": [
+    "vercel"
+  ],
+  "vertica": [
+    "vertica",
+    "вертика"
+  ],
+  "vite": [
+    "vite"
+  ],
+  "vitest": [
+    "vitest"
+  ],
+  "vk cloud": [
+    "vk cloud",
+    "vk.cloud",
+    "вк облако"
+  ],
+  "vk.cloud": [
+    "vk cloud",
+    "vk.cloud",
+    "вк облако"
+  ],
+  "vue": [
+    "vue",
+    "vue 3",
+    "vue.js",
+    "vue3",
+    "vuejs"
+  ],
+  "vue 3": [
+    "vue",
+    "vue 3",
+    "vue.js",
+    "vue3",
+    "vuejs"
+  ],
+  "vue.js": [
+    "vue",
+    "vue 3",
+    "vue.js",
+    "vue3",
+    "vuejs"
+  ],
+  "vue3": [
+    "vue",
+    "vue 3",
+    "vue.js",
+    "vue3",
+    "vuejs"
+  ],
+  "vuejs": [
+    "vue",
+    "vue 3",
+    "vue.js",
+    "vue3",
+    "vuejs"
+  ],
+  "waterfall": [
+    "waterfall",
+    "водопад"
+  ],
+  "web socket": [
+    "web socket",
+    "websocket",
+    "websockets"
+  ],
+  "webflow": [
+    "webflow"
+  ],
+  "webpack": [
+    "webpack"
+  ],
+  "websocket": [
+    "web socket",
+    "websocket",
+    "websockets"
+  ],
+  "websockets": [
+    "web socket",
+    "websocket",
+    "websockets"
+  ],
+  "xamarin": [
+    "xamarin"
+  ],
+  "xg boost": [
+    "xg boost",
+    "xgboost"
+  ],
+  "xgboost": [
+    "xg boost",
+    "xgboost"
+  ],
+  "yandex cloud": [
+    "yandex cloud",
+    "yandex.cloud",
+    "яндекс облако",
+    "яндекс.облако"
+  ],
+  "yandex.cloud": [
+    "yandex cloud",
+    "yandex.cloud",
+    "яндекс облако",
+    "яндекс.облако"
+  ],
+  "yii": [
+    "yii",
+    "yii2"
+  ],
+  "yii2": [
+    "yii",
+    "yii2"
+  ],
+  "zero mq": [
+    "zero mq",
+    "zeromq",
+    "zmq"
+  ],
+  "zeromq": [
+    "zero mq",
+    "zeromq",
+    "zmq"
+  ],
+  "zipkin": [
+    "zipkin"
+  ],
+  "zmq": [
+    "zero mq",
+    "zeromq",
+    "zmq"
+  ],
+  "ажур": [
+    "azure",
+    "microsoft azure",
+    "ажур"
+  ],
+  "ангулар": [
+    "angular",
+    "ангулар",
+    "ангуляр"
+  ],
+  "ангуляр": [
+    "angular",
+    "ангулар",
+    "ангуляр"
+  ],
+  "андроид": [
+    "android",
+    "андроид"
+  ],
+  "ансибл": [
+    "ansible",
+    "ансибл"
+  ],
+  "баш": [
+    "bash",
+    "shell script",
+    "баш"
+  ],
+  "битрикс": [
+    "1c-bitrix",
+    "bitrix",
+    "битрикс"
+  ],
+  "блендер": [
+    "blender",
+    "блендер"
+  ],
+  "вертика": [
+    "vertica",
+    "вертика"
+  ],
+  "вк облако": [
+    "vk cloud",
+    "vk.cloud",
+    "вк облако"
+  ],
+  "водопад": [
+    "waterfall",
+    "водопад"
+  ],
+  "гит": [
+    "git",
+    "гит"
+  ],
+  "графана": [
+    "grafana",
+    "графана"
+  ],
+  "гринплам": [
+    "green plum",
+    "greenplum",
+    "гринплам"
+  ],
+  "грууви": [
+    "groovy",
+    "грууви"
+  ],
+  "дарт": [
+    "dart",
+    "дарт"
+  ],
+  "дебиан": [
+    "debian",
+    "дебиан"
+  ],
+  "джава": [
+    "java",
+    "джава"
+  ],
+  "джаваскрипт": [
+    "javascript",
+    "джаваскрипт"
+  ],
+  "джанго": [
+    "django",
+    "джанго"
+  ],
+  "дженкинс": [
+    "jenkins",
+    "дженкинс"
+  ],
+  "джулия": [
+    "julia",
+    "джулия"
+  ],
+  "докер": [
+    "docker",
+    "докер"
+  ],
+  "енджин": [
+    "nginx",
+    "енджин"
+  ],
+  "знание c": [
+    "c lang",
+    "c-developer",
+    "c-developers",
+    "c-программист",
+    "c-разработчик",
+    "c-разработчика",
+    "c/c++",
+    "знание c",
+    "опыт c",
+    "язык c"
+  ],
+  "канбан": [
+    "kanban",
+    "канбан"
+  ],
+  "кассандра": [
+    "cassandra",
+    "кассандра"
+  ],
+  "кафка": [
+    "apache kafka",
+    "kafka",
+    "кафка"
+  ],
+  "кликхаус": [
+    "ch db",
+    "click house",
+    "clickhouse",
+    "кликхаус"
+  ],
+  "компьютерное зрение": [
+    "computer vision",
+    "cv engineer",
+    "cv-инженер",
+    "ml/cv",
+    "компьютерное зрение"
+  ],
+  "котлин": [
+    "kotlin",
+    "котлин"
+  ],
+  "кролик": [
+    "rabbit mq",
+    "rabbitmq",
+    "кролик"
+  ],
+  "кубер": [
+    "k8s",
+    "kubernetes",
+    "кубер",
+    "кубернетес"
+  ],
+  "кубернетес": [
+    "k8s",
+    "kubernetes",
+    "кубер",
+    "кубернетес"
+  ],
+  "линукс": [
+    "linux",
+    "линукс"
+  ],
+  "луа": [
+    "lua",
+    "луа"
+  ],
+  "мария": [
+    "mariadb",
+    "мария"
+  ],
+  "мемкеш": [
+    "memcache",
+    "memcached",
+    "мемкеш"
+  ],
+  "микросервисы": [
+    "micro services",
+    "microservices",
+    "микросервисы"
+  ],
+  "монго": [
+    "mongo",
+    "mongodb",
+    "монго"
+  ],
+  "мускул": [
+    "my sql",
+    "mysql",
+    "мускул"
+  ],
+  "нлп": [
+    "natural language processing",
+    "nlp",
+    "нлп"
+  ],
+  "обучение с подкреплением": [
+    "reinforcement learning",
+    "обучение с подкреплением"
+  ],
+  "опыт c": [
+    "c lang",
+    "c-developer",
+    "c-developers",
+    "c-программист",
+    "c-разработчик",
+    "c-разработчика",
+    "c/c++",
+    "знание c",
+    "опыт c",
+    "язык c"
+  ],
+  "оракл": [
+    "oracle",
+    "oracle database",
+    "oracle db",
+    "оракл"
+  ],
+  "пайтон": [
+    "python",
+    "пайтон",
+    "питон"
+  ],
+  "пандас": [
+    "pandas",
+    "пандас"
+  ],
+  "паркет": [
+    "parquet",
+    "паркет"
+  ],
+  "перл": [
+    "perl",
+    "перл"
+  ],
+  "питон": [
+    "python",
+    "пайтон",
+    "питон"
+  ],
+  "плюсы": [
+    "c++",
+    "cpp",
+    "плюсы",
+    "си++"
+  ],
+  "постгре": [
+    "postgre",
+    "postgres",
+    "postgresql",
+    "постгре",
+    "постгрес"
+  ],
+  "постгрес": [
+    "postgre",
+    "postgres",
+    "postgresql",
+    "постгре",
+    "постгрес"
+  ],
+  "прометей": [
+    "prometheus",
+    "прометей"
+  ],
+  "пхп": [
+    "php",
+    "пхп"
+  ],
+  "раст": [
+    "rust",
+    "раст"
+  ],
+  "реакт": [
+    "react",
+    "react.js",
+    "reactjs",
+    "реакт"
+  ],
+  "редис": [
+    "redis",
+    "редис"
+  ],
+  "руби": [
+    "ruby",
+    "руби"
+  ],
+  "сбер клауд": [
+    "sbercloud",
+    "сбер клауд",
+    "сбер облако"
+  ],
+  "сбер облако": [
+    "sbercloud",
+    "сбер клауд",
+    "сбер облако"
+  ],
+  "свифт": [
+    "swift",
+    "свифт"
+  ],
+  "селектел": [
+    "selectel",
+    "селектел"
+  ],
+  "си шарп": [
+    "csharp",
+    "си шарп",
+    "си-шарп"
+  ],
+  "си++": [
+    "c++",
+    "cpp",
+    "плюсы",
+    "си++"
+  ],
+  "си-шарп": [
+    "csharp",
+    "си шарп",
+    "си-шарп"
+  ],
+  "скала": [
+    "scala",
+    "скала"
+  ],
+  "скрам": [
+    "scrum",
+    "скрам"
+  ],
+  "скуэль": [
+    "sql",
+    "structured query language",
+    "скуэль"
+  ],
+  "сноуфлейк": [
+    "snowflake",
+    "сноуфлейк"
+  ],
+  "солидити": [
+    "solidity",
+    "солидити"
+  ],
+  "спарк": [
+    "apache spark",
+    "pyspark",
+    "spark",
+    "спарк"
+  ],
+  "табло": [
+    "tableau",
+    "табло"
+  ],
+  "тайпскрипт": [
+    "typescript",
+    "тайпскрипт"
+  ],
+  "тарантул": [
+    "tarantool",
+    "тарантул"
+  ],
+  "терраформ": [
+    "terraform",
+    "терраформ"
+  ],
+  "тильда": [
+    "tilda",
+    "тильда"
+  ],
+  "торнадо": [
+    "tornado",
+    "торнадо"
+  ],
+  "трансформеры": [
+    "transformers",
+    "трансформеры"
+  ],
+  "убунту": [
+    "ubuntu",
+    "убунту"
+  ],
+  "фигма": [
+    "figma",
+    "фигма"
+  ],
+  "фласк": [
+    "flask",
+    "фласк"
+  ],
+  "флаттер": [
+    "flutter",
+    "флаттер"
+  ],
+  "фотошоп": [
+    "adobe photoshop",
+    "photoshop",
+    "фотошоп"
+  ],
+  "хадуп": [
+    "hadoop",
+    "hdfs",
+    "хадуп"
+  ],
+  "хаскел": [
+    "haskell",
+    "хаскел",
+    "хаскель"
+  ],
+  "хаскель": [
+    "haskell",
+    "хаскел",
+    "хаскель"
+  ],
+  "хтмл": [
+    "html",
+    "html5",
+    "хтмл"
+  ],
+  "цсс": [
+    "css",
+    "css3",
+    "цсс"
+  ],
+  "эджайл": [
+    "agail",
+    "agile",
+    "эджайл"
+  ],
+  "эластик": [
+    "elastic",
+    "elasticsearch",
+    "эластик"
+  ],
+  "эликсир": [
+    "elixir",
+    "эликсир"
+  ],
+  "эрланг": [
+    "erlang",
+    "эрланг"
+  ],
+  "ягер": [
+    "jaeger",
+    "ягер"
+  ],
+  "язык c": [
+    "c lang",
+    "c-developer",
+    "c-developers",
+    "c-программист",
+    "c-разработчик",
+    "c-разработчика",
+    "c/c++",
+    "знание c",
+    "опыт c",
+    "язык c"
+  ],
+  "яндекс облако": [
+    "yandex cloud",
+    "yandex.cloud",
+    "яндекс облако",
+    "яндекс.облако"
+  ],
+  "яндекс.облако": [
+    "yandex cloud",
+    "yandex.cloud",
+    "яндекс облако",
+    "яндекс.облако"
+  ]
+}

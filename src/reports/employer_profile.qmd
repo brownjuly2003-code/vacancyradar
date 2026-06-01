@@ -1,0 +1,103 @@
+---
+title: "VacancyRadar — Employer Profile"
+date: today
+format:
+  html:
+    embed-resources: true
+    theme: cosmo
+    toc: true
+jupyter: python3
+execute:
+  echo: false
+  warning: false
+params:
+  employer_id: ""
+---
+
+```{python}
+#| tags: [parameters]
+employer_id = ""  # quarto -P employer_id=hh:1373
+```
+
+```{python}
+from pathlib import Path
+from datetime import datetime
+import duckdb
+import polars as pl
+import plotly.express as px
+import plotly.io as pio
+pio.templates.default = "plotly_white"
+
+if not employer_id:
+    raise ValueError("Передайте --employer_id, например `quarto render employer_profile.qmd -P employer_id=hh:1373`")
+
+import os
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent if "__file__" in globals() else Path.cwd()
+if not (PROJECT_ROOT / "master").exists():
+    PROJECT_ROOT = Path(os.environ.get("VRADAR_ROOT", "."))
+EVENTS_DB = PROJECT_ROOT / "master" / "events.duckdb"
+_slim_override = os.environ.get("VRADAR_SLIM_PATH")
+SLIM = Path(_slim_override) if _slim_override else PROJECT_ROOT / "derived" / "slim_active.parquet"
+
+con = duckdb.connect(":memory:")
+con.execute(f"ATTACH '{EVENTS_DB.as_posix()}' AS events_db (READ_ONLY)")
+con.execute(f"CREATE VIEW slim AS SELECT * FROM read_parquet('{SLIM.as_posix()}')")
+```
+
+## Работодатель `{python} employer_id`
+
+```{python}
+header = con.execute(
+    "SELECT employer_name, count(*) AS active FROM slim WHERE employer_id = ? GROUP BY 1",
+    [employer_id],
+).fetchone()
+if header:
+    name, n_active = header
+    print(f"{name}: {n_active} активных вакансий")
+else:
+    print("работодатель не найден в slim_active")
+```
+
+## Активные вакансии
+
+```{python}
+active = con.execute(
+    """
+    SELECT title, city, seniority, remote_type,
+        coalesce(salary_rub_min, salary_rub_max, 0)::INT AS salary_min,
+        skills
+    FROM slim WHERE employer_id = ?
+    ORDER BY salary_min DESC NULLS LAST
+    """,
+    [employer_id],
+).pl()
+active
+```
+
+## События во времени
+
+```{python}
+bare = employer_id.replace("hh:", "")
+events = con.execute(
+    """
+    SELECT CAST(ts AS DATE) AS day, type, count(*)::INT AS n
+    FROM events_db.main.events WHERE employer_id = ?
+    GROUP BY day, type ORDER BY day, type
+    """,
+    [bare],
+).pl()
+events
+```
+
+```{python}
+if not events.is_empty():
+    fig = px.bar(events.to_pandas(), x="day", y="n", color="type", barmode="group",
+                 labels={"day": "", "n": "events"},
+                 title=f"События по {employer_id}")
+    fig.update_layout(height=320)
+    fig
+```
+
+---
+
+*Сгенерировано VacancyRadar / `{python} f"{datetime.now():%Y-%m-%d %H:%M}"`*

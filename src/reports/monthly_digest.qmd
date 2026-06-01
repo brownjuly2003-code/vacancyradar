@@ -1,0 +1,215 @@
+---
+title: "VacancyRadar — Monthly Digest"
+subtitle: "Рынок вакансий РФ"
+author: "VacancyRadar"
+date: today
+date-format: "DD MMMM YYYY"
+format:
+  html:
+    embed-resources: true
+    theme: cosmo
+    toc: true
+    toc-location: left
+    fig-width: 9
+    fig-height: 5
+jupyter: python3
+execute:
+  echo: false
+  warning: false
+params:
+  month: ""
+---
+
+```{python}
+#| tags: [parameters]
+month = ""  # quarto -P month=2026-04
+```
+
+```{python}
+from pathlib import Path
+from datetime import date, datetime, timedelta
+import duckdb
+import polars as pl
+import plotly.express as px
+import plotly.io as pio
+
+pio.templates.default = "plotly_white"
+
+if month:
+    target_month = datetime.strptime(month, "%Y-%m").date().replace(day=1)
+else:
+    today = date.today()
+    target_month = (today.replace(day=1) - timedelta(days=1)).replace(day=1)
+
+month_start = target_month
+next_month = (month_start.replace(day=28) + timedelta(days=4)).replace(day=1)
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent if "__file__" in globals() else Path.cwd()
+# Quarto render запускает kernel из директории .qmd-файла → cwd = src/reports/.
+# Нужен абсолютный путь к master/.
+import os
+if not (PROJECT_ROOT / "master").exists():
+    PROJECT_ROOT = Path(os.environ.get("VRADAR_ROOT", "."))
+EVENTS_DB = PROJECT_ROOT / "master" / "events.duckdb"
+LAKE = PROJECT_ROOT / "master" / "vacancies_raw.parquet"
+# VRADAR_SLIM_PATH overrides the live IT slim — set by `vradar report --scope full`
+# so a full-market render does not poison the live dashboard artifact.
+_slim_override = os.environ.get("VRADAR_SLIM_PATH")
+SLIM = Path(_slim_override) if _slim_override else PROJECT_ROOT / "derived" / "slim_active.parquet"
+REPORT_SCOPE = os.environ.get("VRADAR_SCOPE", "default")
+```
+
+## Период
+
+**`{python} f"{month_start.strftime('%B %Y')}"`** (`{python} f"{month_start} → {next_month - timedelta(days=1)}"`)
+
+```{python}
+con = duckdb.connect(":memory:")
+con.execute("INSTALL httpfs; LOAD httpfs;")
+
+events_attached = EVENTS_DB.exists()
+if events_attached:
+    con.execute(f"ATTACH '{EVENTS_DB.as_posix()}' AS events_db (READ_ONLY)")
+
+slim_loaded = SLIM.exists()
+if slim_loaded:
+    con.execute(f"CREATE VIEW slim AS SELECT * FROM read_parquet('{SLIM.as_posix()}')")
+```
+
+## Sanity check
+
+```{python}
+status = pl.DataFrame({
+    "источник": ["events.duckdb", "slim_active.parquet"],
+    "доступен": [events_attached, slim_loaded],
+})
+status
+```
+
+```{python}
+month_events = con.execute("""
+    SELECT type, count(*) AS n
+    FROM events_db.main.events
+    WHERE ts >= ? AND ts < ?
+    GROUP BY type
+    ORDER BY n DESC
+""", [month_start, next_month]).fetchall()
+events_summary = pl.DataFrame(month_events, schema={"type": pl.String, "n": pl.Int64}, orient="row")
+events_summary
+```
+
+## Топ работодатели по новым вакансиям
+
+```{python}
+top_emp = con.execute("""
+    WITH new_per_emp AS (
+        SELECT employer_id AS bare_id, count(*) AS new_n
+        FROM events_db.main.events
+        WHERE type='appeared' AND ts >= ? AND ts < ?
+            AND employer_id IS NOT NULL
+        GROUP BY bare_id
+    ),
+    named AS (
+        SELECT 'hh:' || bare_id AS employer_id, new_n FROM new_per_emp
+    )
+    SELECT named.employer_id, slim.employer_name, named.new_n,
+        coalesce(slim.disclosure_rate, 0) AS disclosure_rate
+    FROM named
+    LEFT JOIN (
+        SELECT employer_id, any_value(employer_name) AS employer_name,
+            avg(salary_disclosed::INT)::DOUBLE AS disclosure_rate
+        FROM slim
+        GROUP BY employer_id
+    ) AS slim ON slim.employer_id = named.employer_id
+    ORDER BY new_n DESC
+    LIMIT 25
+""", [month_start, next_month]).pl()
+top_emp
+```
+
+```{python}
+if not top_emp.is_empty():
+    fig = px.bar(
+        top_emp.head(15).to_pandas(),
+        x="new_n", y="employer_name",
+        orientation="h",
+        labels={"new_n": "новых вакансий", "employer_name": ""},
+        title="Топ-15 работодателей месяца",
+    )
+    fig.update_layout(yaxis={"categoryorder": "total ascending"}, height=420, margin={"l": 200})
+    fig
+```
+
+## Динамика по дням
+
+```{python}
+daily = con.execute("""
+    SELECT CAST(ts AS DATE) AS day,
+        SUM(CASE WHEN type='appeared' THEN 1 ELSE 0 END) AS new_n,
+        SUM(CASE WHEN type='closed' THEN 1 ELSE 0 END) AS closed_n
+    FROM events_db.main.events
+    WHERE ts >= ? AND ts < ?
+    GROUP BY day ORDER BY day
+""", [month_start, next_month]).pl()
+daily
+```
+
+```{python}
+if not daily.is_empty():
+    fig = px.line(
+        daily.to_pandas(), x="day", y=["new_n", "closed_n"],
+        labels={"value": "events", "variable": "тип", "day": ""},
+        title="Daily appeared vs closed",
+    )
+    fig.update_layout(height=320, legend_title_text="")
+    fig
+```
+
+## Топ навыки в активных вакансиях
+
+```{python}
+top_skills = con.execute("""
+    SELECT skill, count(*)::INT AS n
+    FROM slim, unnest(skills) AS t(skill)
+    WHERE skill IS NOT NULL AND skill <> ''
+    GROUP BY skill
+    ORDER BY n DESC
+    LIMIT 20
+""").pl()
+top_skills
+```
+
+```{python}
+if not top_skills.is_empty():
+    fig = px.bar(
+        top_skills.to_pandas(),
+        x="n", y="skill",
+        orientation="h",
+        labels={"n": "упоминаний", "skill": ""},
+        title="Топ-20 навыков",
+    )
+    fig.update_layout(yaxis={"categoryorder": "total ascending"}, height=520, margin={"l": 160})
+    fig
+```
+
+## Зарплатные коридоры по seniority
+
+```{python}
+salary = con.execute("""
+    SELECT seniority,
+        count(*) FILTER (WHERE salary_rub_min IS NOT NULL) AS sample,
+        quantile_cont(salary_rub_min, 0.25)::INT AS p25,
+        quantile_cont(salary_rub_min, 0.5)::INT  AS median,
+        quantile_cont(salary_rub_min, 0.75)::INT AS p75
+    FROM slim
+    WHERE salary_rub_min IS NOT NULL
+    GROUP BY seniority
+    HAVING count(*) FILTER (WHERE salary_rub_min IS NOT NULL) >= 3
+    ORDER BY median DESC NULLS LAST
+""").pl()
+salary
+```
+
+---
+
+*Сгенерировано VacancyRadar / `{python} f"{datetime.now():%Y-%m-%d %H:%M}"`*

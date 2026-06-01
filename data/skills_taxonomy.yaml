@@ -1,0 +1,330 @@
+# skills_taxonomy v1 — детерминированный baseline для slim_export.skills
+#
+# Формат:
+#   - canonical: <каноничное имя для UI>
+#     aliases: [<RU/EN варианты, регистронезависимо>]
+#     category: <languages|databases|frameworks_backend|frameworks_frontend|
+#                 data|ml|devops|cloud|design|mobile|qa|soft|methodology>
+#
+# Matcher (src/enrich/skills_match.py): word-boundary regex по каждому
+# alias + canonical. Дубли по canonical схлопываются.
+#
+# Гид по добавлению:
+#   - aliases должны быть однозначными (не "go" с word boundary внутри
+#     слова "google" — \b защитит). Многословные: "Power BI", "Data Lake".
+#   - не добавлять супер-общее ("api", "база") — false positives.
+#   - canonical в UI-friendly форме (PostgreSQL, ClickHouse, не postgres/ch).
+
+# === Languages ===
+- {canonical: Python,        category: languages, aliases: [python, питон, пайтон, py]}
+- {canonical: JavaScript,    category: languages, aliases: [javascript, js, джаваскрипт]}
+- {canonical: TypeScript,    category: languages, aliases: [typescript, ts, тайпскрипт]}
+- {canonical: Go,            category: languages, aliases: [golang, go]}
+- {canonical: Java,          category: languages, aliases: [java, джава]}
+- {canonical: Kotlin,        category: languages, aliases: [kotlin, котлин]}
+- {canonical: Scala,         category: languages, aliases: [scala, скала]}
+- {canonical: C++,           category: languages, aliases: ["c++", cpp, "си++", "плюсы"]}
+- {canonical: C#,            category: languages, aliases: ["c#", "csharp", "си шарп", "си-шарп"]}
+- {canonical: C,             category: languages, aliases: ["c lang", "си", "c/c++", "знание c", "опыт c", "язык c", "c-developer", "c-developers", "c-программист", "c-разработчик", "c-разработчика"], deny_after: ["+", "#"]}
+- {canonical: Rust,          category: languages, aliases: [rust, раст]}
+- {canonical: PHP,           category: languages, aliases: [php, пхп]}
+- {canonical: Ruby,          category: languages, aliases: [ruby, руби]}
+- {canonical: Swift,         category: languages, aliases: [swift, свифт]}
+- {canonical: Objective-C,   category: languages, aliases: ["objective-c", "objective c", "objectivec", "objc"]}
+- {canonical: R,             category: languages, aliases: ["r-lang", "r"], deny_after: ["&", "/3", "-keeper", "keeper", "-style", "-vision", "survival", "@", "i c a", "-admin", "-tree", "-games", "](", "e c a"]}
+- {canonical: Julia,         category: languages, aliases: [julia, джулия]}
+- {canonical: Elixir,        category: languages, aliases: [elixir, эликсир]}
+- {canonical: Erlang,        category: languages, aliases: [erlang, эрланг]}
+- {canonical: Haskell,       category: languages, aliases: [haskell, хаскель, хаскел]}
+- {canonical: Lua,           category: languages, aliases: [lua, луа]}
+- {canonical: Perl,          category: languages, aliases: [perl, перл]}
+- {canonical: Bash,          category: languages, aliases: [bash, баш, "shell script"]}
+- {canonical: PowerShell,    category: languages, aliases: [powershell, "power shell"]}
+- {canonical: SQL,           category: languages, aliases: [sql, "structured query language", скуэль]}
+- {canonical: Solidity,      category: languages, aliases: [solidity, солидити]}
+- {canonical: Dart,          category: languages, aliases: [dart, дарт]}
+- {canonical: Groovy,        category: languages, aliases: [groovy, грууви]}
+- {canonical: HTML,          category: languages, aliases: [html, хтмл, "html5"]}
+- {canonical: CSS,           category: languages, aliases: [css, "css3", цсс]}
+
+# === Databases ===
+- {canonical: PostgreSQL,    category: databases, aliases: [postgresql, postgres, postgre, "пг", постгрес, постгре]}
+- {canonical: MySQL,         category: databases, aliases: [mysql, мускул, "my sql"]}
+- {canonical: MariaDB,       category: databases, aliases: [mariadb, мария]}
+- {canonical: Oracle,        category: databases, aliases: ["oracle db", "oracle database", оракл]}
+- {canonical: MS SQL Server, category: databases, aliases: ["ms sql", mssql, "microsoft sql", "sql server", "ms-sql"]}
+- {canonical: SQLite,        category: databases, aliases: [sqlite, "sql lite"]}
+- {canonical: MongoDB,       category: databases, aliases: [mongodb, mongo, монго]}
+- {canonical: Redis,         category: databases, aliases: [redis, редис]}
+- {canonical: Memcached,     category: databases, aliases: [memcached, memcache, мемкеш]}
+- {canonical: Elasticsearch, category: databases, aliases: [elasticsearch, elastic, "es", эластик]}
+- {canonical: OpenSearch,    category: databases, aliases: [opensearch, "open search"]}
+- {canonical: Cassandra,     category: databases, aliases: [cassandra, кассандра]}
+- {canonical: ScyllaDB,      category: databases, aliases: [scylladb, scylla]}
+- {canonical: ClickHouse,    category: databases, aliases: [clickhouse, "click house", кликхаус, "кх", "ch db"]}
+- {canonical: Greenplum,     category: databases, aliases: [greenplum, "green plum", гринплам]}
+- {canonical: Vertica,       category: databases, aliases: [vertica, вертика]}
+- {canonical: Snowflake,     category: databases, aliases: [snowflake, сноуфлейк]}
+- {canonical: BigQuery,      category: databases, aliases: [bigquery, "big query", "bq"]}
+- {canonical: Redshift,      category: databases, aliases: [redshift, "red shift"]}
+- {canonical: Databricks,    category: databases, aliases: [databricks, "data bricks"]}
+- {canonical: Trino,         category: databases, aliases: [trino, "trinodb"]}
+- {canonical: Presto,        category: databases, aliases: [presto, "presto db"]}
+- {canonical: Druid,         category: databases, aliases: ["apache druid", druid]}
+- {canonical: DuckDB,        category: databases, aliases: [duckdb, "duck db"]}
+- {canonical: Neo4j,         category: databases, aliases: [neo4j, "neo 4j"]}
+- {canonical: ArangoDB,      category: databases, aliases: [arangodb, arango]}
+- {canonical: DynamoDB,      category: databases, aliases: [dynamodb, dynamo]}
+- {canonical: CockroachDB,   category: databases, aliases: [cockroachdb, cockroach]}
+- {canonical: TiDB,          category: databases, aliases: [tidb, "ti db"]}
+- {canonical: InfluxDB,      category: databases, aliases: [influxdb, influx]}
+- {canonical: TimescaleDB,   category: databases, aliases: [timescaledb, timescale]}
+- {canonical: Tarantool,     category: databases, aliases: [tarantool, тарантул]}
+
+# === Backend frameworks ===
+- {canonical: Django,        category: frameworks_backend, aliases: [django, джанго]}
+- {canonical: Flask,         category: frameworks_backend, aliases: [flask, фласк]}
+- {canonical: FastAPI,       category: frameworks_backend, aliases: [fastapi, "fast api"]}
+- {canonical: Pyramid,       category: frameworks_backend, aliases: [pyramid]}
+- {canonical: aiohttp,       category: frameworks_backend, aliases: [aiohttp]}
+- {canonical: Tornado,       category: frameworks_backend, aliases: [tornado, торнадо]}
+- {canonical: Sanic,         category: frameworks_backend, aliases: [sanic]}
+- {canonical: Litestar,      category: frameworks_backend, aliases: [litestar]}
+- {canonical: Spring,        category: frameworks_backend, aliases: ["spring framework", spring]}
+- {canonical: Spring Boot,   category: frameworks_backend, aliases: ["spring boot", "springboot"]}
+- {canonical: Quarkus,       category: frameworks_backend, aliases: [quarkus]}
+- {canonical: Micronaut,     category: frameworks_backend, aliases: [micronaut]}
+- {canonical: Ktor,          category: frameworks_backend, aliases: [ktor]}
+- {canonical: Express,       category: frameworks_backend, aliases: ["express.js", expressjs, express]}
+- {canonical: NestJS,        category: frameworks_backend, aliases: [nestjs, "nest js", "nest.js"]}
+- {canonical: Koa,           category: frameworks_backend, aliases: ["koa.js", koa]}
+- {canonical: Fastify,       category: frameworks_backend, aliases: [fastify]}
+- {canonical: Hapi,          category: frameworks_backend, aliases: ["hapi.js", hapi]}
+- {canonical: Laravel,       category: frameworks_backend, aliases: [laravel]}
+- {canonical: Symfony,       category: frameworks_backend, aliases: [symfony]}
+- {canonical: Yii,           category: frameworks_backend, aliases: ["yii2", yii]}
+- {canonical: Bitrix,        category: frameworks_backend, aliases: ["1c-bitrix", bitrix, битрикс]}
+- {canonical: Rails,         category: frameworks_backend, aliases: ["ruby on rails", rails, "ror"]}
+- {canonical: Sinatra,       category: frameworks_backend, aliases: [sinatra]}
+- {canonical: Phoenix,       category: frameworks_backend, aliases: ["phoenix framework"]}
+- {canonical: ASP.NET,       category: frameworks_backend, aliases: ["asp.net", aspnet, "asp net"]}
+- {canonical: .NET,          category: frameworks_backend, aliases: [".net", dotnet, "dot net", "net core", "dotnet core"]}
+- {canonical: Gin,           category: frameworks_backend, aliases: ["gin gonic", gin]}
+- {canonical: Echo,          category: frameworks_backend, aliases: ["echo framework"]}
+- {canonical: Fiber,         category: frameworks_backend, aliases: ["fiber framework"]}
+- {canonical: Actix,         category: frameworks_backend, aliases: [actix, "actix-web"]}
+- {canonical: Axum,          category: frameworks_backend, aliases: ["axum framework"]}
+
+# === Frontend frameworks ===
+- {canonical: React,         category: frameworks_frontend, aliases: ["react.js", reactjs, react, реакт]}
+- {canonical: Vue,           category: frameworks_frontend, aliases: ["vue.js", vuejs, vue, "vue 3", "vue3"]}
+- {canonical: Angular,       category: frameworks_frontend, aliases: [angular, ангуляр, ангулар]}
+- {canonical: Svelte,        category: frameworks_frontend, aliases: [svelte, sveltekit]}
+- {canonical: Next.js,       category: frameworks_frontend, aliases: ["next.js", nextjs, "next js"]}
+- {canonical: Nuxt,          category: frameworks_frontend, aliases: ["nuxt.js", nuxtjs, "nuxt 3", nuxt]}
+- {canonical: Remix,         category: frameworks_frontend, aliases: ["remix.run", remix]}
+- {canonical: Astro,         category: frameworks_frontend, aliases: ["astro.build", astro]}
+- {canonical: Solid.js,      category: frameworks_frontend, aliases: ["solid.js", solidjs, "solid js"]}
+- {canonical: jQuery,        category: frameworks_frontend, aliases: [jquery, "j query"]}
+- {canonical: Redux,         category: frameworks_frontend, aliases: [redux]}
+- {canonical: MobX,          category: frameworks_frontend, aliases: [mobx]}
+- {canonical: RxJS,          category: frameworks_frontend, aliases: [rxjs, "rx js"]}
+- {canonical: Tailwind,      category: frameworks_frontend, aliases: ["tailwind css", tailwindcss, tailwind]}
+- {canonical: Bootstrap,     category: frameworks_frontend, aliases: [bootstrap, "bootstrap 5"]}
+- {canonical: SASS,          category: frameworks_frontend, aliases: [sass, scss]}
+- {canonical: Webpack,       category: frameworks_frontend, aliases: [webpack]}
+- {canonical: Vite,          category: frameworks_frontend, aliases: [vite]}
+- {canonical: Rollup,        category: frameworks_frontend, aliases: ["rollup.js", rollup]}
+- {canonical: ESBuild,       category: frameworks_frontend, aliases: [esbuild]}
+- {canonical: Storybook,     category: frameworks_frontend, aliases: [storybook]}
+
+# === Data engineering / data ===
+- {canonical: Apache Spark,  category: data, aliases: ["apache spark", pyspark, spark, спарк]}
+- {canonical: Apache Kafka,  category: data, aliases: ["apache kafka", kafka, кафка]}
+- {canonical: Apache Flink,  category: data, aliases: ["apache flink", flink]}
+- {canonical: Apache Beam,   category: data, aliases: ["apache beam", beam]}
+- {canonical: Apache Airflow, category: data, aliases: [airflow, "apache airflow", "air flow"]}
+- {canonical: Dagster,       category: data, aliases: [dagster]}
+- {canonical: Prefect,       category: data, aliases: [prefect]}
+- {canonical: Luigi,         category: data, aliases: ["luigi pipeline"]}
+- {canonical: dbt,           category: data, aliases: ["dbt", "data build tool"]}
+- {canonical: Hadoop,        category: data, aliases: [hadoop, hdfs, хадуп]}
+- {canonical: Hive,          category: data, aliases: ["apache hive", hive]}
+- {canonical: HBase,         category: data, aliases: [hbase]}
+- {canonical: NiFi,          category: data, aliases: ["apache nifi", nifi]}
+- {canonical: Pandas,        category: data, aliases: [pandas, пандас]}
+- {canonical: Polars,        category: data, aliases: [polars]}
+- {canonical: NumPy,         category: data, aliases: [numpy]}
+- {canonical: Dask,          category: data, aliases: [dask]}
+- {canonical: Modin,         category: data, aliases: [modin]}
+- {canonical: Arrow,         category: data, aliases: ["apache arrow", "pyarrow"]}
+- {canonical: Parquet,       category: data, aliases: [parquet, паркет]}
+- {canonical: Iceberg,       category: data, aliases: ["apache iceberg", iceberg]}
+- {canonical: Delta Lake,    category: data, aliases: ["delta lake", "deltalake"]}
+- {canonical: Hudi,          category: data, aliases: ["apache hudi", hudi]}
+- {canonical: Tableau,       category: data, aliases: [tableau, табло]}
+- {canonical: Power BI,      category: data, aliases: ["power bi", powerbi]}
+- {canonical: Looker,        category: data, aliases: [looker, "looker studio"]}
+- {canonical: Metabase,      category: data, aliases: [metabase]}
+- {canonical: Superset,      category: data, aliases: ["apache superset", superset]}
+- {canonical: Redash,        category: data, aliases: [redash]}
+- {canonical: Qlik,          category: data, aliases: ["qlik sense", "qlikview", qlik]}
+- {canonical: SAS,           category: data, aliases: ["sas analytics"]}
+- {canonical: SPSS,          category: data, aliases: ["ibm spss", spss]}
+- {canonical: Excel,         category: data, aliases: [excel, "ms excel"]}
+
+# === ML / AI ===
+- {canonical: PyTorch,       category: ml, aliases: [pytorch, "py torch"]}
+- {canonical: TensorFlow,    category: ml, aliases: [tensorflow, "tensor flow"]}
+- {canonical: Keras,         category: ml, aliases: [keras]}
+- {canonical: scikit-learn,  category: ml, aliases: ["scikit-learn", "scikit learn", sklearn]}
+- {canonical: XGBoost,       category: ml, aliases: [xgboost, "xg boost"]}
+- {canonical: LightGBM,      category: ml, aliases: [lightgbm, "light gbm"]}
+- {canonical: CatBoost,      category: ml, aliases: [catboost, "cat boost"]}
+- {canonical: Hugging Face,  category: ml, aliases: ["hugging face", huggingface, "hf transformers"]}
+- {canonical: Transformers,  category: ml, aliases: [transformers, "трансформеры"]}
+- {canonical: LangChain,     category: ml, aliases: [langchain, "lang chain"]}
+- {canonical: LlamaIndex,    category: ml, aliases: [llamaindex, "llama index"]}
+- {canonical: spaCy,         category: ml, aliases: [spacy, "space y"]}
+- {canonical: NLTK,          category: ml, aliases: [nltk]}
+- {canonical: OpenCV,        category: ml, aliases: [opencv, "open cv"]}
+- {canonical: MLflow,        category: ml, aliases: [mlflow, "ml flow"]}
+- {canonical: Kubeflow,      category: ml, aliases: [kubeflow, "kube flow"]}
+- {canonical: ONNX,          category: ml, aliases: [onnx]}
+- {canonical: NLP,           category: ml, aliases: [nlp, "natural language processing", нлп]}
+- {canonical: Computer Vision, category: ml, aliases: ["computer vision", "ml/cv", "cv engineer", "cv-инженер", "компьютерное зрение"]}
+- {canonical: Reinforcement Learning, category: ml, aliases: ["reinforcement learning", "обучение с подкреплением"]}
+- {canonical: LLM,           category: ml, aliases: [llm, "large language model"]}
+- {canonical: RAG,           category: ml, aliases: [rag, "retrieval augmented generation", "retrieval-augmented generation"]}
+
+# === DevOps / infra ===
+- {canonical: Docker,        category: devops, aliases: [docker, докер]}
+- {canonical: Kubernetes,    category: devops, aliases: [kubernetes, "k8s", кубер, кубернетес]}
+- {canonical: Helm,          category: devops, aliases: ["helm chart", helm]}
+- {canonical: Terraform,     category: devops, aliases: [terraform, терраформ]}
+- {canonical: Ansible,       category: devops, aliases: [ansible, ансибл]}
+- {canonical: Puppet,        category: devops, aliases: [puppet]}
+- {canonical: Chef,          category: devops, aliases: ["chef infra"]}
+- {canonical: Jenkins,       category: devops, aliases: [jenkins, дженкинс]}
+- {canonical: GitLab CI,     category: devops, aliases: ["gitlab ci", "gitlab ci/cd", "gitlab pipelines"]}
+- {canonical: GitHub Actions, category: devops, aliases: ["github actions", "gh actions"]}
+- {canonical: TeamCity,      category: devops, aliases: [teamcity, "team city"]}
+- {canonical: Bamboo,        category: devops, aliases: ["atlassian bamboo", bamboo]}
+- {canonical: ArgoCD,        category: devops, aliases: [argocd, "argo cd"]}
+- {canonical: Flux,          category: devops, aliases: [fluxcd, "flux cd"]}
+- {canonical: Prometheus,    category: devops, aliases: [prometheus, прометей]}
+- {canonical: Grafana,       category: devops, aliases: [grafana, графана]}
+- {canonical: Loki,          category: devops, aliases: ["grafana loki", loki]}
+- {canonical: Tempo,         category: devops, aliases: ["grafana tempo"]}
+- {canonical: Jaeger,        category: devops, aliases: [jaeger, ягер]}
+- {canonical: Zipkin,        category: devops, aliases: [zipkin]}
+- {canonical: OpenTelemetry, category: devops, aliases: [opentelemetry, otel, "open telemetry"]}
+- {canonical: Datadog,       category: devops, aliases: [datadog, "data dog"]}
+- {canonical: New Relic,     category: devops, aliases: ["new relic", newrelic]}
+- {canonical: Sentry,        category: devops, aliases: ["sentry.io", sentry]}
+- {canonical: Splunk,        category: devops, aliases: [splunk]}
+- {canonical: Elastic Stack, category: devops, aliases: ["elastic stack", "elk stack", "elk"]}
+- {canonical: Kibana,        category: devops, aliases: [kibana]}
+- {canonical: Logstash,      category: devops, aliases: [logstash, "log stash"]}
+- {canonical: Fluentd,       category: devops, aliases: [fluentd, fluent]}
+- {canonical: Vault,         category: devops, aliases: ["hashicorp vault", "hashi vault"]}
+- {canonical: Consul,        category: devops, aliases: ["hashicorp consul", consul]}
+- {canonical: Nomad,         category: devops, aliases: ["hashicorp nomad", nomad]}
+- {canonical: Nginx,         category: devops, aliases: [nginx, енджин]}
+- {canonical: HAProxy,       category: devops, aliases: [haproxy, "ha proxy"]}
+- {canonical: Traefik,       category: devops, aliases: [traefik, "traefik proxy"]}
+- {canonical: Envoy,         category: devops, aliases: ["envoy proxy", envoy]}
+- {canonical: Istio,         category: devops, aliases: [istio]}
+- {canonical: Linkerd,       category: devops, aliases: [linkerd]}
+- {canonical: RabbitMQ,      category: devops, aliases: [rabbitmq, "rabbit mq", кролик]}
+- {canonical: NATS,          category: devops, aliases: ["nats messaging", "nats.io"]}
+- {canonical: ActiveMQ,      category: devops, aliases: [activemq, "active mq"]}
+- {canonical: ZeroMQ,        category: devops, aliases: [zeromq, "zero mq", zmq]}
+- {canonical: Linux,         category: devops, aliases: [linux, линукс]}
+- {canonical: Ubuntu,        category: devops, aliases: [ubuntu, убунту]}
+- {canonical: CentOS,        category: devops, aliases: [centos, "cent os"]}
+- {canonical: Debian,        category: devops, aliases: [debian, дебиан]}
+- {canonical: RHEL,          category: devops, aliases: ["red hat enterprise linux", rhel, "red hat"]}
+
+# === Cloud ===
+- {canonical: AWS,           category: cloud, aliases: ["amazon web services", aws]}
+- {canonical: GCP,           category: cloud, aliases: ["google cloud platform", "google cloud", gcp]}
+- {canonical: Azure,         category: cloud, aliases: ["microsoft azure", azure, ажур]}
+- {canonical: Yandex Cloud,  category: cloud, aliases: ["yandex cloud", "yandex.cloud", "яндекс облако", "яндекс.облако"]}
+- {canonical: VK Cloud,      category: cloud, aliases: ["vk cloud", "vk.cloud", "вк облако"]}
+- {canonical: SberCloud,     category: cloud, aliases: [sbercloud, "сбер клауд", "сбер облако"]}
+- {canonical: Selectel,      category: cloud, aliases: [selectel, селектел]}
+- {canonical: DigitalOcean,  category: cloud, aliases: [digitalocean, "digital ocean", "do cloud"]}
+- {canonical: Cloudflare,    category: cloud, aliases: [cloudflare, "cloud flare"]}
+- {canonical: Vercel,        category: cloud, aliases: [vercel]}
+- {canonical: Netlify,       category: cloud, aliases: [netlify]}
+- {canonical: Heroku,        category: cloud, aliases: [heroku]}
+
+# === Mobile ===
+- {canonical: iOS,           category: mobile, aliases: [ios, "ios development"]}
+- {canonical: Android,       category: mobile, aliases: [android, андроид]}
+- {canonical: Flutter,       category: mobile, aliases: [flutter, флаттер]}
+- {canonical: React Native,  category: mobile, aliases: ["react native", "react-native"]}
+- {canonical: Xamarin,       category: mobile, aliases: [xamarin]}
+- {canonical: Ionic,         category: mobile, aliases: ["ionic framework", ionic]}
+- {canonical: SwiftUI,       category: mobile, aliases: [swiftui, "swift ui"]}
+- {canonical: Jetpack Compose, category: mobile, aliases: ["jetpack compose", "jetpack-compose"]}
+
+# === QA / testing ===
+- {canonical: Selenium,      category: qa, aliases: [selenium]}
+- {canonical: Playwright,    category: qa, aliases: [playwright]}
+- {canonical: Cypress,       category: qa, aliases: [cypress]}
+- {canonical: Puppeteer,     category: qa, aliases: [puppeteer]}
+- {canonical: Appium,        category: qa, aliases: [appium]}
+- {canonical: pytest,        category: qa, aliases: [pytest, "py test"]}
+- {canonical: JUnit,         category: qa, aliases: [junit, "j unit"]}
+- {canonical: TestNG,        category: qa, aliases: [testng, "test ng"]}
+- {canonical: Jest,          category: qa, aliases: [jest]}
+- {canonical: Mocha,         category: qa, aliases: [mocha]}
+- {canonical: Vitest,        category: qa, aliases: [vitest]}
+- {canonical: Cucumber,      category: qa, aliases: [cucumber, gherkin]}
+- {canonical: Postman,       category: qa, aliases: [postman]}
+- {canonical: JMeter,        category: qa, aliases: [jmeter, "j meter"]}
+- {canonical: K6,            category: qa, aliases: ["k6", "k6 load", "k6 io"]}
+- {canonical: Locust,        category: qa, aliases: ["locust io", locust]}
+- {canonical: Allure,        category: qa, aliases: ["allure report", allure]}
+
+# === Design ===
+- {canonical: Figma,         category: design, aliases: [figma, фигма]}
+- {canonical: Sketch,        category: design, aliases: ["sketch app", sketch]}
+- {canonical: Adobe XD,      category: design, aliases: ["adobe xd", "xd"]}
+- {canonical: Photoshop,     category: design, aliases: [photoshop, "adobe photoshop", фотошоп]}
+- {canonical: Illustrator,   category: design, aliases: ["adobe illustrator", illustrator]}
+- {canonical: After Effects, category: design, aliases: ["after effects", "ae"]}
+- {canonical: Premiere Pro,  category: design, aliases: ["premiere pro", premiere]}
+- {canonical: InDesign,      category: design, aliases: [indesign, "in design"]}
+- {canonical: Blender,       category: design, aliases: [blender, блендер]}
+- {canonical: Cinema 4D,     category: design, aliases: ["cinema 4d", "c4d"]}
+- {canonical: Tilda,         category: design, aliases: [tilda, тильда]}
+- {canonical: Webflow,       category: design, aliases: [webflow]}
+
+# === Methodology / soft ===
+- {canonical: Agile,         category: methodology, aliases: [agile, эджайл, agail]}
+- {canonical: Scrum,         category: methodology, aliases: [scrum, скрам]}
+- {canonical: Kanban,        category: methodology, aliases: [kanban, канбан]}
+- {canonical: Waterfall,     category: methodology, aliases: [waterfall, водопад]}
+- {canonical: SAFe,          category: methodology, aliases: ["scaled agile framework", "safe framework"]}
+- {canonical: TDD,           category: methodology, aliases: [tdd, "test driven development", "test-driven"]}
+- {canonical: BDD,           category: methodology, aliases: [bdd, "behavior driven development"]}
+- {canonical: DDD,           category: methodology, aliases: [ddd, "domain driven design", "domain-driven"]}
+- {canonical: REST,          category: methodology, aliases: [rest, "restful api", "rest api"]}
+- {canonical: GraphQL,       category: methodology, aliases: [graphql, "graph ql"]}
+- {canonical: gRPC,          category: methodology, aliases: [grpc, "g rpc"]}
+- {canonical: WebSocket,     category: methodology, aliases: [websocket, "web socket", websockets]}
+- {canonical: OAuth,         category: methodology, aliases: [oauth, "oauth2", "oauth 2"]}
+- {canonical: JWT,           category: methodology, aliases: [jwt, "json web token"]}
+- {canonical: Microservices, category: methodology, aliases: [microservices, "micro services", микросервисы]}
+- {canonical: CI/CD,         category: methodology, aliases: ["ci/cd", cicd, "continuous integration"]}
+- {canonical: Git,           category: methodology, aliases: [git, гит]}
+- {canonical: SVN,           category: methodology, aliases: [svn, subversion]}
+- {canonical: Mercurial,     category: methodology, aliases: [mercurial]}
+- {canonical: 1C,            category: methodology, aliases: ["1c", "1с", "1c:enterprise"]}
+- {canonical: SAP,           category: methodology, aliases: ["sap erp", "sap hana", sap]}
+- {canonical: Salesforce,    category: methodology, aliases: [salesforce]}
+- {canonical: ETL,           category: methodology, aliases: [etl, "extract transform load"]}
+- {canonical: ELT,           category: methodology, aliases: [elt, "extract load transform"]}

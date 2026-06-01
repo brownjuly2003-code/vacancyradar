@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.pytest_tmp/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Master, derived, lake — never in git (50+ GB / regenerable)
+master/
+derived/
+lake/
+.cache/
+
+# DuckDB / Parquet / Lance
+*.duckdb
+*.duckdb.wal
+*.parquet
+*.lance/
+*.feather
+
+# Secrets and sessions
+.env
+*.session
+*.session-journal
+# Telegram MTProto credentials notes — содержит TG_API_ID/hash (Phase 4 deferred)
+telegram_info.md
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Refdata cache (regenerable via `vradar refdata areas|roles --refresh`).
+# areas.yaml ~110k LOC (88 subjects × full city tree) — too noisy for commits.
+data/areas.yaml
+
+# Web
+web/.next/
+web/node_modules/
+web/out/
+web/.vercel/
+web/test-results/
+
+# Logs
+logs/
+*.log
+
+# CXKM workflow sandbox
+.tmp/
+.workflow/
+logs/
+
+# Ad-hoc dump artifacts (file lists / trees / dump CSVs from sweeps)
+_tmp_*

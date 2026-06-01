@@ -1,0 +1,94 @@
+---
+title: "VacancyRadar — Skill Landscape"
+date: today
+format:
+  html:
+    embed-resources: true
+    theme: cosmo
+    toc: true
+jupyter: python3
+execute:
+  echo: false
+  warning: false
+---
+
+```{python}
+from pathlib import Path
+from datetime import datetime
+import duckdb
+import polars as pl
+import plotly.express as px
+import plotly.io as pio
+pio.templates.default = "plotly_white"
+
+import os
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent if "__file__" in globals() else Path.cwd()
+if not (PROJECT_ROOT / "derived").exists():
+    PROJECT_ROOT = Path(os.environ.get("VRADAR_ROOT", "."))
+_slim_override = os.environ.get("VRADAR_SLIM_PATH")
+SLIM = Path(_slim_override) if _slim_override else PROJECT_ROOT / "derived" / "slim_active.parquet"
+con = duckdb.connect(":memory:")
+con.execute(f"CREATE VIEW slim AS SELECT * FROM read_parquet('{SLIM.as_posix()}')")
+```
+
+## Top-30 навыков в активных вакансиях
+
+```{python}
+top_skills = con.execute(
+    """
+    SELECT skill, count(*)::INT AS n,
+        round(avg(salary_rub_min) FILTER (WHERE salary_rub_min IS NOT NULL))::BIGINT AS avg_salary
+    FROM slim, unnest(skills) AS t(skill)
+    WHERE skill IS NOT NULL
+    GROUP BY skill ORDER BY n DESC LIMIT 30
+    """
+).pl()
+top_skills
+```
+
+```{python}
+if not top_skills.is_empty():
+    fig = px.bar(top_skills.to_pandas(), x="n", y="skill", orientation="h",
+                 hover_data=["avg_salary"],
+                 labels={"n": "упоминаний", "skill": ""},
+                 title="Top-30 навыков (mentions count)")
+    fig.update_layout(yaxis={"categoryorder": "total ascending"}, height=720, margin={"l": 160})
+    fig
+```
+
+## Co-occurrence matrix (топ-15)
+
+```{python}
+top15 = top_skills.head(15)["skill"].to_list()
+if top15:
+    placeholders = ",".join("?" * len(top15))
+    cooc = con.execute(
+        f"""
+        WITH active_skills AS (
+            SELECT vacancy_id, list_filter(skills, x -> x IN ({placeholders})) AS s
+            FROM slim WHERE skills IS NOT NULL AND len(skills) > 0
+        )
+        SELECT a AS skill_a, b AS skill_b, count(*)::INT AS n
+        FROM active_skills, unnest(s) AS t1(a), unnest(s) AS t2(b)
+        WHERE a < b AND a IN ({placeholders}) AND b IN ({placeholders})
+        GROUP BY a, b
+        ORDER BY n DESC LIMIT 50
+        """,
+        top15 * 3,
+    ).pl()
+    cooc
+```
+
+```{python}
+if top15 and not cooc.is_empty():
+    pivot = cooc.to_pandas().pivot(index="skill_a", columns="skill_b", values="n").fillna(0)
+    fig = px.imshow(pivot, color_continuous_scale="Blues",
+                    labels={"x": "", "y": "", "color": "пары"},
+                    title="Skill co-occurrence (топ-15)")
+    fig.update_layout(height=520)
+    fig
+```
+
+---
+
+*Сгенерировано VacancyRadar / `{python} f"{datetime.now():%Y-%m-%d %H:%M}"`*

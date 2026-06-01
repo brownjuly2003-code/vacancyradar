@@ -1,0 +1,74 @@
+hh:
+  api_base: https://api.hh.ru
+  user_agent: "VacancyRadar/0.1 (research; contact: noreply@vacancyradar.example)"
+  search:
+    area: 113          # Россия
+    per_page: 100
+    full_sweep_pages: 2000
+  rate_limit:
+    requests_per_second: 10
+    backoff_min: 1.0
+    backoff_max: 60.0
+    max_retries: 5
+
+telegram:
+  channels_file: data/tg_channels.yaml
+  rate_limit:
+    messages_per_second: 1
+
+market:
+  live_scope: it
+  scopes:
+    it:
+      label: IT market
+      hh:
+        category_id: 11
+        category_name: "Информационные технологии"
+        roles_file: data/professional_roles.yaml
+      telegram:
+        channels_file: data/tg_channels.yaml
+        roles:
+          - analytics
+          - crypto
+          - data
+          - design
+          - dev
+          - devops
+          - game
+          - mobile
+          - product
+          - qa
+
+salary:
+  # Monthly RUB outlier thresholds applied in slim_export.
+  # Values outside [floor, ceiling] are nulled (not clamped) so they don't
+  # poison aggregate medians/p90. See _clamp_salary_outliers for justification.
+  outlier_floor: 10000
+  outlier_ceiling: 5000000
+
+cbr:
+  url: https://www.cbr-xml-daily.ru/daily_json.js
+
+storage:
+  master_root: master
+  derived_root: derived
+  lake_root: lake
+
+blob:
+  provider: vercel
+  rw_token_env: BLOB_READ_WRITE_TOKEN
+  public_base_url_env: BLOB_PUBLIC_BASE_URL
+  prefixes:
+    slim_active: slim/active.parquet
+    slim_events_dir: slim/events_30d/
+    agg_dir: agg/
+
+embeddings:
+  model: sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+  batch_size: 256
+  cache_path: master/embeddings.lance
+
+logging:
+  level: INFO
+  rotation: 5 MB
+  retention: 5

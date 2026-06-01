@@ -1,0 +1,38 @@
+# Local pre-commit hooks. Opt-in: `pre-commit install` after `pip install pre-commit`.
+# Mirrors the CI gate (ruff + mypy) so the developer's commit fails fast on the
+# same checks GitHub Actions would run. Kimi audit 2026-05-17 P2-4.
+#
+# Note: ruff-format is intentionally NOT enabled — the project predates ruff
+# formatting and enabling it now would produce a large reformat diff
+# orthogonal to functional work. Add in a dedicated commit if desired.
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(.*\.parquet|.*\.lance/.*)$
+      - id: end-of-file-fixer
+        exclude: ^(.*\.parquet|.*\.lance/.*)$
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        files: ^(src|tests|tools)/
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        files: ^src/
+        additional_dependencies:
+          - types-PyYAML>=6.0
+          - types-requests>=2.31
+          - types-beautifulsoup4>=4.12
+          - pydantic>=2.0
+        args: [--config-file=pyproject.toml]

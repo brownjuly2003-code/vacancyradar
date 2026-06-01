@@ -1,0 +1,102 @@
+[project]
+name = "vacancy-radar"
+version = "0.0.1"
+description = "Russian job market analytics — local pipeline + Vercel dashboards"
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=1.0",
+    "polars>=1.0",
+    "pyarrow>=16.0",
+    "requests>=2.31",
+    "curl-cffi>=0.7",
+    "tenacity>=8.0",
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "python-dotenv>=1.0",
+    "loguru>=0.7",
+    "psycopg[binary]>=3.2",
+    "telethon>=1.36",
+    "datasketch>=1.6",
+    "beautifulsoup4>=4.12",
+    "pyahocorasick>=2.0",
+    "tzdata>=2024.1; platform_system == 'Windows'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "mypy>=1.10",
+    "types-PyYAML>=6.0",
+    "types-requests>=2.31",
+    "types-beautifulsoup4>=4.12",
+    "pylance>=0.13",
+]
+ml = [
+    "spacy>=3.7",
+    "sentence-transformers>=3.0",
+    "pylance>=0.13",
+]
+reports = [
+    "jupyter>=1.0",
+    "plotly>=5.20",
+]
+
+[project.scripts]
+vradar = "src.cli:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+cache_dir = ".mypy_cache"
+incremental = true
+follow_imports = "silent"
+ignore_missing_imports = true
+warn_unused_ignores = true
+files = ["src"]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disable_error_code = ["misc", "arg-type", "assignment"]
+
+[tool.pytest.ini_options]
+addopts = ["-p", "no:schemathesis", "--basetemp=.tmp/pytest"]
+testpaths = ["tests"]
+markers = [
+    "slow: integration tests hitting live APIs",
+]
+
+# Coverage scope is `src` (the publishable package). Tests are excluded —
+# coverage of test fixtures themselves isn't a meaningful signal. No
+# `--cov-fail-under` threshold yet (Kimi audit 2026-05-17 P1-4): first
+# establish the baseline, then ratchet up in a follow-up cycle.
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = [
+    "src/__init__.py",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+precision = 1
+skip_empty = true
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]

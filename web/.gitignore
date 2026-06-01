@@ -1,0 +1,10 @@
+.vercel
+.env*.local
+node_modules/
+.next/
+next-env.d.ts
+.duckdb-extensions/
+.npm-cache/
+next-dev*.log
+tsconfig.tsbuildinfo
+coverage/
