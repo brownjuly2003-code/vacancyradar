@@ -1,5 +1,7 @@
 # VacancyRadar
 
+[![CI](https://github.com/brownjuly2003-code/vacancyradar/actions/workflows/ci.yml/badge.svg)](https://github.com/brownjuly2003-code/vacancyradar/actions/workflows/ci.yml)
+
 Dashboard and analytics for the Russian IT job market. A Python pipeline ingests
 data from hh.ru (IT professional roles) and a curated set of public Telegram
 channels, accumulates an event store + raw lake, publishes an IT-scoped
