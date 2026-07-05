@@ -52,6 +52,17 @@ def main(argv: list[str] | None = None) -> int:
             "active set. Enable only after a full sweep."
         ),
     )
+    ingest.add_argument(
+        "--full-sweep",
+        action="store_true",
+        help=(
+            "hh shards: drain every role completely. Roles whose totalResults exceed the "
+            "~2000-item shards result window are auto-segmented (experience buckets, then "
+            "Moscow/SPb/rest-of-Russia areas) so the sweep covers the whole active set — "
+            "the prerequisite for --detect-closed and `publish slim --active-days`. "
+            "Ignores --pages; requires --page-start 1 and --transport shards."
+        ),
+    )
 
     refdata = sub.add_parser("refdata", help="Fetch/cache reference data")
     refdata.add_argument("kind", choices=["roles", "areas"])
@@ -68,29 +79,13 @@ def main(argv: list[str] | None = None) -> int:
     publish = sub.add_parser("publish", help="Publish derived artifacts")
     publish.add_argument(
         "target",
-        choices=["slim", "events", "weekly", "embeddings", "snapshots", "neon", "hf-mirror"],
-    )
-    publish.add_argument("--init", action="store_true", help="neon: apply schema before sync (idempotent)")
-    publish.add_argument(
-        "--force",
-        action="store_true",
-        help="neon: bypass shrinkage guard (truncated/stale parquet detection); use only after manual review",
+        choices=["slim", "events", "weekly", "embeddings", "hf-mirror"],
     )
     publish.add_argument("--scope", default=None, help="slim: market scope filter from config.yaml, e.g. it")
     publish.add_argument(
         "--dry",
         action="store_true",
-        help="validate env + parse args, skip artifact build and Vercel Blob PUT",
-    )
-    publish.add_argument(
-        "--no-prune",
-        action="store_true",
-        help="events: skip blob TTL prune of partitions outside the rolling 30-day window",
-    )
-    publish.add_argument(
-        "--prune-dry-run",
-        action="store_true",
-        help="events: show what TTL prune would delete without calling DELETE",
+        help="parse args + plan only, skip artifact build and uploads",
     )
     publish.add_argument(
         "--dedup",
@@ -131,7 +126,7 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     prune = sub.add_parser("prune", help="Prune historical data with retention windows")
-    prune.add_argument("target", choices=["events"])
+    prune.add_argument("target", choices=["events", "lake"])
     prune.add_argument(
         "--older-than-days",
         type=int,
@@ -154,6 +149,21 @@ def main(argv: list[str] | None = None) -> int:
         help=(
             "run CHECKPOINT after DELETE to reclaim disk space. Off by default "
             "because CHECKPOINT can be slow on multi-GB DBs."
+        ),
+    )
+    prune.add_argument(
+        "--lake-root",
+        type=str,
+        default="master/vacancies_raw.parquet",
+        help="lake: raw lake root with year=/month=/source= Hive partitions",
+    )
+    prune.add_argument(
+        "--trash-dir",
+        type=str,
+        default="master/.lake_compact_trash",
+        help=(
+            "lake: originals are moved here (outside the lake glob) instead of "
+            "deleted; remove manually after verifying reads"
         ),
     )
 
@@ -298,42 +308,15 @@ from src.cli_modules.ingest import (  # noqa: E402, F401
 )
 from src.cli_modules.prune import _prune, _prune_events  # noqa: E402, F401
 from src.cli_modules.publish import (  # noqa: E402, F401
-    _load_blob_cfg,
     _publish,
     _publish_embeddings,
     _publish_events,
     _publish_hf_mirror,
-    _publish_neon,
     _publish_slim,
-    _publish_snapshots,
     _publish_weekly,
 )
 from src.cli_modules.refdata import _refdata  # noqa: E402, F401
 from src.cli_modules.report import _report  # noqa: E402, F401
-
-
-def _upload_blob(
-    local,
-    pathname: str,
-    cfg,
-    *,
-    label: str = "blob",
-    content_type: str = "application/octet-stream",
-) -> str:
-    """Upload local file to Vercel Blob, log to stdout, return public URL.
-
-    Stays in src/cli.py (not extracted to cli_modules/publish.py) so tests'
-    `monkeypatch.setattr(cli, "_upload_blob", fake)` (10 sites in
-    test_cli_misc.py) keeps working. The publish impls do function-scope
-    `from src.cli import _upload_blob`, which re-resolves the module attribute
-    on every call — picking up monkeypatched replacements.
-    """
-    from src.publish.blob_push import upload_file
-
-    result = upload_file(local, pathname, cfg, content_type=content_type)
-    print(f"[{label}] uploaded → {result.public_url}")
-    return result.public_url
-
 
 __all__ = [
     "main",
@@ -349,7 +332,6 @@ __all__ = [
     "_ingest_hh",
     "_ingest_hh_crawl",
     "_ingest_telegram",
-    "_load_blob_cfg",
     "_load_settings_for_cwd",
     "_load_telegram_channels",
     "_load_yaml",
@@ -360,15 +342,12 @@ __all__ = [
     "_publish_embeddings",
     "_publish_events",
     "_publish_hf_mirror",
-    "_publish_neon",
     "_publish_slim",
-    "_publish_snapshots",
     "_publish_weekly",
     "_refdata",
     "_report",
     "_resolve_hh_scope_role_ids",
     "_scoped_telegram_channels",
-    "_upload_blob",
     "_write_hh_completed_sweep_state",
 ]
 

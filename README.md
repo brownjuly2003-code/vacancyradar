@@ -1,143 +1,133 @@
 # VacancyRadar
 
-[![CI](https://github.com/brownjuly2003-code/vacancyradar/actions/workflows/ci.yml/badge.svg)](https://github.com/brownjuly2003-code/vacancyradar/actions/workflows/ci.yml)
+Дашборд и аналитика IT-рынка вакансий РФ. Python-конвейер собирает данные с hh.ru
+(IT professional roles) + curated публичных Telegram-каналов, накапливает event
+store + raw lake и публикует компактные артефакты в публичный Hugging Face
+Dataset. Витрина — **статический no-DB storefront** на HF Space (две страницы:
+поиск + аналитический дашборд), который сам пересобирается в облаке по крону.
 
-Dashboard and analytics for the Russian IT job market. A Python pipeline ingests
-data from hh.ru (IT professional roles) and a curated set of public Telegram
-channels, accumulates an event store + raw lake, publishes an IT-scoped
-slim/aggregates artifact set to a Hugging Face Dataset mirror, and syncs a live
-read model into Neon Postgres. The frontend is a Next.js 15 executive dashboard
-with a Neon-first search/facets path and JSON-snapshot / DuckDB+httpfs fallbacks.
+**Live:** https://liovina-vacancyradar.static.hf.space (+ `/dashboard.html`)
 
-**Live demo:** https://vacancyradar.vercel.app
+## Состояние
 
-## Highlights
+| | |
+|---|---|
+| Продукт | Статическая витрина на ките «Чистый лист»: `index.html` (поиск) + `dashboard.html` (15 графиков: heatmap город×грейд, Lorenz-кривая работодателей, slopegraph зарплат, приток вакансий и др.), всё client-side из `data.json.gz` (~2.3 МБ), без сервера и БД |
+| Сбор | iMac (чистый IP), launchd `com.vradar.collect` @ 07:00/17:00 МСК: `scripts/run_collect.sh` — full-sweep hh + Telegram (через локальный AdGuard VPN SOCKS) + publish HF mirror |
+| Данные | Публичный HF Dataset [`liovina/vacancyradar-data`](https://huggingface.co/datasets/liovina/vacancyradar-data): `slim/active.parquet` + `slim/events_30d/` + `agg/weekly_*.parquet` |
+| Self-refresh | GH Actions `refresh-storefront.yml` (cron 15:37 UTC): пересборка `data.json.gz`/`trends.json.gz` из HF mirror + деплой на Space. Не зависит от домашних машин |
+| Мониторинг | GH Actions `healthcheck.yml` 2×/день: свежесть HF dataset (<30ч), row floor (≥20k), тренд корпуса (падение >15% = алерт), живость Space; провал → GitHub issue (email) |
+| Tests | `ruff check src tests`, `mypy src`, `pytest -q` (CI coverage-гейт `--cov-fail-under=97`) |
 
-- **No-auth hh.ru ingest** via the public `hh.ru/shards/vacancy/search` endpoint
-  using `curl_cffi` Chrome JA3 impersonation (the API is Cloudflare/JA3-gated), with
-  resilient 403/transient backoff. OAuth `--transport api` is kept as a fallback.
-- **Event-sourced history** — the master store keeps `appeared/seen/closed/
-  salary_changed/desc_changed` events (not daily snapshots), so history scales.
-- **Cheap cloud surface** — pre-aggregated `slim/snapshots/*.json` (~52 KB total)
-  replace a 12 MB parquet cold-read on the dashboard hot path (~225× egress
-  reduction). Neon backs live search/facets; Hugging Face hosts public parquet
-  for a DuckDB+httpfs fallback.
-- **Enrichment** — CBR FX normalization to RUB, regex + Aho-Corasick skills
-  taxonomy, spaCy `ru_core_news_sm` lemma matcher, seniority/remote inference,
-  and sentence-transformers mpnet embeddings (local-only Lance store).
-- **Quality gates** — backend `ruff` + `mypy` + `pytest` (coverage gate
-  `--cov-fail-under=97`); frontend `vitest` unit + `playwright` e2e + `tsc` + build.
-
-## Stack
-
-- **Backend (Python 3.12):** DuckDB, Polars, pandas, `curl_cffi`, tenacity,
-  Telethon, `pyahocorasick`. ML opt-in: spaCy, sentence-transformers, Lance.
-- **Cloud:** Hugging Face Dataset (public artifact mirror) + Neon Postgres
-  (live read model). Vercel Blob remains a legacy fallback.
-- **Frontend:** Next.js 15 + React 19 + vanilla CSS + Recharts; Neon-first
-  API routes with JSON-snapshot and DuckDB+httpfs fallbacks.
-
-## Architecture
+## Архитектура
 
 ```
-hh.ru shards ─┐                            ┌─→ Neon vacancies + aggregates ─→ /api/search, /api/facets
-              ├→ DuckDB master + raw lake ─┤
-Telegram ─────┘                            ├─→ HF slim/active.parquet (12 MB)  ─→ DuckDB+httpfs fallback
-                                           ├─→ HF agg/weekly_*.parquet (~50 KB) ─→ /api/trends/* fallback
-                                           └─→ HF slim/snapshots/*.json (~52 KB) ─→ facets/trends fast path
+hh.ru shards ─┐  iMac: launchd 07:00/17:00 МСК          ОБЛАКО
+              ├→ DuckDB master + raw lake ─→ HF Dataset liovina/vacancyradar-data
+Telegram ─────┘  (event store, локально)      │  slim/active.parquet + events + weekly
+ (через локальный                             ▼  cron 15:37 UTC
+  AdGuard VPN SOCKS)              GH Actions refresh-storefront.yml
+                                              │  build data.json.gz + deploy
+                                              ▼
+                                  HF Space liovina/vacancyradar  ← ПРОДУКТ
 ```
 
-3-tier-by-SLA design:
+- **Локальный pipeline = source of truth**, облако = read-replica. Master хранит
+  события (`appeared/seen/closed/salary_changed/desc_changed`), не снапшоты.
+- **Telegram-egress**: линия iMac блокирует Telegram DC, поэтому Telethon ходит
+  через AdGuard VPN CLI в SOCKS-режиме (`127.0.0.1:1080`) — туннелируется только
+  Telethon, hh-трафик не затронут. Прокси поднимается перед tg-шагом и
+  гарантированно гасится в конце прогона (trap).
+- **Бэкап**: master lake → приватный HF dataset, еженедельно (iMac launchd).
 
-- **Live IT** — Neon `vacancies` + `aggregates` for `/api/search` and
-  `/api/facets`; HF `slim/active.parquet` is the fallback/export surface.
-- **JSON snapshots** — pre-aggregated `slim/snapshots/{facets,trends/*}.json`
-  cache facets/trends; routes fall back to Neon aggregates or DuckDB+httpfs.
-- **IT history** — weekly aggregates in the HF mirror, surfaced on `/trends`.
-- **Long master** — DuckDB event store + raw Parquet lake + (local-only) Lance
-  embeddings.
-- **Full-market reports** — Quarto static HTML, generated on demand, off-cloud.
+Neon Postgres, Vercel (Next.js app + Blob) и Windows-контур (Scheduled Tasks,
+Grafana/Alloy) **удалены 2026-07-06** — статическая витрина закрыла их роль без
+quota-классов инцидентов. История — в git до коммита этой чистки.
 
-The local pipeline is the source of truth; the cloud is a read replica. Any
-logic change can rebuild `derived/` without losing history.
-
-## Quickstart
+## Quickstart (локальный pipeline)
 
 ```bash
-# 1. Install (Python 3.12)
+# 1. Установка core deps (Python 3.12 — pinned)
 make install
-make install-ml          # NER + embeddings (~2 GB; Visual C++ Redist on Windows)
+make install-ml          # NER + embeddings (~2 GB; локальный ML, в облако не идёт)
 
-# 2. Smoke ingest — IT scope, no auth
+# 2. Smoke ingest — IT scope, без аутентификации
 python -m src.cli ingest hh --scope it --pages 1 --per-page 50 --area 113
 
-# 3. Daily pipeline
-python -m src.cli ingest cbr                      # CBR FX rates
-python -m src.cli ingest hh --scope it            # HH IT roles
-python -m src.cli ingest telegram --scope it      # IT Telegram channels
-python -m src.cli enrich hh-details --rate 1.0    # description teaser/FTS
-python -m src.cli publish slim --scope it         # → derived/slim_active.parquet
+# 3. Полный цикл вручную (штатно его гоняет iMac scripts/run_collect.sh)
+python -m src.cli ingest cbr                      # ЦБ rates → master/ref/cbr_rates.parquet
+python -m src.cli ingest hh --scope it --full-sweep --detect-closed --per-page 100
+python -m src.cli ingest telegram --scope it      # IT Telegram channels (нужен TG_PROXY, см. .env.example)
+python -m src.cli publish slim --scope it --strict --active-days 14
 python -m src.cli publish events                  # → derived/slim_events_30d/
-python -m src.cli publish weekly                  # → agg/weekly_*.parquet
-python -m src.cli publish snapshots               # → slim/snapshots/*.json
-python -m src.cli publish neon                    # → Neon read model
-python -m src.cli publish hf-mirror               # → Hugging Face public artifacts
+python -m src.cli publish weekly --strict         # → 4 файла agg/weekly_*.parquet
+python -m src.cli publish hf-mirror               # → HF Dataset (единственный внешний upload)
+python -m src.cli enrich hh-details --rate 1.0    # description_teaser (некритичный хвост)
 
-# 4. Frontend
-cd web && npm install && npm run dev              # / dashboard + /trends
+# 4. Витрина локально
+cd static-proto && python build_artifact.py ../derived/slim_active.parquet . \
+  && python -m http.server 8848                   # http://127.0.0.1:8848/ (file:// не работает)
 
 # 5. Reports (Quarto + Python kernel)
-python -m src.cli report monthly --month 2026-04
-python -m src.cli report skill
-python -m src.cli report employer --employer hh:1373
+python -m src.cli report monthly --month 2026-04  # → derived/reports/monthly_digest.html
 
-# 6. Tests
+# 6. Тесты
 make test
 ```
 
-Configuration is environment-driven — copy `.env.example` to `.env` and fill in
-the Hugging Face / Neon / hh.ru / Telegram values.
+OAuth-путь к `api.hh.ru` доступен через `--transport api` + `vradar auth hh ...` —
+fallback на случай, если shards endpoint закроют.
 
 ### Initial full ingest
 
-For the first full snapshot of active hh.ru vacancies:
-`refdata roles --refresh`, `refdata areas --refresh`, then
-`ingest hh-crawl --root area=113 --max-depth 4 --rate 1.0 --max-vacancies 2000000`.
-The crawler resumes from `master/crawl_progress.json`. This is a research/backfill
-path, not the daily live path.
+Для первого полного снимка активных вакансий hh.ru: `python -m src.cli refdata roles --refresh`,
+`python -m src.cli refdata areas --refresh`, `python -m src.cli ingest hh-crawl --root area=113
+--max-depth 4 --rate 1.0 --max-vacancies 2000000`. Crawler resume'ится из
+`master/crawl_progress.json`. Полный проход — research/backfill path, не ежедневный live path.
 
-### Daily refresh
+**Closed detection — opt-in.** `ingest hh` без флага не эмитит `closed` (partial sweep даст
+false positives). `--detect-closed` валиден только вместе с `--full-sweep`.
 
-The daily pipeline (`ingest cbr → ingest hh --scope it → ingest telegram
---scope it → enrich hh-details → publish slim/events/weekly/snapshots/neon/
-hf-mirror`) is intended to run once a day via a scheduler (cron / Task
-Scheduler). HH/TG ingest failures block publish unless
-`VRADAR_ALLOW_STALE_PUBLISH=1` is explicitly set.
+## Структура
 
-**Closed detection is opt-in.** `ingest hh` without a flag does not emit
-`closed` (a partial sweep would produce false positives). `ingest hh --scope it
---detect-closed` is only valid when a run starts at page 1 and reaches the last
-hh page for every IT professional role.
+См. `CLAUDE.md` § Структура для полного дерева, или `docs/architecture.md`.
+Ключевое: `src/` (ingest/transform/enrich/publish/reports) · `static-proto/`
+(витрина: `build_artifact.py` + 2 HTML) · `scripts/run_collect.sh` (iMac runner) ·
+`.github/workflows/` (refresh-storefront + healthcheck + ci) · `docs/contracts/`
+(Parquet-схемы slim/events/weekly).
 
-## Testing
+## Команды
 
 ```bash
-ruff check src tests
-mypy src
-pytest -q -p no:schemathesis        # backend (coverage gate 97%)
+make install              # core + dev + reports
+make install-ml           # +spacy +sentence-transformers +pylance (~2 GB, local-only)
+make test                 # pytest -q (addopts in pyproject)
+make lint                 # ruff check src tests
 
-cd web
-npm run test:unit                   # vitest
-npm run lint                        # tsc --noEmit
-npm run test:e2e                    # playwright
-npm run build
+python -m src.cli publish slim --scope it   # локальный slim artifact
+python -m src.cli publish hf-mirror         # публикация артефактов в HF Dataset
+python -m src.cli enrich embeddings         # sentence-transformers → Lance (local-only)
+
+# Витрина: ручной redeploy
+gh workflow run refresh-storefront.yml -R brownjuly2003-code/vacancyradar-private
+
+# Verify публичных артефактов через DuckDB httpfs
+duckdb -c "INSTALL httpfs; LOAD httpfs; SELECT count(*) FROM \
+read_parquet('https://huggingface.co/datasets/liovina/vacancyradar-data/resolve/main/slim/active.parquet');"
 ```
 
-## Documentation
+## Принципы
 
-- `docs/architecture.md` — architectural rationale.
-- `docs/contracts/` — Parquet schemas for slim / events / weekly aggregates.
+- Локальный pipeline = source of truth; cloud = read-replica
+- Master хранит events, не snapshots (масштабируется)
+- Raw API JSON хранится всегда — для re-parsing при изменении логики
+- Витрина статическая: нет серверов, БД и quota-классов инцидентов;
+  единственный внешний publish — публичный HF Dataset
+- «Активно» = подтверждено sweep'ом за 14 дней, не накопленный корпус
+- Полный текст вакансии не хранится в паблике — короткий teaser + ссылка
+- Честность данных важнее полноты графиков: нечестные серии (кумулятивный
+  closed, однословный шум рангов) на витрину не выводятся
 
-## License
+## Лицензия
 
-Personal project, no open license.
+Личный проект, без открытой лицензии.

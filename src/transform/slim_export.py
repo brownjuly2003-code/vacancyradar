@@ -139,6 +139,18 @@ def _is_shards_shape(item: dict) -> bool:
 
 # === shards-shape mappers ===
 
+# hh's required experience field → seniority fallback (used only when no
+# explicit text marker fired). Market convention on hh.ru: <1y junior,
+# 1-3y middle, 3-6y senior, 6+y lead-grade. Shards carries it as the string
+# `workExperience`; api.hh.ru as `experience.id` — same enum values.
+_HH_EXPERIENCE_TO_SENIORITY: dict[str, str] = {
+    "noExperience": "junior",
+    "between1And3": "middle",
+    "between3And6": "senior",
+    "moreThan6": "lead",
+}
+
+
 def _hh_remote_type(item: dict) -> str:
     """Derive remote_type from hh shards workFormats. Returns 'unknown' on miss."""
     fmts = item.get("workFormats") or []
@@ -246,6 +258,17 @@ def _hh_to_slim_row(
     # (Senior/Middle/Lead) и experience-years scанятся в body как fallback.
     seniority_body = " ".join(filter(None, [teaser, fts]))
     seniority = parse_seniority(title or "", body=seniority_body)
+    if seniority == "unknown":
+        # Final fallback: hh's required workExperience field (shards shape).
+        # Explicit text markers win above — a "Senior" title with a 1-3y
+        # requirement stays senior; this only rescues rows with no marker at
+        # all (56% of the corpus was unknown before this, 2026-06-05 audit
+        # follow-up). api.hh.ru shape has `experience.id` with the same enum.
+        raw_exp = item.get("workExperience")
+        if raw_exp is None:
+            exp_obj = item.get("experience")
+            raw_exp = exp_obj.get("id") if isinstance(exp_obj, dict) else exp_obj
+        seniority = _HH_EXPERIENCE_TO_SENIORITY.get(raw_exp, "unknown")
     if remote_type == "unknown":
         remote_type = parse_remote_type(enrich_text)
 

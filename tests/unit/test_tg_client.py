@@ -190,6 +190,7 @@ def test_build_client_falls_back_to_env_session_name(monkeypatch):
 def test_build_client_uses_bounded_batch_settings(monkeypatch):
     monkeypatch.setenv("TG_API_ID", "1")
     monkeypatch.setenv("TG_API_HASH", "h")
+    monkeypatch.delenv("TG_PROXY", raising=False)
 
     captured: dict = {}
 
@@ -204,11 +205,95 @@ def test_build_client_uses_bounded_batch_settings(monkeypatch):
     assert captured["kwargs"] == {
         "auto_reconnect": False,
         "connection_retries": 2,
+        "proxy": None,
         "raise_last_call_error": True,
         "receive_updates": False,
         "request_retries": 2,
         "retry_delay": 2,
     }
+
+
+# ---------------------------------------------------------------------------
+# TG_PROXY: на iMac (чистый IP, без VPN) Telegram DC блокированы провайдером;
+# трафик выводится через LAN SOCKS-прокси на Windows-боксе (его VPN покрывает
+# Telegram). См. _parse_proxy docstring.
+# ---------------------------------------------------------------------------
+
+
+def test_parse_proxy_socks5_basic():
+    assert tg_client._parse_proxy("socks5://192.168.1.134:1080") == {
+        "proxy_type": "socks5",
+        "addr": "192.168.1.134",
+        "port": 1080,
+    }
+
+
+def test_parse_proxy_with_credentials():
+    assert tg_client._parse_proxy("socks5://user:pass@10.0.0.1:9050") == {
+        "proxy_type": "socks5",
+        "addr": "10.0.0.1",
+        "port": 9050,
+        "username": "user",
+        "password": "pass",
+    }
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "https://10.0.0.1:8080",  # https не поддерживается Telethon proxy
+        "ssh://10.0.0.1:22",
+        "10.0.0.1:1080",  # схема обязательна
+    ],
+)
+def test_parse_proxy_rejects_unknown_scheme(value):
+    with pytest.raises(ValueError, match="scheme"):
+        tg_client._parse_proxy(value)
+
+
+def test_parse_proxy_requires_host_and_port():
+    with pytest.raises(ValueError, match="host and port"):
+        tg_client._parse_proxy("socks5://192.168.1.134")
+
+
+def test_build_client_passes_proxy_from_env(monkeypatch):
+    monkeypatch.setenv("TG_API_ID", "1")
+    monkeypatch.setenv("TG_API_HASH", "h")
+    monkeypatch.setenv("TG_PROXY", "socks5://192.168.1.134:1080")
+
+    captured: dict = {}
+
+    class _FakeTelethon:
+        def __init__(self, session, api_id, api_hash, **kwargs):
+            captured["kwargs"] = kwargs
+
+    monkeypatch.setattr(tg_client, "TelegramClient", _FakeTelethon)
+
+    tg_client._build_client()
+
+    assert captured["kwargs"]["proxy"] == {
+        "proxy_type": "socks5",
+        "addr": "192.168.1.134",
+        "port": 1080,
+    }
+
+
+def test_build_client_ignores_blank_proxy_env(monkeypatch):
+    monkeypatch.setenv("TG_API_ID", "1")
+    monkeypatch.setenv("TG_API_HASH", "h")
+    monkeypatch.setenv("TG_PROXY", "   ")
+
+    captured: dict = {}
+
+    class _FakeTelethon:
+        def __init__(self, session, api_id, api_hash, **kwargs):
+            captured["kwargs"] = kwargs
+
+    monkeypatch.setattr(tg_client, "TelegramClient", _FakeTelethon)
+
+    tg_client._build_client()
+
+    assert captured["kwargs"]["proxy"] is None
 
 
 def test_fetch_channel_messages_skips_non_message_objects(monkeypatch):

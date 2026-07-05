@@ -587,6 +587,51 @@ def test_seniority_uses_description_teaser(tmp_path: Path):
     assert row["seniority"] == "senior"
 
 
+def test_seniority_falls_back_to_work_experience_shards(tmp_path: Path):
+    """Нет текстовых маркеров → required-поле workExperience решает.
+
+    Закрывает 56%-unknown хвост (audit follow-up 2026-06-05): shards всегда
+    несёт workExperience, маппинг noExperience/1-3/3-6/6+ → jr/mid/sr/lead.
+    """
+    fetched = datetime(2026, 4, 27, tzinfo=timezone.utc)
+    _seed_lake(
+        tmp_path,
+        [(fetched, [_shards_item(1, name="Data Analyst", workExperience="between3And6")])],
+    )
+    assert build_slim_active(tmp_path).to_dicts()[0]["seniority"] == "senior"
+
+
+def test_seniority_text_marker_beats_work_experience(tmp_path: Path):
+    """Явный маркер в title приоритетнее формального требования опыта."""
+    fetched = datetime(2026, 4, 27, tzinfo=timezone.utc)
+    _seed_lake(
+        tmp_path,
+        [(fetched, [_shards_item(1, name="Senior Data Analyst", workExperience="noExperience")])],
+    )
+    assert build_slim_active(tmp_path).to_dicts()[0]["seniority"] == "senior"
+
+
+def test_seniority_falls_back_to_experience_api(tmp_path: Path):
+    """api.hh.ru shape: experience.id — тот же enum, тот же fallback."""
+    fetched = datetime(2026, 4, 27, tzinfo=timezone.utc)
+    _seed_api_lake(
+        tmp_path,
+        [
+            (
+                fetched,
+                [
+                    _api_item(
+                        1,
+                        name="Backend Engineer",
+                        experience={"id": "between1And3", "name": "От 1 года до 3 лет"},
+                    )
+                ],
+            )
+        ],
+    )
+    assert build_slim_active(tmp_path).to_dicts()[0]["seniority"] == "middle"
+
+
 def test_remote_fallback_fires_when_native_unknown(tmp_path: Path):
     """workFormats пуст → native='unknown' → fallback на teaser keyword."""
     fetched = datetime(2026, 4, 27, tzinfo=timezone.utc)

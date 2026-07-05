@@ -30,19 +30,16 @@ def test_is_transient_stderr_handles_empty_and_known_transient_values():
 
 
 def test_build_upload_plan_maps_current_artifact_layout(tmp_path: Path):
-    (tmp_path / "derived" / "snapshots").mkdir(parents=True)
     (tmp_path / "derived" / "agg").mkdir(parents=True)
     (tmp_path / "derived" / "slim_events_30d").mkdir(parents=True)
     (tmp_path / "derived" / "slim_active.parquet").write_bytes(b"slim")
-    (tmp_path / "derived" / "snapshots" / "facets.json").write_text("{}", encoding="utf-8")
-    (tmp_path / "derived" / "agg" / "weekly_market_pulse.parquet").write_bytes(b"agg")
+    (tmp_path / "derived" / "agg" / "weekly_role_salary.parquet").write_bytes(b"agg")
     (tmp_path / "derived" / "slim_events_30d" / "events.parquet").write_bytes(b"events")
 
     plan = build_upload_plan(tmp_path)
 
     assert [(item.local_path.relative_to(tmp_path), item.path_in_repo) for item in plan] == [
         (Path("derived/slim_active.parquet"), "slim/active.parquet"),
-        (Path("derived/snapshots"), "slim/snapshots"),
         (Path("derived/agg"), "agg"),
         (Path("derived/slim_events_30d"), "slim/events_30d"),
     ]
@@ -53,8 +50,7 @@ def test_missing_required_paths_reports_only_required_artifacts(tmp_path: Path):
 
     assert missing == [
         Path("derived/slim_active.parquet"),
-        Path("derived/snapshots/facets.json"),
-        Path("derived/agg/weekly_market_pulse.parquet"),
+        Path("derived/agg/weekly_role_salary.parquet"),
     ]
 
 
@@ -105,7 +101,7 @@ def test_upload_items_uses_env_token_not_command_argument(tmp_path: Path):
 
 def test_upload_items_uploads_each_plan_item(tmp_path: Path):
     first = tmp_path / "derived" / "slim_active.parquet"
-    second = tmp_path / "derived" / "snapshots"
+    second = tmp_path / "derived" / "agg"
     first.parent.mkdir(parents=True)
     first.write_bytes(b"slim")
     second.mkdir()
@@ -119,14 +115,14 @@ def test_upload_items_uploads_each_plan_item(tmp_path: Path):
     upload_items(
         [
             HfUploadItem(first, "slim/active.parquet"),
-            HfUploadItem(second, "slim/snapshots"),
+            HfUploadItem(second, "agg"),
         ],
         cfg,
         runner=fake_runner,
     )
 
     assert [cmd[3] for cmd in calls] == [str(first), str(second)]
-    assert [cmd[4] for cmd in calls] == ["slim/active.parquet", "slim/snapshots"]
+    assert [cmd[4] for cmd in calls] == ["slim/active.parquet", "agg"]
 
 
 def _make_completed(returncode: int, stderr: str = "") -> subprocess.CompletedProcess:

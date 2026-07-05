@@ -1,6 +1,6 @@
 .PHONY: install install-ml ingest ingest-hh ingest-tg ingest-cbr publish publish-events publish-weekly test test-slow lint dryrun clean
 
-PYTHON ?= python
+PYTHON ?= D:/Python/Python312/python.exe
 
 install:
 	$(PYTHON) -m pip install --timeout 300 -e ".[dev,reports]"

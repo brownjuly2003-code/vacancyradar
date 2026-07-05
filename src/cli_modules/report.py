@@ -33,7 +33,7 @@ def _report(args: argparse.Namespace) -> int:
     # Quarto python_engine resolves /usr/bin/env python, which on this machine
     # hits Python 3.13 (no jupyter installed). Pin to 3.12 (where pip lives) so
     # `quarto render` doesn't crash with "Jupyter is not available".
-    env.setdefault("QUARTO_PYTHON", "python")
+    env.setdefault("QUARTO_PYTHON", "D:/Python/Python312/python.exe")
     scope_name = getattr(args, "scope", None)
     if scope_name and scope_name != "it":
         # Full-market report: build a one-off slim from raw lake (does not

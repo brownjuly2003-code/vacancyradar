@@ -9,6 +9,7 @@ import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 from telethon.errors import (
     AuthKeyDuplicatedError,
@@ -36,17 +37,46 @@ class TGMessage:
     views: int | None
 
 
+def _parse_proxy(value: str) -> dict[str, object]:
+    """Parse `TG_PROXY` URL (`socks5://[user:pass@]host:port`) → Telethon proxy dict.
+
+    WHY: на сборочном хосте с чистым IP (iMac, без VPN) Telegram DC заблокированы
+    провайдером, а hh.ru — наоборот, доступен. TG-трафик выводится через LAN
+    SOCKS-прокси на хосте, чей VPN покрывает Telegram (Windows-бокс). На клиенте
+    нужен `python-socks` (Telethon проксирует через него).
+    """
+    parsed = urlparse(value)
+    scheme = (parsed.scheme or "").lower()
+    if scheme not in {"socks5", "socks4", "http"}:
+        raise ValueError(f"TG_PROXY scheme must be socks5/socks4/http, got: {value!r}")
+    if not parsed.hostname or not parsed.port:
+        raise ValueError(f"TG_PROXY must include host and port: {value!r}")
+    proxy: dict[str, object] = {
+        "proxy_type": scheme,
+        "addr": parsed.hostname,
+        "port": parsed.port,
+    }
+    if parsed.username:
+        proxy["username"] = parsed.username
+    if parsed.password:
+        proxy["password"] = parsed.password
+    return proxy
+
+
 def _build_client(session_path: Path | None = None) -> TelegramClient:
     api_id = int(os.environ["TG_API_ID"])
     api_hash = os.environ["TG_API_HASH"]
     session_name = os.environ.get("TG_SESSION", "vradar_session")
     session = str(session_path or session_name)
+    proxy_url = os.environ.get("TG_PROXY", "").strip()
+    proxy = _parse_proxy(proxy_url) if proxy_url else None
     return TelegramClient(
         session,
         api_id,
         api_hash,
         auto_reconnect=False,
         connection_retries=2,
+        proxy=proxy,
         raise_last_call_error=True,
         receive_updates=False,
         request_retries=2,

@@ -1,6 +1,6 @@
 hh:
   api_base: https://api.hh.ru
-  user_agent: "VacancyRadar/0.1 (research; contact: noreply@vacancyradar.example)"
+  user_agent: "VacancyRadar/0.1 (research; contact: gemini.ge2026@gmail.com)"
   search:
     area: 113          # Россия
     per_page: 100
@@ -53,15 +53,6 @@ storage:
   master_root: master
   derived_root: derived
   lake_root: lake
-
-blob:
-  provider: vercel
-  rw_token_env: BLOB_READ_WRITE_TOKEN
-  public_base_url_env: BLOB_PUBLIC_BASE_URL
-  prefixes:
-    slim_active: slim/active.parquet
-    slim_events_dir: slim/events_30d/
-    agg_dir: agg/
 
 embeddings:
   model: sentence-transformers/paraphrase-multilingual-mpnet-base-v2

@@ -111,7 +111,7 @@ class HHSearch(BaseModel):
 class HHSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
     api_base: str = "https://api.hh.ru"
-    user_agent: str = "VacancyRadar/0.1 (research; contact: noreply@vacancyradar.example)"
+    user_agent: str = "VacancyRadar/0.1 (research; contact: gemini.ge2026@gmail.com)"
     search: HHSearch = Field(default_factory=HHSearch)
     rate_limit: HHRateLimit = Field(default_factory=HHRateLimit)
 

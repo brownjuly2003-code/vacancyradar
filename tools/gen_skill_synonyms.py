@@ -8,7 +8,7 @@ Output map: alias_lower -> [expansion_terms_lower_unique_sorted].
   ILIKE substring, would match "polyglot", "deploy", "deploys", "google").
 
 Usage:
-    python -m tools.gen_skill_synonyms
+    D:/Python/Python312/python.exe -m tools.gen_skill_synonyms
 
 The JSON is checked in alongside the source yaml. /api/search loads it at
 runtime to expand single-word Russian queries (e.g. "питон" -> Python jobs).

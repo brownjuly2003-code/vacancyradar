@@ -1,12 +1,11 @@
 """Freshness gate for `vradar publish weekly`.
 
-Empty aggregate parquets break the /trends frontend silently: DuckDB reads a
-zero-row Parquet, recharts renders an empty chart, no error is raised.
+Empty aggregate parquets break the storefront trends silently: the builder
+reads a zero-row Parquet and renders an empty chart, no error is raised.
 Audit 2026-04-27 caught this on weekly_skill_velocity.parquet.
 
 The gate must:
-  - default mode: skip upload of any empty aggregate (keep previous-good
-    Blob copy), log a warning, exit 0;
+  - default mode: log a warning for any empty aggregate, exit 0;
   - strict mode (`--strict`): exit non-zero so the scheduled task / CI run
     surfaces the failure.
 """
@@ -20,7 +19,6 @@ import pytest
 
 import src.cli as cli
 import src.transform.weekly_aggregates as weekly_aggregates
-from src.publish.blob_push import BlobConfig, BlobUploadResult
 
 
 def _args(*, strict: bool = False) -> Namespace:
@@ -28,7 +26,7 @@ def _args(*, strict: bool = False) -> Namespace:
 
 
 @pytest.fixture
-def patched_publish(monkeypatch, tmp_path, blob_env):
+def patched_publish(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
 
     # Fast-path: _publish_weekly reads derived/slim_active.parquet written by
@@ -38,7 +36,7 @@ def patched_publish(monkeypatch, tmp_path, blob_env):
     pl.DataFrame({"vacancy_id": ["hh:1"]}).write_parquet(slim_path)
 
     fake_aggregates = {
-        # Two empty + two non-empty — proves gate skips empties without
+        # Two empty + two non-empty — proves gate warns on empties without
         # tanking the entire run.
         "weekly_market_pulse": pl.DataFrame(
             schema={"date": pl.Date, "total_active": pl.Int64},
@@ -78,53 +76,29 @@ def patched_publish(monkeypatch, tmp_path, blob_env):
         "src.transform.weekly_aggregates.write_weekly_aggregates",
         fake_write,
     )
-
-    upload_calls: list[tuple[Path, str]] = []
-
-    def fake_upload(local_path: Path, pathname: str, cfg: BlobConfig, **_kwargs):
-        upload_calls.append((local_path, pathname))
-        return BlobUploadResult(
-            pathname=pathname,
-            url=f"https://blob.example/{pathname}",
-            public_url=f"https://blob.example/{pathname}",
-            content_type="application/octet-stream",
-            response={},
-        )
-
-    monkeypatch.setattr("src.publish.blob_push.upload_file", fake_upload)
-    return upload_calls
+    return written_paths
 
 
-def test_publish_weekly_skips_empty_aggregates_by_default(patched_publish, capsys):
-    upload_calls = patched_publish
-
+def test_publish_weekly_warns_on_empty_aggregates_by_default(patched_publish, capsys):
     exit_code = cli._publish_weekly(_args())
 
     assert exit_code == 0
-    uploaded_names = sorted(name for _, name in upload_calls)
-    assert uploaded_names == [
-        "agg/weekly_employer_top.parquet",
-        "agg/weekly_role_salary.parquet",
-    ]
     captured = capsys.readouterr()
-    assert "weekly_market_pulse: 0 rows — SKIPPED" in captured.err
-    assert "weekly_skill_velocity: 0 rows — SKIPPED" in captured.err
+    assert "weekly_market_pulse: 0 rows" in captured.err
+    assert "weekly_skill_velocity: 0 rows" in captured.err
     assert "[warn] 2/4 weekly aggregates empty" in captured.err
+    # Non-empty aggregates are reported on stdout.
+    assert "weekly_employer_top: 1 rows" in captured.out
+    assert "weekly_role_salary: 1 rows" in captured.out
 
 
 def test_publish_weekly_strict_exits_nonzero_on_empty(patched_publish, capsys):
-    upload_calls = patched_publish
-
     exit_code = cli._publish_weekly(_args(strict=True))
 
     assert exit_code == 4
-    # Non-empty aggregates still get uploaded (preserves run idempotency
-    # — strict failure ≠ rolling-back successful uploads).
-    uploaded_names = sorted(name for _, name in upload_calls)
-    assert uploaded_names == [
-        "agg/weekly_employer_top.parquet",
-        "agg/weekly_role_salary.parquet",
-    ]
+    # All aggregates are still written locally (strict failure ≠ rolling back
+    # the files the HF mirror step would pick up on the next good run).
+    assert len(patched_publish) == 4
     captured = capsys.readouterr()
     assert "weekly --strict" in captured.err
 
@@ -137,28 +111,25 @@ def test_publish_weekly_reuses_slim_parquet(patched_publish, capsys):
     assert "slim_active.parquet" in captured.out
 
 
-def test_publish_weekly_skips_blob_upload_when_base_is_hf(
-    patched_publish, monkeypatch, capsys
-):
-    upload_calls = patched_publish
-    monkeypatch.setenv("BLOB_READ_WRITE_TOKEN", "")
-    monkeypatch.setenv(
-        "BLOB_PUBLIC_BASE_URL",
-        "https://huggingface.co/datasets/your-org/vacancyradar-data/resolve/main",
-    )
+def test_publish_weekly_dry_skips_build(monkeypatch, tmp_path, capsys):
+    monkeypatch.chdir(tmp_path)
 
-    exit_code = cli._publish_weekly(_args())
+    def boom(*_a, **_kw):
+        raise AssertionError("dry run must not build aggregates")
+
+    monkeypatch.setattr("src.transform.weekly_aggregates.build_all_weekly", boom)
+
+    exit_code = cli._publish_weekly(Namespace(target="weekly", dry=True, strict=False))
 
     assert exit_code == 0
-    assert upload_calls == []
-    assert "blob upload disabled" in capsys.readouterr().out
+    assert "[dry] publish weekly" in capsys.readouterr().out
 
 
-def test_publish_weekly_rebuilds_when_slim_missing(monkeypatch, tmp_path, capsys, blob_env):
+def test_publish_weekly_rebuilds_when_slim_missing(monkeypatch, tmp_path, capsys):
     """If derived/slim_active.parquet is absent, fall back to lake rebuild.
 
     Covers ad-hoc local use where someone runs `publish weekly` without first
-    running `publish slim`. Cron sequence is enforced by daily_refresh.ps1.
+    running `publish slim`. The collection runner enforces the cron sequence.
     """
     monkeypatch.chdir(tmp_path)
 
@@ -190,16 +161,6 @@ def test_publish_weekly_rebuilds_when_slim_missing(monkeypatch, tmp_path, capsys
     monkeypatch.setattr(
         "src.transform.weekly_aggregates.write_weekly_aggregates",
         fake_write,
-    )
-    monkeypatch.setattr(
-        "src.publish.blob_push.upload_file",
-        lambda *args, **kwargs: BlobUploadResult(
-            pathname="x",
-            url="x",
-            public_url="x",
-            content_type="application/octet-stream",
-            response={},
-        ),
     )
 
     exit_code = cli._publish_weekly(_args())

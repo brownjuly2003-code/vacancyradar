@@ -89,16 +89,3 @@ def write_slim_events_partitioned(df: pl.DataFrame, out_root: Path) -> list[Path
         )
         written.append(path)
     return written
-
-
-def list_partition_uploads(out_root: Path) -> list[tuple[Path, str]]:
-    """Map local partition paths → blob pathnames for upload.
-
-    Returns list of (local_path, blob_pathname) where blob_pathname is the
-    relative path under slim/events_30d/.
-    """
-    uploads: list[tuple[Path, str]] = []
-    for p in sorted(out_root.rglob("events.parquet")):
-        rel = p.relative_to(out_root).as_posix()
-        uploads.append((p, f"slim/events_30d/{rel}"))
-    return uploads

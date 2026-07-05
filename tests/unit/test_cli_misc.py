@@ -1,7 +1,7 @@
 """Coverage ratchet for src/cli.py: dispatcher fallthroughs, refdata,
-auth (hh + tg), publish_neon, publish_snapshots (--dry), publish_slim
-(--dry + freshness gate), publish_events (--dry + empty), publish_embeddings,
-report, _parse_hh_crawl_root, _ingest_cbr.
+auth (hh + tg), publish_slim (--dry + freshness gate), publish_events
+(--dry + empty), publish_embeddings, report, _parse_hh_crawl_root,
+_ingest_cbr.
 
 These cover the cheapest uncovered blocks in cli.py. Each test isolates
 the file system via tmp_path + chdir and mocks the underlying I/O so we
@@ -34,8 +34,6 @@ def test_publish_dispatcher_unknown_target_returns_1():
         ("events", "_publish_events", 11),
         ("weekly", "_publish_weekly", 12),
         ("embeddings", "_publish_embeddings", 13),
-        ("snapshots", "_publish_snapshots", 14),
-        ("neon", "_publish_neon", 15),
         ("hf-mirror", "_publish_hf_mirror", 16),
     ],
 )
@@ -99,39 +97,6 @@ def test_prune_dispatcher_unknown_target_returns_1():
 def test_auth_unknown_provider_returns_1(capsys):
     assert cli._auth(Namespace(provider="bogus")) == 1
     assert "unknown provider: bogus" in capsys.readouterr().err
-
-
-def test_upload_blob_calls_blob_push_and_logs(monkeypatch, tmp_path, capsys):
-    local = tmp_path / "artifact.json"
-    local.write_text("{}", encoding="utf-8")
-    cfg = object()
-    seen = {}
-
-    def fake_upload_file(local_path, pathname, blob_cfg, *, content_type):
-        seen["local_path"] = local_path
-        seen["pathname"] = pathname
-        seen["cfg"] = blob_cfg
-        seen["content_type"] = content_type
-        return Namespace(public_url="https://blob.test/artifact.json")
-
-    monkeypatch.setattr("src.publish.blob_push.upload_file", fake_upload_file)
-
-    url = cli._upload_blob(
-        local,
-        "agg/artifact.json",
-        cfg,
-        label="artifact",
-        content_type="application/json",
-    )
-
-    assert url == "https://blob.test/artifact.json"
-    assert seen == {
-        "local_path": local,
-        "pathname": "agg/artifact.json",
-        "cfg": cfg,
-        "content_type": "application/json",
-    }
-    assert "[artifact] uploaded" in capsys.readouterr().out
 
 
 # --------------------------------------------------------------------------- #
@@ -465,79 +430,6 @@ def test_ingest_cbr_happy_writes_parquet(tmp_path, monkeypatch, capsys):
 
 
 # --------------------------------------------------------------------------- #
-# _publish_neon
-# --------------------------------------------------------------------------- #
-
-
-def test_publish_neon_missing_database_url_returns_3(tmp_path, monkeypatch, capsys):
-    monkeypatch.chdir(tmp_path)
-    # dotenv default override=False: setting to empty wins over any .env value.
-    monkeypatch.setenv("NEON_DATABASE_URL", "")
-    rc = cli._publish_neon(Namespace(dry=False, init=False, force=False))
-    assert rc == 3
-    assert "NEON_DATABASE_URL" in capsys.readouterr().err
-
-
-def test_publish_neon_missing_parquet_returns_3(tmp_path, monkeypatch, capsys):
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("NEON_DATABASE_URL", "postgres://fake")
-    rc = cli._publish_neon(Namespace(dry=False, init=False, force=False))
-    assert rc == 3
-    assert "slim_active.parquet missing" in capsys.readouterr().err
-
-
-def test_publish_neon_dry_runs_without_io(tmp_path, monkeypatch, capsys):
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("NEON_DATABASE_URL", "postgres://fake")
-    (tmp_path / "derived").mkdir()
-    (tmp_path / "derived" / "slim_active.parquet").write_bytes(b"stub")
-
-    def boom(*_a, **_kw):
-        raise AssertionError("sync must not run in dry mode")
-
-    monkeypatch.setattr("src.publish.neon_sync.sync_parquet_to_neon", boom)
-
-    rc = cli._publish_neon(Namespace(dry=True, init=False, force=False))
-    assert rc == 0
-    assert "dry: would sync" in capsys.readouterr().out
-
-
-def test_publish_neon_shrinkage_abort_returns_4(tmp_path, monkeypatch, capsys):
-    from src.publish.neon_sync import ShrinkageGuardError
-
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("NEON_DATABASE_URL", "postgres://fake")
-    (tmp_path / "derived").mkdir()
-    (tmp_path / "derived" / "slim_active.parquet").write_bytes(b"stub")
-
-    def fake_sync(*_a, **_kw):
-        raise ShrinkageGuardError("shrunk 50% — aborting")
-
-    monkeypatch.setattr("src.publish.neon_sync.sync_parquet_to_neon", fake_sync)
-
-    rc = cli._publish_neon(Namespace(dry=False, init=False, force=False))
-    assert rc == 4
-    assert "shrinkage guard" in capsys.readouterr().err
-
-
-def test_publish_neon_happy_path_prints_stats(tmp_path, monkeypatch, capsys):
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("NEON_DATABASE_URL", "postgres://fake")
-    (tmp_path / "derived").mkdir()
-    (tmp_path / "derived" / "slim_active.parquet").write_bytes(b"stub")
-
-    monkeypatch.setattr(
-        "src.publish.neon_sync.sync_parquet_to_neon",
-        lambda *_a, **_kw: {"rows_read": 100, "rows_upserted": 90, "rows_deleted": 5},
-    )
-
-    rc = cli._publish_neon(Namespace(dry=False, init=True, force=True))
-    assert rc == 0
-    out = capsys.readouterr().out
-    assert "rows_read=100" in out and "upserted=90" in out and "deleted=5" in out
-
-
-# --------------------------------------------------------------------------- #
 # _publish_hf_mirror
 # --------------------------------------------------------------------------- #
 
@@ -565,19 +457,16 @@ def test_publish_hf_mirror_missing_required_artifacts_returns_3(
     assert rc == 3
     err = capsys.readouterr().err
     assert "derived/slim_active.parquet" in err
-    assert "derived/snapshots/facets.json" in err
-    assert "derived/agg/weekly_market_pulse.parquet" in err
+    assert "derived/agg/weekly_role_salary.parquet" in err
 
 
 def test_publish_hf_mirror_dry_prints_plan_without_upload(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("HF_REPO_ID", "owner/repo")
     monkeypatch.setenv("HF_TOKEN", "hf_TEST")
-    (tmp_path / "derived" / "snapshots").mkdir(parents=True)
-    (tmp_path / "derived" / "agg").mkdir()
+    (tmp_path / "derived" / "agg").mkdir(parents=True)
     (tmp_path / "derived" / "slim_active.parquet").write_bytes(b"slim")
-    (tmp_path / "derived" / "snapshots" / "facets.json").write_text("{}", encoding="utf-8")
-    (tmp_path / "derived" / "agg" / "weekly_market_pulse.parquet").write_bytes(b"agg")
+    (tmp_path / "derived" / "agg" / "weekly_role_salary.parquet").write_bytes(b"agg")
 
     def boom(*_args, **_kwargs):
         raise AssertionError("dry run must not upload")
@@ -590,7 +479,6 @@ def test_publish_hf_mirror_dry_prints_plan_without_upload(tmp_path, monkeypatch,
     out = capsys.readouterr().out
     assert "https://huggingface.co/datasets/owner/repo/resolve/main" in out
     assert "slim/active.parquet" in out
-    assert "slim/snapshots" in out
     assert "agg" in out
 
 
@@ -598,11 +486,9 @@ def test_publish_hf_mirror_uploads_plan(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("HF_REPO_ID", "owner/repo")
     monkeypatch.setenv("HF_TOKEN", "hf_TEST")
-    (tmp_path / "derived" / "snapshots").mkdir(parents=True)
-    (tmp_path / "derived" / "agg").mkdir()
+    (tmp_path / "derived" / "agg").mkdir(parents=True)
     (tmp_path / "derived" / "slim_active.parquet").write_bytes(b"slim")
-    (tmp_path / "derived" / "snapshots" / "facets.json").write_text("{}", encoding="utf-8")
-    (tmp_path / "derived" / "agg" / "weekly_market_pulse.parquet").write_bytes(b"agg")
+    (tmp_path / "derived" / "agg" / "weekly_role_salary.parquet").write_bytes(b"agg")
     captured = []
 
     def fake_upload_items(plan, cfg):
@@ -615,7 +501,6 @@ def test_publish_hf_mirror_uploads_plan(tmp_path, monkeypatch, capsys):
     assert rc == 0
     assert captured == [
         ("slim/active.parquet", "owner/repo", "hf_TEST"),
-        ("slim/snapshots", "owner/repo", "hf_TEST"),
         ("agg", "owner/repo", "hf_TEST"),
     ]
     assert "HF_TOKEN" not in capsys.readouterr().out
@@ -625,11 +510,9 @@ def test_publish_hf_mirror_missing_cli_returns_2(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("HF_REPO_ID", "owner/repo")
     monkeypatch.setenv("HF_TOKEN", "hf_TEST")
-    (tmp_path / "derived" / "snapshots").mkdir(parents=True)
-    (tmp_path / "derived" / "agg").mkdir()
+    (tmp_path / "derived" / "agg").mkdir(parents=True)
     (tmp_path / "derived" / "slim_active.parquet").write_bytes(b"slim")
-    (tmp_path / "derived" / "snapshots" / "facets.json").write_text("{}", encoding="utf-8")
-    (tmp_path / "derived" / "agg" / "weekly_market_pulse.parquet").write_bytes(b"agg")
+    (tmp_path / "derived" / "agg" / "weekly_role_salary.parquet").write_bytes(b"agg")
 
     def raise_missing_cli(plan, cfg):
         raise FileNotFoundError("huggingface-cli")
@@ -650,11 +533,9 @@ def test_publish_hf_mirror_called_process_error_returns_1(
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("HF_REPO_ID", "owner/repo")
     monkeypatch.setenv("HF_TOKEN", "hf_TEST")
-    (tmp_path / "derived" / "snapshots").mkdir(parents=True)
-    (tmp_path / "derived" / "agg").mkdir()
+    (tmp_path / "derived" / "agg").mkdir(parents=True)
     (tmp_path / "derived" / "slim_active.parquet").write_bytes(b"slim")
-    (tmp_path / "derived" / "snapshots" / "facets.json").write_text("{}", encoding="utf-8")
-    (tmp_path / "derived" / "agg" / "weekly_market_pulse.parquet").write_bytes(b"agg")
+    (tmp_path / "derived" / "agg" / "weekly_role_salary.parquet").write_bytes(b"agg")
 
     def raise_upload_failure(plan, cfg):
         raise subprocess.CalledProcessError(
@@ -672,37 +553,11 @@ def test_publish_hf_mirror_called_process_error_returns_1(
 
 
 # --------------------------------------------------------------------------- #
-# _publish_snapshots / _publish_slim / _publish_events / _publish_embeddings dry
+# _publish_slim / _publish_events / _publish_embeddings dry + arg plumbing
 # --------------------------------------------------------------------------- #
 
 
-def test_publish_snapshots_dry_validates_env(tmp_path, monkeypatch, capsys):
-    monkeypatch.chdir(tmp_path)
-    # dotenv default override=False: setting to empty wins over any .env value.
-    monkeypatch.setenv("BLOB_READ_WRITE_TOKEN", "")
-    monkeypatch.setenv("BLOB_PUBLIC_BASE_URL", "")
-    rc = cli._publish_snapshots(Namespace(dry=True))
-    assert rc == 2
-    assert "BLOB_READ_WRITE_TOKEN" in capsys.readouterr().err
-
-
-def test_publish_snapshots_dry_env_ok_returns_0(tmp_path, monkeypatch, capsys, blob_env):
-    monkeypatch.chdir(tmp_path)
-    rc = cli._publish_snapshots(Namespace(dry=True))
-    assert rc == 0
-    assert "publish snapshots" in capsys.readouterr().out
-
-
-def test_publish_snapshots_missing_slim_returns_3(
-    tmp_path, monkeypatch, capsys, blob_env
-):
-    monkeypatch.chdir(tmp_path)
-    rc = cli._publish_snapshots(Namespace(dry=False))
-    assert rc == 3
-    assert "slim_active.parquet missing" in capsys.readouterr().err
-
-
-def test_publish_slim_dry_env_ok_returns_0(tmp_path, monkeypatch, capsys, blob_env):
+def test_publish_slim_dry_returns_0(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     rc = cli._publish_slim(
         Namespace(dry=True, strict=False, active_days=None, scope=None, dedup=False)
@@ -711,15 +566,10 @@ def test_publish_slim_dry_env_ok_returns_0(tmp_path, monkeypatch, capsys, blob_e
     assert "publish slim" in capsys.readouterr().out
 
 
-def test_publish_slim_skips_blob_upload_when_base_is_hf(tmp_path, monkeypatch, capsys):
+def test_publish_slim_writes_artifact(tmp_path, monkeypatch, capsys):
     from datetime import datetime, timezone
 
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("BLOB_READ_WRITE_TOKEN", "")
-    monkeypatch.setenv(
-        "BLOB_PUBLIC_BASE_URL",
-        "https://huggingface.co/datasets/your-org/vacancyradar-data/resolve/main",
-    )
     fake_df = pl.DataFrame(
         {
             "last_seen_at": [datetime.now(timezone.utc)],
@@ -736,11 +586,6 @@ def test_publish_slim_skips_blob_upload_when_base_is_hf(tmp_path, monkeypatch, c
         out_path.write_bytes(b"parquet")
 
     monkeypatch.setattr("src.transform.slim_export.write_slim_active", fake_write)
-    monkeypatch.setattr(
-        cli,
-        "_upload_blob",
-        lambda *_a, **_kw: pytest.fail("Vercel Blob upload should be skipped"),
-    )
 
     rc = cli._publish_slim(
         Namespace(dry=False, strict=False, active_days=None, scope=None, dedup=False)
@@ -748,26 +593,9 @@ def test_publish_slim_skips_blob_upload_when_base_is_hf(tmp_path, monkeypatch, c
 
     assert rc == 0
     assert (tmp_path / "derived" / "slim_active.parquet").exists()
-    assert "blob upload disabled" in capsys.readouterr().out
 
 
-def test_load_blob_cfg_hf_base_dry_prints_skip(monkeypatch, capsys):
-    monkeypatch.setenv("BLOB_READ_WRITE_TOKEN", "")
-    monkeypatch.setenv(
-        "BLOB_PUBLIC_BASE_URL",
-        "https://huggingface.co/datasets/your-org/vacancyradar-data/resolve/main",
-    )
-
-    cfg, exit_code = cli._load_blob_cfg("slim", dry=True)
-
-    assert cfg is None
-    assert exit_code == 0
-    out = capsys.readouterr().out
-    assert "blob upload disabled" in out
-    assert "skip build + upload" in out
-
-
-def test_publish_slim_empty_lake_returns_3(tmp_path, monkeypatch, capsys, blob_env):
+def test_publish_slim_empty_lake_returns_3(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(
         "src.transform.slim_export.build_slim_active",
@@ -780,9 +608,7 @@ def test_publish_slim_empty_lake_returns_3(tmp_path, monkeypatch, capsys, blob_e
     assert "empty lake" in capsys.readouterr().err
 
 
-def test_publish_slim_strict_stale_returns_4(
-    tmp_path, monkeypatch, capsys, blob_env
-):
+def test_publish_slim_strict_stale_returns_4(tmp_path, monkeypatch, capsys):
     """When last_seen_at is older than 24h and --strict is set, exit 4."""
     from datetime import datetime, timedelta, timezone
 
@@ -800,9 +626,7 @@ def test_publish_slim_strict_stale_returns_4(
     assert "exceeds 24h threshold" in capsys.readouterr().err
 
 
-def test_publish_slim_active_days_passes_window(
-    tmp_path, monkeypatch, capsys, blob_env
-):
+def test_publish_slim_active_days_passes_window(tmp_path, monkeypatch, capsys):
     from datetime import datetime, timezone
 
     monkeypatch.chdir(tmp_path)
@@ -825,7 +649,6 @@ def test_publish_slim_active_days_passes_window(
 
     monkeypatch.setattr("src.transform.slim_export.build_slim_active", fake_build)
     monkeypatch.setattr("src.transform.slim_export.write_slim_active", fake_write)
-    monkeypatch.setattr(cli, "_upload_blob", lambda *_a, **_kw: "https://blob.test/x")
 
     rc = cli._publish_slim(
         Namespace(dry=False, strict=False, active_days=14, scope=None, dedup=False)
@@ -836,9 +659,7 @@ def test_publish_slim_active_days_passes_window(
     assert "active-window filter" in capsys.readouterr().out
 
 
-def test_publish_slim_scope_passes_market_scope(
-    tmp_path, monkeypatch, capsys, blob_env
-):
+def test_publish_slim_scope_passes_market_scope(tmp_path, monkeypatch, capsys):
     from datetime import datetime, timezone
 
     monkeypatch.chdir(tmp_path)
@@ -861,7 +682,6 @@ def test_publish_slim_scope_passes_market_scope(
 
     monkeypatch.setattr("src.transform.slim_export.build_slim_active", fake_build)
     monkeypatch.setattr("src.transform.slim_export.write_slim_active", fake_write)
-    monkeypatch.setattr(cli, "_upload_blob", lambda *_a, **_kw: "https://blob.test/x")
 
     rc = cli._publish_slim(
         Namespace(dry=False, strict=False, active_days=None, scope="it", dedup=False)
@@ -872,31 +692,27 @@ def test_publish_slim_scope_passes_market_scope(
     assert "market-scope filter: it" in capsys.readouterr().out
 
 
-def test_publish_events_dry_env_ok_returns_0(tmp_path, monkeypatch, capsys, blob_env):
+def test_publish_events_dry_returns_0(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
-    rc = cli._publish_events(Namespace(dry=True, no_prune=True, prune_dry_run=False))
+    rc = cli._publish_events(Namespace(dry=True))
     assert rc == 0
     assert "publish events" in capsys.readouterr().out
 
 
-def test_publish_embeddings_dry_env_ok_returns_0(
-    tmp_path, monkeypatch, capsys, blob_env
-):
+def test_publish_embeddings_dry_returns_0(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     rc = cli._publish_embeddings(Namespace(dry=True))
     assert rc == 0
 
 
-def test_publish_embeddings_missing_lance_returns_3(
-    tmp_path, monkeypatch, capsys, blob_env
-):
+def test_publish_embeddings_missing_lance_returns_3(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     rc = cli._publish_embeddings(Namespace(dry=False))
     assert rc == 3
     assert "embeddings.lance missing" in capsys.readouterr().err
 
 
-def test_publish_weekly_dry_env_ok_returns_0(tmp_path, monkeypatch, capsys, blob_env):
+def test_publish_weekly_dry_returns_0(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     rc = cli._publish_weekly(Namespace(dry=True, strict=False))
     assert rc == 0
@@ -960,7 +776,7 @@ def _one_slim_event_df():
 
 
 def test_publish_events_no_events_prints_done_and_skips_write(
-    tmp_path, monkeypatch, capsys, blob_env
+    tmp_path, monkeypatch, capsys
 ):
     monkeypatch.chdir(tmp_path)
 
@@ -968,30 +784,18 @@ def test_publish_events_no_events_prints_done_and_skips_write(
         "src.transform.slim_events.build_slim_events_30d",
         lambda _db: _empty_slim_events_df(),
     )
-    # Empty branch never calls write/upload — assert by booby-trapping them.
+    # Empty branch never calls write — assert by booby-trapping it.
     monkeypatch.setattr(
         "src.transform.slim_events.write_slim_events_partitioned",
         lambda *_a, **_kw: pytest.fail("write must not run on empty events"),
     )
-    monkeypatch.setattr(
-        "src.publish.blob_ttl.prune_events_30d",
-        lambda *_a, **_kw: pytest.fail("prune must not run when no_prune=True"),
-    )
 
-    rc = cli._publish_events(
-        Namespace(dry=False, no_prune=True, prune_dry_run=False)
-    )
+    rc = cli._publish_events(Namespace(dry=False))
     assert rc == 0
     assert "no events in last 30 days" in capsys.readouterr().out
 
 
-def test_publish_events_happy_writes_uploads_and_prunes(
-    tmp_path, monkeypatch, capsys, blob_env
-):
-    from datetime import date
-
-    from src.publish.blob_ttl import PruneResult
-
+def test_publish_events_happy_wipes_stale_and_writes(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
 
     monkeypatch.setattr(
@@ -1017,472 +821,12 @@ def test_publish_events_happy_writes_uploads_and_prunes(
         "src.transform.slim_events.write_slim_events_partitioned",
         fake_write,
     )
-    monkeypatch.setattr(
-        "src.transform.slim_events.list_partition_uploads",
-        lambda root: [
-            (
-                root / "year=2026" / "month=05" / "day=18" / "events.parquet",
-                "slim/events_30d/year=2026/month=05/day=18/events.parquet",
-            )
-        ],
-    )
 
-    uploads: list[tuple[Path, str]] = []
-
-    def fake_upload(local, pathname, cfg, **_kw):
-        uploads.append((local, pathname))
-        print(f"[blob] uploaded → {pathname}")
-        return f"https://blob.test/{pathname}"
-
-    monkeypatch.setattr(cli, "_upload_blob", fake_upload)
-
-    monkeypatch.setattr(
-        "src.publish.blob_ttl.prune_events_30d",
-        lambda cfg, *, today, dry_run: PruneResult(
-            kept=10,
-            pruned=2,
-            pruned_pathnames=["slim/events_30d/year=2026/month=03/day=10/events.parquet"],
-            skipped_unparseable=["slim/events_30d/badly_named.parquet"],
-            dry_run=dry_run,
-            cutoff=date(2026, 4, 18),
-        ),
-    )
-
-    rc = cli._publish_events(
-        Namespace(dry=False, no_prune=False, prune_dry_run=True)
-    )
-    assert rc == 0
-    assert uploads and "year=2026" in uploads[0][1]
-    out = capsys.readouterr()
-    assert "1 events × 7 cols" in out.out
-    assert "[prune dry-run] kept=10" in out.out
-    assert "would delete=2" in out.out
-    assert "skipped (unparseable pathname)" in out.out
-
-
-def test_publish_events_skips_blob_upload_and_prune_when_base_is_hf(
-    tmp_path, monkeypatch, capsys
-):
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("BLOB_READ_WRITE_TOKEN", "")
-    monkeypatch.setenv(
-        "BLOB_PUBLIC_BASE_URL",
-        "https://huggingface.co/datasets/your-org/vacancyradar-data/resolve/main",
-    )
-    monkeypatch.setattr(
-        "src.transform.slim_events.build_slim_events_30d",
-        lambda _db: _one_slim_event_df(),
-    )
-    written_files: list[Path] = []
-
-    def fake_write(_df, out_root):
-        f = out_root / "year=2026" / "month=05" / "day=18" / "events.parquet"
-        f.parent.mkdir(parents=True, exist_ok=True)
-        f.write_bytes(b"stub")
-        written_files.append(f)
-        return [f]
-
-    monkeypatch.setattr(
-        "src.transform.slim_events.write_slim_events_partitioned",
-        fake_write,
-    )
-    monkeypatch.setattr(
-        "src.transform.slim_events.list_partition_uploads",
-        lambda _root: pytest.fail("HF-primary events must not list Blob uploads"),
-    )
-    monkeypatch.setattr(
-        "src.publish.blob_ttl.prune_events_30d",
-        lambda *_a, **_kw: pytest.fail("HF-primary events must not prune Blob"),
-    )
-
-    rc = cli._publish_events(
-        Namespace(dry=False, no_prune=False, prune_dry_run=False)
-    )
-
+    rc = cli._publish_events(Namespace(dry=False))
     assert rc == 0
     assert len(written_files) == 1
-    out = capsys.readouterr().out
-    assert "blob upload disabled" in out
-    assert "1 events × 7 cols" in out
+    assert "1 events × 7 cols" in capsys.readouterr().out
 
-
-def test_publish_events_prune_without_unparseable_paths_omits_skip_warning(
-    tmp_path, monkeypatch, capsys, blob_env
-):
-    from datetime import date
-
-    from src.publish.blob_ttl import PruneResult
-
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr(
-        "src.transform.slim_events.build_slim_events_30d",
-        lambda _db: _one_slim_event_df(),
-    )
-
-    def fake_write(_df, out_root):
-        f = out_root / "year=2026" / "month=05" / "day=18" / "events.parquet"
-        f.parent.mkdir(parents=True, exist_ok=True)
-        f.write_bytes(b"stub")
-        return [f]
-
-    monkeypatch.setattr(
-        "src.transform.slim_events.write_slim_events_partitioned",
-        fake_write,
-    )
-    monkeypatch.setattr("src.transform.slim_events.list_partition_uploads", lambda _root: [])
-    monkeypatch.setattr(
-        "src.publish.blob_ttl.prune_events_30d",
-        lambda _cfg, *, today, dry_run: PruneResult(
-            kept=1,
-            pruned=0,
-            pruned_pathnames=[],
-            skipped_unparseable=[],
-            dry_run=dry_run,
-            cutoff=date(2026, 4, 18),
-        ),
-    )
-
-    rc = cli._publish_events(
-        Namespace(dry=False, no_prune=False, prune_dry_run=False)
-    )
-
-    assert rc == 0
-    out = capsys.readouterr().out
-    assert "[prune] kept=1 deleted=0" in out
-    assert "skipped (unparseable pathname)" not in out
-
-
-def test_publish_events_upload_failure_is_non_fatal(
-    tmp_path, monkeypatch, capsys, blob_env
-):
-    monkeypatch.chdir(tmp_path)
-
-    monkeypatch.setattr(
-        "src.transform.slim_events.build_slim_events_30d",
-        lambda _db: _one_slim_event_df(),
-    )
-
-    def fake_write(df, out_root):
-        f = out_root / "year=2026" / "month=05" / "day=18" / "events.parquet"
-        f.parent.mkdir(parents=True, exist_ok=True)
-        f.write_bytes(b"x")
-        return [f]
-
-    monkeypatch.setattr(
-        "src.transform.slim_events.write_slim_events_partitioned", fake_write
-    )
-    monkeypatch.setattr(
-        "src.transform.slim_events.list_partition_uploads",
-        lambda root: [(root / "year=2026" / "month=05" / "day=18" / "events.parquet", "x")],
-    )
-
-    def boom(*_a, **_kw):
-        raise RuntimeError("403 blob suspended")
-
-    monkeypatch.setattr(cli, "_upload_blob", boom)
-
-    rc = cli._publish_events(
-        Namespace(dry=False, no_prune=True, prune_dry_run=False)
-    )
-    # Upload failure logs to stderr but returns 0 — same rationale as
-    # _publish_weekly / _publish_slim (Blob non-fatal so Neon path can recover).
-    assert rc == 0
-    assert "blob upload failed" in capsys.readouterr().err
-
-
-def test_publish_events_prune_failure_is_non_fatal(
-    tmp_path, monkeypatch, capsys, blob_env
-):
-    monkeypatch.chdir(tmp_path)
-
-    monkeypatch.setattr(
-        "src.transform.slim_events.build_slim_events_30d",
-        lambda _db: _one_slim_event_df(),
-    )
-
-    def fake_write(df, out_root):
-        f = out_root / "year=2026" / "month=05" / "day=18" / "events.parquet"
-        f.parent.mkdir(parents=True, exist_ok=True)
-        f.write_bytes(b"x")
-        return [f]
-
-    monkeypatch.setattr(
-        "src.transform.slim_events.write_slim_events_partitioned", fake_write
-    )
-    monkeypatch.setattr(
-        "src.transform.slim_events.list_partition_uploads",
-        lambda root: [(root / "year=2026" / "month=05" / "day=18" / "events.parquet", "x")],
-    )
-    monkeypatch.setattr(cli, "_upload_blob", lambda *_a, **_kw: "ok")
-
-    def boom(*_a, **_kw):
-        raise RuntimeError("403 blob suspended")
-
-    monkeypatch.setattr("src.publish.blob_ttl.prune_events_30d", boom)
-
-    rc = cli._publish_events(
-        Namespace(dry=False, no_prune=False, prune_dry_run=False)
-    )
-    assert rc == 0
-    assert "blob prune failed" in capsys.readouterr().err
-
-
-# --------------------------------------------------------------------------- #
-# _publish_weekly upload-exception branch (covers 856-857)
-# --------------------------------------------------------------------------- #
-
-
-def test_publish_weekly_upload_failure_is_non_fatal(
-    tmp_path, monkeypatch, capsys, blob_env
-):
-    monkeypatch.chdir(tmp_path)
-
-    # Write a non-empty derived/slim_active.parquet so the fast-path reuse hits.
-    (tmp_path / "derived").mkdir()
-    slim = pl.DataFrame({"col": [1]})
-    slim.write_parquet(tmp_path / "derived" / "slim_active.parquet")
-
-    # build_all_weekly returns one non-empty aggregate; the rest empty → it
-    # exercises both the upload branch and the "0 rows — SKIPPED" branch.
-    one_row = pl.DataFrame({"x": [1]})
-    empty = pl.DataFrame()
-    monkeypatch.setattr(
-        "src.transform.weekly_aggregates.build_all_weekly",
-        lambda _db, _slim: {
-            "weekly_market_pulse": one_row,
-            "weekly_employer_top": empty,
-            "weekly_skill_velocity": empty,
-            "weekly_role_salary": empty,
-        },
-    )
-
-    def fake_write(aggregates, out_dir):
-        out_dir.mkdir(parents=True, exist_ok=True)
-        paths: list[Path] = []
-        for name, df in aggregates.items():
-            p = out_dir / f"{name}.parquet"
-            df.write_parquet(p)
-            paths.append(p)
-        return paths
-
-    monkeypatch.setattr(
-        "src.transform.weekly_aggregates.write_weekly_aggregates",
-        fake_write,
-    )
-
-    def boom(*_a, **_kw):
-        raise RuntimeError("403 blob suspended")
-
-    monkeypatch.setattr(cli, "_upload_blob", boom)
-
-    rc = cli._publish_weekly(Namespace(dry=False, strict=False))
-    assert rc == 0
-    err = capsys.readouterr().err
-    assert "blob upload failed for agg/weekly_market_pulse.parquet" in err
-    # Empty aggregates → warn but no fail
-    assert "3/4 weekly aggregates empty" in err
-
-
-# --------------------------------------------------------------------------- #
-# _publish_snapshots non-dry — Neon skipped (no URL) + Blob upload OK
-# --------------------------------------------------------------------------- #
-
-
-def test_publish_snapshots_happy_no_neon(tmp_path, monkeypatch, capsys, blob_env):
-    monkeypatch.chdir(tmp_path)
-    # Override any .env-loaded NEON_DATABASE_URL so the psycopg branch is skipped.
-    monkeypatch.setenv("NEON_DATABASE_URL", "")
-
-    (tmp_path / "derived").mkdir()
-    pl.DataFrame({"x": [1]}).write_parquet(tmp_path / "derived" / "slim_active.parquet")
-
-    written_paths: dict[str, Path] = {}
-
-    def fake_build(slim, weekly, out_dir):
-        snap_dir = out_dir / "snapshots"
-        snap_dir.mkdir(parents=True, exist_ok=True)
-        facets = snap_dir / "facets.json"
-        facets.write_text('{"facets": {}}', encoding="utf-8")
-        written_paths["facets"] = facets
-        return written_paths
-
-    monkeypatch.setattr("src.publish.snapshots.build_snapshots", fake_build)
-    monkeypatch.setattr(
-        "src.publish.snapshots.iter_blob_paths",
-        lambda snap_dir: [(written_paths["facets"], "slim/snapshots/facets.json")],
-    )
-
-    uploads: list[tuple[Path, str]] = []
-
-    def fake_upload(local, pathname, cfg, **_kw):
-        uploads.append((local, pathname))
-        return f"https://blob.test/{pathname}"
-
-    monkeypatch.setattr(cli, "_upload_blob", fake_upload)
-
-    rc = cli._publish_snapshots(Namespace(dry=False))
-    assert rc == 0
-    assert uploads == [(written_paths["facets"], "slim/snapshots/facets.json")]
-    out = capsys.readouterr().out
-    assert "facets:" in out
-
-
-def test_publish_snapshots_skips_blob_upload_when_base_is_hf(
-    tmp_path, monkeypatch, capsys
-):
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("NEON_DATABASE_URL", "")
-    monkeypatch.setenv("BLOB_READ_WRITE_TOKEN", "")
-    monkeypatch.setenv(
-        "BLOB_PUBLIC_BASE_URL",
-        "https://huggingface.co/datasets/your-org/vacancyradar-data/resolve/main",
-    )
-    (tmp_path / "derived").mkdir()
-    pl.DataFrame({"x": [1]}).write_parquet(tmp_path / "derived" / "slim_active.parquet")
-    written_paths: dict[str, Path] = {}
-
-    def fake_build(_slim, _weekly, out_dir):
-        snap_dir = out_dir / "snapshots"
-        snap_dir.mkdir(parents=True, exist_ok=True)
-        facets = snap_dir / "facets.json"
-        facets.write_text('{"facets": {}}', encoding="utf-8")
-        written_paths["facets"] = facets
-        return written_paths
-
-    monkeypatch.setattr("src.publish.snapshots.build_snapshots", fake_build)
-    monkeypatch.setattr(
-        "src.publish.snapshots.iter_blob_paths",
-        lambda _snap_dir: [(written_paths["facets"], "slim/snapshots/facets.json")],
-    )
-    monkeypatch.setattr(
-        cli,
-        "_upload_blob",
-        lambda *_a, **_kw: pytest.fail("HF-primary snapshots must not upload to Blob"),
-    )
-
-    rc = cli._publish_snapshots(Namespace(dry=False))
-
-    assert rc == 0
-    out = capsys.readouterr().out
-    assert "blob upload disabled" in out
-    assert "facets:" in out
-
-
-def test_publish_snapshots_blob_upload_failure_is_non_fatal(
-    tmp_path, monkeypatch, capsys, blob_env
-):
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("NEON_DATABASE_URL", "")
-
-    (tmp_path / "derived").mkdir()
-    pl.DataFrame({"x": [1]}).write_parquet(tmp_path / "derived" / "slim_active.parquet")
-
-    written_paths: dict[str, Path] = {}
-
-    def fake_build(slim, weekly, out_dir):
-        snap_dir = out_dir / "snapshots"
-        snap_dir.mkdir(parents=True, exist_ok=True)
-        f = snap_dir / "facets.json"
-        f.write_text("{}", encoding="utf-8")
-        written_paths["facets"] = f
-        return written_paths
-
-    monkeypatch.setattr("src.publish.snapshots.build_snapshots", fake_build)
-    monkeypatch.setattr(
-        "src.publish.snapshots.iter_blob_paths",
-        lambda d: [(written_paths["facets"], "slim/snapshots/facets.json")],
-    )
-    monkeypatch.setattr(
-        cli, "_upload_blob",
-        lambda *_a, **_kw: (_ for _ in ()).throw(RuntimeError("403")),
-    )
-
-    rc = cli._publish_snapshots(Namespace(dry=False))
-    assert rc == 0
-    assert "blob upload failed for slim/snapshots/facets.json" in capsys.readouterr().err
-
-
-# --------------------------------------------------------------------------- #
-# _publish_snapshots non-dry — Neon upsert path with mocked psycopg
-# --------------------------------------------------------------------------- #
-
-
-def test_publish_snapshots_neon_upsert_runs(tmp_path, monkeypatch, capsys, blob_env):
-    """Cover the psycopg branch of _publish_snapshots without a real DB."""
-    import sys
-    import types
-
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("NEON_DATABASE_URL", "postgres://fake")
-
-    (tmp_path / "derived").mkdir()
-    pl.DataFrame({"x": [1]}).write_parquet(tmp_path / "derived" / "slim_active.parquet")
-
-    # Fake psycopg + psycopg.types.json modules so the cli's local import resolves.
-    fake_psycopg = types.ModuleType("psycopg")
-    executions: list[tuple] = []
-    committed: list[bool] = []
-
-    class FakeCursor:
-        def __init__(self):
-            pass
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *exc):
-            return False
-
-        def execute(self, sql, params):
-            executions.append((sql, params))
-
-    class FakeConn:
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *exc):
-            return False
-
-        def cursor(self):
-            return FakeCursor()
-
-        def commit(self):
-            committed.append(True)
-
-    fake_psycopg.connect = lambda _dsn: FakeConn()
-    fake_types_json = types.ModuleType("psycopg.types.json")
-    fake_types_json.Jsonb = lambda payload: ("JSONB", payload)
-    fake_psycopg.types = types.SimpleNamespace(json=fake_types_json)
-
-    monkeypatch.setitem(sys.modules, "psycopg", fake_psycopg)
-    monkeypatch.setitem(sys.modules, "psycopg.types", fake_psycopg.types)
-    monkeypatch.setitem(sys.modules, "psycopg.types.json", fake_types_json)
-
-    facets_path = tmp_path / "derived" / "snapshots" / "facets.json"
-    facets_path.parent.mkdir(parents=True, exist_ok=True)
-    facets_path.write_text('{"hi": 1}', encoding="utf-8")
-
-    monkeypatch.setattr(
-        "src.publish.snapshots.build_snapshots",
-        lambda *_a, **_kw: {"facets": facets_path},
-    )
-    monkeypatch.setattr(
-        "src.publish.snapshots.iter_blob_paths",
-        lambda d: [(facets_path, "slim/snapshots/facets.json")],
-    )
-    monkeypatch.setattr(cli, "_upload_blob", lambda *_a, **_kw: "https://blob.test/x")
-
-    rc = cli._publish_snapshots(Namespace(dry=False))
-    assert rc == 0
-    # One execute (the only snapshot we returned) + commit fired
-    assert len(executions) == 1
-    assert "INSERT INTO aggregates" in executions[0][0]
-    name, jsonb, version = executions[0][1]
-    assert name == "facets"
-    assert jsonb == ("JSONB", {"hi": 1})
-    assert version == 1  # CURRENT_AGGREGATE_SCHEMA_VERSION
-    assert committed == [True]
-    assert "upserted 1 aggregates → Neon" in capsys.readouterr().out
 
 
 # --------------------------------------------------------------------------- #
@@ -1555,7 +899,7 @@ def test_ingest_hh_crawl_happy_runs_crawl(tmp_path, monkeypatch, capsys):
 # --------------------------------------------------------------------------- #
 
 
-def test_publish_embeddings_happy_uploads_blob(tmp_path, monkeypatch, capsys, blob_env):
+def test_publish_embeddings_happy_writes_parquet(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
 
     # Pretend the Lance store exists (mtime+path probe). The export function
@@ -1573,83 +917,12 @@ def test_publish_embeddings_happy_uploads_blob(tmp_path, monkeypatch, capsys, bl
 
     monkeypatch.setattr("src.publish.embeddings_export.export_to_parquet", fake_export)
 
-    uploaded: list[tuple[Path, str]] = []
-    monkeypatch.setattr(
-        cli, "_upload_blob",
-        lambda local, pathname, cfg, **kw: uploaded.append((local, pathname))
-        or "https://blob.test/x",
-    )
-
     rc = cli._publish_embeddings(Namespace(dry=False))
     assert rc == 0
-    # cli uses a relative Path('derived/embeddings.parquet'); compare via name
-    # to avoid absolute-vs-relative noise after monkeypatch.chdir(tmp_path).
-    assert len(uploaded) == 1
-    assert uploaded[0][0].name == "embeddings.parquet"
-    assert uploaded[0][1] == "agg/embeddings.parquet"
     assert "3 rows" in capsys.readouterr().out
 
 
-def test_publish_embeddings_skips_blob_upload_when_base_is_hf(
-    tmp_path, monkeypatch, capsys
-):
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("BLOB_READ_WRITE_TOKEN", "")
-    monkeypatch.setenv(
-        "BLOB_PUBLIC_BASE_URL",
-        "https://huggingface.co/datasets/your-org/vacancyradar-data/resolve/main",
-    )
-    lance_path = tmp_path / "master" / "embeddings.lance"
-    lance_path.mkdir(parents=True)
-
-    def fake_export(out, _src):
-        out.parent.mkdir(parents=True, exist_ok=True)
-        pl.DataFrame({"x": [1]}).write_parquet(out)
-        return 1
-
-    monkeypatch.setattr("src.publish.embeddings_export.export_to_parquet", fake_export)
-    monkeypatch.setattr(
-        cli,
-        "_upload_blob",
-        lambda *_a, **_kw: pytest.fail("HF-primary embeddings must not upload to Blob"),
-    )
-
-    rc = cli._publish_embeddings(Namespace(dry=False))
-
-    assert rc == 0
-    out = capsys.readouterr().out
-    assert "blob upload disabled" in out
-    assert "1 rows" in out
-
-
-def test_publish_embeddings_blob_suspended_is_non_fatal(
-    tmp_path, monkeypatch, capsys, blob_env
-):
-    from src.publish.blob_push import BlobStoreSuspendedError
-
-    monkeypatch.chdir(tmp_path)
-    (tmp_path / "master" / "embeddings.lance").mkdir(parents=True)
-    (tmp_path / "derived").mkdir()
-
-    def fake_export(out, src):
-        pl.DataFrame({"x": [1]}).write_parquet(out)
-        return 1
-
-    monkeypatch.setattr("src.publish.embeddings_export.export_to_parquet", fake_export)
-
-    def raise_suspended(*_a, **_kw):
-        raise BlobStoreSuspendedError("store suspended")
-
-    monkeypatch.setattr(cli, "_upload_blob", raise_suspended)
-
-    rc = cli._publish_embeddings(Namespace(dry=False))
-    assert rc == 0
-    assert "blob upload failed for agg/embeddings.parquet" in capsys.readouterr().err
-
-
-def test_publish_embeddings_empty_lance_returns_3(
-    tmp_path, monkeypatch, capsys, blob_env
-):
+def test_publish_embeddings_empty_lance_returns_3(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     (tmp_path / "master" / "embeddings.lance").mkdir(parents=True)
     monkeypatch.setattr(
@@ -1661,56 +934,8 @@ def test_publish_embeddings_empty_lance_returns_3(
     assert "empty Lance store" in capsys.readouterr().err
 
 
-def test_publish_snapshots_neon_set_but_psycopg_missing(
-    tmp_path, monkeypatch, capsys, blob_env
-):
-    """If NEON_DATABASE_URL is set but psycopg isn't importable, log and continue."""
-    import builtins
-    import sys
-
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("NEON_DATABASE_URL", "postgres://fake")
-
-    (tmp_path / "derived").mkdir()
-    pl.DataFrame({"x": [1]}).write_parquet(tmp_path / "derived" / "slim_active.parquet")
-
-    facets_path = tmp_path / "derived" / "snapshots" / "facets.json"
-    facets_path.parent.mkdir(parents=True)
-    facets_path.write_text("{}", encoding="utf-8")
-
-    monkeypatch.setattr(
-        "src.publish.snapshots.build_snapshots",
-        lambda *_a, **_kw: {"facets": facets_path},
-    )
-    monkeypatch.setattr(
-        "src.publish.snapshots.iter_blob_paths",
-        lambda d: [(facets_path, "slim/snapshots/facets.json")],
-    )
-    monkeypatch.setattr(cli, "_upload_blob", lambda *_a, **_kw: "https://blob.test/x")
-
-    # Force `import psycopg` to fail. Pop cached modules so the cli's
-    # local import re-attempts the import and hits our hook.
-    sys.modules.pop("psycopg", None)
-    sys.modules.pop("psycopg.types", None)
-    sys.modules.pop("psycopg.types.json", None)
-    real_import = builtins.__import__
-
-    def fake_import(name, *args, **kwargs):
-        if name == "psycopg" or name.startswith("psycopg."):
-            raise ImportError("psycopg not available in test env")
-        return real_import(name, *args, **kwargs)
-
-    monkeypatch.setattr(builtins, "__import__", fake_import)
-
-    rc = cli._publish_snapshots(Namespace(dry=False))
-    assert rc == 0
-    assert "psycopg not installed" in capsys.readouterr().err
-
-
-def test_publish_slim_dedup_and_upload_failure(
-    tmp_path, monkeypatch, capsys, blob_env
-):
-    """Cover the --dedup branch + the blob-upload-failure non-fatal handler."""
+def test_publish_slim_dedup_branch(tmp_path, monkeypatch, capsys):
+    """Cover the --dedup branch of _publish_slim."""
     from datetime import datetime, timezone
 
     monkeypatch.chdir(tmp_path)
@@ -1734,20 +959,12 @@ def test_publish_slim_dedup_and_upload_failure(
         "src.transform.slim_export.apply_cross_source_dedup", fake_dedup
     )
 
-    written = {}
-
     def fake_write(df, out):
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_bytes(b"x" * 128)
-        written["path"] = out
         return out
 
     monkeypatch.setattr("src.transform.slim_export.write_slim_active", fake_write)
-
-    def boom(*_a, **_kw):
-        raise RuntimeError("403 blob suspended")
-
-    monkeypatch.setattr(cli, "_upload_blob", boom)
 
     rc = cli._publish_slim(
         Namespace(
@@ -1756,9 +973,7 @@ def test_publish_slim_dedup_and_upload_failure(
     )
     assert rc == 0
     assert seen.get("called")
-    out = capsys.readouterr()
-    assert "[dedup] cross-source pairs=1" in out.out
-    assert "blob upload failed for slim/active.parquet" in out.err
+    assert "[dedup] cross-source pairs=1" in capsys.readouterr().out
 
 
 def test_auth_tg_happy_path_mocks_telethon(tmp_path, monkeypatch, capsys):
@@ -1775,8 +990,8 @@ def test_auth_tg_happy_path_mocks_telethon(tmp_path, monkeypatch, capsys):
     started = {}
 
     class FakeMe:
-        username = "demo_user"
-        first_name = "Demo"
+        username = "julia_test"
+        first_name = "Julia"
         id = 42
 
     class FakeClient:
@@ -1807,7 +1022,7 @@ def test_auth_tg_happy_path_mocks_telethon(tmp_path, monkeypatch, capsys):
     assert started["session"] == "test_session"
     assert started.get("disconnected") is True
     out = capsys.readouterr().out
-    assert "[auth-tg] OK: signed in as demo_user (42)" in out
+    assert "[auth-tg] OK: signed in as julia_test (42)" in out
     assert "test_session.session" in out
 
 

@@ -9,7 +9,6 @@ import polars as pl
 from src.transform.slim_events import (
     SLIM_EVENTS_SCHEMA,
     build_slim_events_30d,
-    list_partition_uploads,
     write_slim_events_partitioned,
 )
 
@@ -144,18 +143,3 @@ def test_write_partitioned_handles_empty_frame(tmp_path: Path):
     df = pl.DataFrame(schema=SLIM_EVENTS_SCHEMA)
     written = write_slim_events_partitioned(df, tmp_path / "out")
     assert written == []
-
-
-def test_list_partition_uploads_maps_to_blob_paths(tmp_path: Path):
-    out_root = tmp_path / "slim_events_30d"
-    (out_root / "year=2026" / "month=04" / "day=25").mkdir(parents=True)
-    (out_root / "year=2026" / "month=04" / "day=25" / "events.parquet").write_bytes(b"x")
-    (out_root / "year=2026" / "month=04" / "day=27").mkdir(parents=True)
-    (out_root / "year=2026" / "month=04" / "day=27" / "events.parquet").write_bytes(b"y")
-
-    uploads = list_partition_uploads(out_root)
-    pathnames = [p for _, p in uploads]
-    assert pathnames == [
-        "slim/events_30d/year=2026/month=04/day=25/events.parquet",
-        "slim/events_30d/year=2026/month=04/day=27/events.parquet",
-    ]

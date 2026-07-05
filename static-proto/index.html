@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>VacancyRadar — поиск вакансий в IT</title>
+<link rel="stylesheet" href="house-style/tokens.css">
+<style>
+  .topbar{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+  .topbar .badge{margin-left:auto;font-size:13px;color:var(--faint);
+    background:var(--panel);border:1px solid var(--line);padding:5px 11px;border-radius:999px}
+  .cards{grid-template-columns:repeat(5,1fr);margin-bottom:18px}
+  @media(max-width:1100px){.cards{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:680px){.cards{grid-template-columns:repeat(2,1fr)}}
+
+  .layout{display:grid;grid-template-columns:252px 1fr;gap:18px;align-items:start}
+  .layout > main{min-width:0}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+  .filters .phead{margin-bottom:12px}
+  .filters h2{font-size:16px}
+  .field{margin-bottom:14px}
+  .field:last-child{margin-bottom:0}
+  .field label{display:block;font-size:14px;color:var(--muted);margin-bottom:5px}
+  .field input,.field select{width:100%;padding:8px 10px;font:inherit;font-size:16px;color:var(--ink);
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--r-sm)}
+  .field input:focus,.field select:focus{outline:2px solid #dbe3e8;border-color:var(--accent)}
+  .checks{display:flex;flex-direction:column;gap:7px}
+  .checks label{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:15px;cursor:pointer}
+  .reset{margin-top:4px;width:100%;padding:9px;border:1px solid var(--line);background:var(--bg);
+    border-radius:999px;cursor:pointer;font:inherit;font-size:15px;color:var(--muted)}
+  .reset:hover{border-color:var(--accent);color:var(--accent)}
+
+  .searchrow{margin-bottom:12px}
+  .searchrow input{width:100%;font:inherit;font-size:18px;padding:12px 15px;color:var(--ink);
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--r-sm)}
+  .searchrow input:focus{outline:2px solid #dbe3e8;border-color:var(--accent)}
+  .status{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;color:var(--muted);font-size:15px}
+  .status b{color:var(--ink);font-weight:700}
+  .status .t{margin-left:auto;color:var(--faint)}
+
+  .results{overflow-x:auto;padding-top:4px}
+  table.clean{min-width:760px}
+  table.clean thead th{position:sticky;top:0;background:var(--panel);z-index:1}
+  .t-title{font-weight:700;max-width:460px}
+  .t-title a{font-weight:700}
+  .t-emp{color:var(--muted);max-width:190px}
+  .sal{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .sal.none{color:var(--faint)}
+  .tag.tg{color:var(--accent);border-color:#cfdae1;background:#eef3f6}
+  .more{padding:14px;text-align:center;color:var(--muted)}
+  .more button{padding:9px 18px;border:1px solid var(--line);background:var(--bg);border-radius:999px;cursor:pointer;font:inherit;font-size:15px}
+  .loading{padding:64px;text-align:center;color:var(--muted)}
+  .foot{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);color:var(--faint);font-size:14px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div>
+      <h1>VacancyRadar</h1>
+      <div class="eyebrow" id="hmeta">загрузка данных…</div>
+    </div>
+    <span class="badge">поиск целиком в браузере · без БД</span>
+  </div>
+
+  <nav class="pagenav">
+    <a class="cur">Поиск вакансий</a>
+    <a href="dashboard.html">Аналитика</a>
+  </nav>
+
+  <div id="boot" class="loading">Скачиваю срез вакансий (≈2.6 МБ) и распаковываю в браузере…</div>
+
+  <div id="app" style="display:none">
+    <div class="cards" id="kpis"></div>
+
+    <div class="layout">
+      <aside class="panel filters">
+        <div class="phead"><h2>Фильтры</h2></div>
+        <div class="field">
+          <label for="f-city">Город</label>
+          <input list="cities" id="f-city" type="text" placeholder="любой" autocomplete="off">
+          <datalist id="cities"></datalist>
+        </div>
+        <div class="field">
+          <label>Источник</label>
+          <div class="checks" id="f-src"></div>
+        </div>
+        <div class="field">
+          <label for="f-sr">Уровень</label>
+          <select id="f-sr"><option value="">любой</option></select>
+        </div>
+        <div class="field">
+          <label for="f-rt">Формат</label>
+          <select id="f-rt"><option value="">любой</option></select>
+        </div>
+        <div class="field">
+          <label for="f-sal">Зарплата от, ₽</label>
+          <input id="f-sal" type="number" min="0" step="10000" placeholder="нет">
+        </div>
+        <button class="reset" id="f-reset">Сбросить фильтры</button>
+      </aside>
+
+      <main>
+        <div class="searchrow">
+          <input id="q" type="text" placeholder="Поиск по названию и описанию: python, data engineer, аналитик…" autocomplete="off">
+        </div>
+        <div class="status">
+          <span>Найдено <b id="cnt" class="num">—</b> из <span id="tot" class="num">—</span></span>
+          <span id="brk"></span>
+          <span class="t" id="ms"></span>
+        </div>
+        <div class="panel full results">
+          <table class="clean">
+            <thead><tr>
+              <th>Вакансия</th><th>Работодатель</th><th>Город</th>
+              <th class="r">Зарплата</th><th>Уровень</th><th>Формат</th><th>Источник</th><th class="r">Обновлено</th>
+            </tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+          <div class="more" id="more"></div>
+        </div>
+      </main>
+    </div>
+
+    <footer class="foot">
+      Источник: hh.ru (публичная выдача) и открытые Telegram-каналы. Показан срез активных вакансий.
+      Поиск, фильтры и агрегации выполняются полностью в вашем браузере — серверная база данных не используется.
+    </footer>
+  </div>
+</div>
+
+<script>
+const PAGE = 100;
+let DATA = [];
+let shown = PAGE;
+let last = [];
+
+const $ = s => document.querySelector(s);
+const fmtN = n => n.toLocaleString("ru-RU");
+
+function fmtSalary(r){
+  const a=r.smin, b=r.smax;
+  if(!a && !b) return '<span class="sal none">—</span>';
+  const k = v => Math.round(v/1000);
+  let s;
+  if(a && b && a!==b) s = k(a)+"–"+k(b);
+  else s = String(k(a||b));
+  return '<span class="sal">'+s.replace(/\B(?=(\d{3})+(?!\d))/g," ")+" тыс ₽</span>";
+}
+const SR_RU = {intern:"Intern", junior:"Junior", middle:"Middle", senior:"Senior", lead:"Lead", principal:"Principal", director:"Director", unknown:"—"};
+// data carries remote_type="office" (majority); keep onsite alias for forward-compat
+const RT_RU = {office:"офис", onsite:"офис", remote:"удалённо", hybrid:"гибрид", unknown:"—"};
+
+async function boot(){
+  const t0 = performance.now();
+  const res = await fetch("data.json.gz");
+  const stream = res.body.pipeThrough(new DecompressionStream("gzip"));
+  const text = await new Response(stream).text();
+  DATA = JSON.parse(text);
+  const ms = Math.round(performance.now()-t0);
+
+  // precompute lowercased search field
+  for(const r of DATA){ r._s = ((r.t||"")+" "+(r.ds||"")).toLowerCase(); }
+
+  buildFacets();
+  $("#boot").style.display="none";
+  $("#app").style.display="block";
+  const dates = DATA.map(r=>r.ls).filter(Boolean).sort();
+  $("#hmeta").textContent = `${fmtN(DATA.length)} активных вакансий · данные на ${dates[dates.length-1]||"—"} · загрузка ${ms} мс`;
+  bind();
+  render();
+}
+
+function buildFacets(){
+  // sources
+  const srcCounts = {};
+  const sr = new Set(), rt = new Set(), cityCounts = {};
+  for(const r of DATA){
+    srcCounts[r.src]=(srcCounts[r.src]||0)+1;
+    if(r.sr) sr.add(r.sr);
+    if(r.rt) rt.add(r.rt);
+    if(r.c) cityCounts[r.c]=(cityCounts[r.c]||0)+1;
+  }
+  const srcBox = $("#f-src");
+  for(const [s,n] of Object.entries(srcCounts).sort((a,b)=>b[1]-a[1])){
+    srcBox.insertAdjacentHTML("beforeend",
+      `<label><input type="checkbox" class="src" value="${s}" checked> ${s==="hh"?"hh.ru":"Telegram"} <span style="color:var(--faint)">(${fmtN(n)})</span></label>`);
+  }
+  const srSel=$("#f-sr"), order=["intern","junior","middle","senior","lead","principal","director","unknown"];
+  [...sr].sort((a,b)=>order.indexOf(a)-order.indexOf(b)).forEach(v=>{
+    if(v==="unknown") return;
+    srSel.insertAdjacentHTML("beforeend",`<option value="${v}">${SR_RU[v]||v}</option>`);
+  });
+  const rtSel=$("#f-rt");
+  ["office","remote","hybrid"].forEach(v=>{ if(rt.has(v)) rtSel.insertAdjacentHTML("beforeend",`<option value="${v}">${RT_RU[v]||v}</option>`); });
+  const dl=$("#cities");
+  Object.entries(cityCounts).sort((a,b)=>b[1]-a[1]).slice(0,200).forEach(([c,n])=>{
+    dl.insertAdjacentHTML("beforeend",`<option value="${c.replace(/"/g,'&quot;')}">`);
+  });
+}
+
+function currentFilters(){
+  return {
+    q: $("#q").value.trim().toLowerCase(),
+    city: $("#f-city").value.trim(),
+    srcs: new Set([...document.querySelectorAll(".src:checked")].map(c=>c.value)),
+    sr: $("#f-sr").value,
+    rt: $("#f-rt").value,
+    sal: parseInt($("#f-sal").value,10) || 0,
+  };
+}
+
+function render(){
+  const t0 = performance.now();
+  const f = currentFilters();
+  const toks = f.q ? f.q.split(/\s+/).filter(Boolean) : [];
+  const out = [];
+  let hh=0, tg=0;
+  for(const r of DATA){
+    if(!f.srcs.has(r.src)) continue;
+    if(f.city && r.c!==f.city) continue;
+    if(f.sr && r.sr!==f.sr) continue;
+    if(f.rt && r.rt!==f.rt) continue;
+    if(f.sal && !((r.smin||0)>=f.sal || (r.smax||0)>=f.sal)) continue;
+    if(toks.length){
+      let ok=true;
+      for(const tk of toks){ if(r._s.indexOf(tk)===-1){ok=false;break;} }
+      if(!ok) continue;
+    }
+    out.push(r);
+    if(r.src==="hh") hh++; else tg++;
+  }
+  // rank
+  if(toks.length){
+    for(const r of out){
+      const tl=(r.t||"").toLowerCase(); let sc=0;
+      for(const tk of toks){ if(tl.indexOf(tk)!==-1) sc+=3; }
+      r._sc=sc;
+    }
+    out.sort((a,b)=> (b._sc-a._sc) || (a.ls<b.ls?1:a.ls>b.ls?-1:0));
+  } else {
+    out.sort((a,b)=> (a.ls<b.ls?1:a.ls>b.ls?-1:0));
+  }
+  const ms = (performance.now()-t0);
+  last = out; shown = PAGE;
+  $("#cnt").textContent = fmtN(out.length);
+  $("#tot").textContent = fmtN(DATA.length);
+  $("#brk").innerHTML = `· hh <b class="num">${fmtN(hh)}</b> · tg <b class="num">${fmtN(tg)}</b>`;
+  $("#ms").textContent = `фильтрация ${ms.toFixed(1)} мс`;
+  drawKpis(out);
+  drawRows();
+}
+
+function drawKpis(out){
+  const withSal = out.filter(r=>r.smin||r.smax);
+  const sals = withSal.map(r=>r.smin||r.smax).sort((a,b)=>a-b);
+  const med = sals.length ? sals[Math.floor(sals.length/2)] : 0;
+  const cities = new Set(out.map(r=>r.c).filter(Boolean)).size;
+  const emps = new Set(out.map(r=>r.e).filter(Boolean)).size;
+  const kpis = [
+    ["В выборке", fmtN(out.length), "вакансий"],
+    ["С зарплатой", fmtN(withSal.length), out.length?Math.round(withSal.length/out.length*100)+"% выборки":"—"],
+    ["Медиана з/п", med?fmtN(Math.round(med/1000))+" тыс ₽":"—", "по раскрытым"],
+    ["Городов", fmtN(cities), "в выборке"],
+    ["Работодателей", fmtN(emps), "уникальных"],
+  ];
+  $("#kpis").innerHTML = kpis.map(k=>
+    `<div class="kpi"><div class="kpi-lab">${k[0]}</div><div class="kpi-val num">${k[1]}</div><div class="kpi-foot">${k[2]}</div></div>`
+  ).join("");
+}
+
+function drawRows(){
+  const slice = last.slice(0, shown);
+  $("#rows").innerHTML = slice.map(r=>{
+    const tag = r.src==="hh" ? '<span class="tag good">hh.ru</span>' : '<span class="tag tg">Telegram</span>';
+    const tt = esc(r.t || "—");
+    const title = r.u ? `<a href="${r.u}" target="_blank" rel="noopener">${tt}</a>` : tt;
+    return `<tr>
+      <td class="t-title">${title}</td>
+      <td class="t-emp">${esc(r.e||"—")}</td>
+      <td>${esc(r.c||"—")}</td>
+      <td class="r">${fmtSalary(r)}</td>
+      <td>${SR_RU[r.sr]||"—"}</td>
+      <td>${RT_RU[r.rt]||"—"}</td>
+      <td>${tag}</td>
+      <td class="r" style="color:var(--muted)">${r.ls||"—"}</td>
+    </tr>`;
+  }).join("");
+  const more=$("#more");
+  if(last.length>shown){
+    more.innerHTML=`<button id="loadmore">Показать ещё (${fmtN(last.length-shown)})</button>`;
+    $("#loadmore").onclick=()=>{ shown+=PAGE*4; drawRows(); };
+  } else {
+    more.innerHTML = last.length ? `<span style="color:var(--faint)">показаны все ${fmtN(last.length)}</span>` : "ничего не найдено";
+  }
+}
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+let deb;
+function bind(){
+  const reRender=()=>{ clearTimeout(deb); deb=setTimeout(render,120); };
+  $("#q").addEventListener("input", reRender);
+  $("#f-city").addEventListener("input", reRender);
+  $("#f-sal").addEventListener("input", reRender);
+  $("#f-sr").addEventListener("change", render);
+  $("#f-rt").addEventListener("change", render);
+  document.querySelectorAll(".src").forEach(c=>c.addEventListener("change", render));
+  $("#f-reset").addEventListener("click",()=>{
+    $("#q").value=""; $("#f-city").value=""; $("#f-sal").value=""; $("#f-sr").value=""; $("#f-rt").value="";
+    document.querySelectorAll(".src").forEach(c=>c.checked=true); render();
+  });
+}
+
+boot().catch(e=>{ $("#boot").textContent="Ошибка загрузки: "+e.message; console.error(e); });
+</script>
+</body>
+</html>

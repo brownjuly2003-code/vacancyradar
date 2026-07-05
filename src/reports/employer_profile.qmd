@@ -34,7 +34,7 @@ if not employer_id:
 import os
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent if "__file__" in globals() else Path.cwd()
 if not (PROJECT_ROOT / "master").exists():
-    PROJECT_ROOT = Path(os.environ.get("VRADAR_ROOT", "."))
+    PROJECT_ROOT = Path(os.environ.get("VRADAR_ROOT", "D:/VacancyRadar"))
 EVENTS_DB = PROJECT_ROOT / "master" / "events.duckdb"
 _slim_override = os.environ.get("VRADAR_SLIM_PATH")
 SLIM = Path(_slim_override) if _slim_override else PROJECT_ROOT / "derived" / "slim_active.parquet"

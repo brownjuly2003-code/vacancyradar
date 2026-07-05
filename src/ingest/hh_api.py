@@ -23,7 +23,7 @@ class HHTransientError(Exception):
 @dataclass(frozen=True)
 class HHConfig:
     base: str = "https://api.hh.ru"
-    user_agent: str = "VacancyRadar/0.1 (research; contact: noreply@vacancyradar.example)"
+    user_agent: str = "VacancyRadar/0.1 (research; contact: gemini.ge2026@gmail.com)"
     access_token: str | None = None
     requests_per_second: float = 10.0
     backoff_min: float = 1.0

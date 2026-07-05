@@ -49,7 +49,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent if "__file__" in gl
 # Нужен абсолютный путь к master/.
 import os
 if not (PROJECT_ROOT / "master").exists():
-    PROJECT_ROOT = Path(os.environ.get("VRADAR_ROOT", "."))
+    PROJECT_ROOT = Path(os.environ.get("VRADAR_ROOT", "D:/VacancyRadar"))
 EVENTS_DB = PROJECT_ROOT / "master" / "events.duckdb"
 LAKE = PROJECT_ROOT / "master" / "vacancies_raw.parquet"
 # VRADAR_SLIM_PATH overrides the live IT slim — set by `vradar report --scope full`

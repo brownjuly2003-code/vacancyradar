@@ -1,0 +1,116 @@
+/* ============================================================
+   ЧИСТЫЙ ЛИСТ - house style для одностраничной RU-аналитики
+   (sales/analytics, KPI + графики, офлайн HTML).
+   Источник правил: dashboard-craft-ru + design-taste-frontend (anti-slop).
+   Подключение:  <link rel="stylesheet" href="house-style/tokens.css">
+   ============================================================ */
+
+/* ---------- ШРИФТ: PT Sans Narrow, self-host, только 400/700 ----------
+   Промежуточные веса (450/500/600) НЕ использовать - faux-bold.
+   ₽ (U+20BD) живёт в latin-ext, woff2 его уже содержит. */
+@font-face{font-family:'PT Sans Narrow';font-style:normal;font-weight:400;font-display:swap;
+ src:url('assets/fonts/PTSansNarrow-Regular.woff2') format('woff2');}
+@font-face{font-family:'PT Sans Narrow';font-style:normal;font-weight:700;font-display:swap;
+ src:url('assets/fonts/PTSansNarrow-Bold.woff2') format('woff2');}
+
+:root{
+ /* --- БАЗА: холодный белый лист (НЕ тёплый крем) --- */
+ --bg:#f6f7f9;        /* фон страницы, слегка холодный off-white */
+ --panel:#ffffff;     /* карточки и панели */
+ --ink:#16191d;       /* основной текст */
+ --muted:#5b636b;     /* вторичный текст, оси, подписи (AA на --bg) */
+ --faint:#7a828b;     /* третичный, только крупное/некритичное */
+ --line:#e6e9ec;      /* hairline-границы и сетка */
+
+ /* --- ОДИН акцент (color consistency lock) --- */
+ --accent:#2d4a5e;      /* холодный сине-чернильный: текущий ряд, ссылки, active */
+ --accent-soft:#93a7b4; /* осветлённый акцент: прошлый год / вторичный ряд */
+
+ /* --- Смысловые: ТОЛЬКО план/факт и рост/падение --- */
+ --good:#1f7a4d;      /* план выполнен / рост */
+ --bad:#c0392b;       /* план не выполнен / падение */
+ --plan:#9aa3ab;      /* плановая линия - нейтральный серый, не золото */
+
+ /* --- Категории: МОНОХРОМ по рангу (тёмный = крупнее). Один hue (акцент). --- */
+ --rank-1:#2d4a5e; --rank-2:#4a6577; --rank-3:#6b8492;
+ --rank-4:#8ea4ae; --rank-5:#b4c3cb; --rest:#d7dde1;  /* «Остальное» = нейтраль */
+
+ /* --- Форма: ОДНА радиус-шкала (shape lock) --- */
+ --r:10px;            /* карточки и панели */
+ --r-sm:8px;          /* мелкие контролы */
+ --gap:12px;
+ --shadow:0 1px 3px rgba(20,30,40,.05);   /* тень тонирована под фон, не чёрная */
+ --maxw:1340px;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+ font-family:'PT Sans Narrow',system-ui,sans-serif;
+ -webkit-font-smoothing:antialiased;font-size:18px;line-height:1.45;}
+
+/* числа всегда табличные (PT Sans Narrow поддерживает tnum) */
+.num,.kpi-val,.kpi-delta,.kpi-foot,table td,table th{font-variant-numeric:tabular-nums;}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:22px 26px 48px;}
+
+/* ---------- ТИПОГРАФИКА: крупнее, чем кажется ---------- */
+h1{font-size:28px;font-weight:700;margin:0 0 4px;letter-spacing:-.2px;}
+h2{font-size:20px;font-weight:700;margin:0;}
+.sub{font-size:15px;color:var(--muted);}      /* подзаголовок панели */
+.lead{font-size:18px;color:var(--muted);}
+.eyebrow{font-size:13px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ---------- KPI-КАРТОЧКИ: одинаковая структура ----------
+   подпись / значение / ОДНА строка (стрелка + ЦЕЛЫЙ % к пр.году).
+   Никакой разнородной вторички между карточками. */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+ padding:14px 16px;min-height:104px;display:flex;flex-direction:column;justify-content:space-between;
+ box-shadow:var(--shadow);}
+.kpi-lab{font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+.kpi-val{font-size:30px;font-weight:700;line-height:1.05;margin:8px 0 2px;}
+.kpi-delta{font-size:16px;color:var(--muted);}
+.kpi-delta b{font-weight:700;}
+.kpi-foot{font-size:14px;color:var(--faint);margin-top:2px;}
+.up{color:var(--good);} .down{color:var(--bad);}   /* зелёный/красный = только смысл */
+
+/* ---------- ПАНЕЛИ И ГРАФИКИ ---------- */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+ padding:14px 16px 10px;box-shadow:var(--shadow);display:flex;flex-direction:column;}
+.panel.full{grid-column:1/-1;}
+.phead{display:flex;align-items:baseline;gap:8px 16px;margin-bottom:8px;flex-wrap:wrap;}
+.chart{width:100%;height:330px;}
+
+/* ---------- ТАБЛИЦА: разделители разреженные (divide-y, не рамка на каждой строке) ---------- */
+table.clean{width:100%;border-collapse:collapse;font-size:16px;}
+table.clean th{text-align:left;font-weight:700;color:var(--muted);font-size:14px;
+ text-transform:uppercase;letter-spacing:.03em;padding:8px 10px;border-bottom:1px solid var(--line);}
+table.clean td{padding:8px 10px;border-bottom:1px solid var(--line);}
+table.clean tr:last-child td{border-bottom:0;}
+table.clean td.r,table.clean th.r{text-align:right;}
+
+/* ---------- БЕЙДЖИ / ПИЛЮЛИ ---------- */
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;
+ border:1px solid var(--line);color:var(--muted);background:var(--panel);}
+.tag.good{color:var(--good);border-color:#bfe0cd;background:#f0f8f3;}
+.tag.bad{color:var(--bad);border-color:#eccac6;background:#fbf1f0;}
+
+/* ---------- СВОТЧИ КАТЕГОРИЙ (для легенды/демо) ---------- */
+.sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;}
+.sw-1{background:var(--rank-1);} .sw-2{background:var(--rank-2);} .sw-3{background:var(--rank-3);}
+.sw-4{background:var(--rank-4);} .sw-5{background:var(--rank-5);} .sw-rest{background:var(--rest);}
+.sw-accent{background:var(--accent);} .sw-soft{background:var(--accent-soft);}
+.sw-good{background:var(--good);} .sw-bad{background:var(--bad);}
+
+/* ---------- НАВИГАЦИЯ между страницами ---------- */
+.pagenav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px;}
+.pagenav a{font-size:15px;font-weight:700;color:var(--muted);padding:9px 17px;
+ border:1px solid var(--line);border-radius:999px;background:var(--panel);transition:.15s;}
+.pagenav a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none;}
+.pagenav a.cur{background:var(--accent);border-color:var(--accent);color:#fff;cursor:default;}
+
+@media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}

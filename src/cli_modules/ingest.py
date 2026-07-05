@@ -15,6 +15,183 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any, Callable
+
+# --- full-sweep segmentation (hh shards) -----------------------------------
+# hh shards serves at most ~2000 items per query (lastPage caps at
+# 2000/per_page regardless of page size; pages beyond it return an error
+# page — verified live 2026-06-05). Roles above the window are drained via
+# disjoint sub-segments: `experience` first (required single-valued field,
+# bucket totals sum exactly to the role total), then an area partition
+# (Moscow / SPb / all other RF subjects in one multi-area query). `schedule`
+# and `employment` were probed and rejected (multi-valued / barely cut);
+# `date_from`/`date_to`/`period` are ignored by shards.
+_EXPERIENCE_BUCKETS: tuple[str, ...] = (
+    "noExperience",
+    "between1And3",
+    "between3And6",
+    "moreThan6",
+)
+_MOSCOW_AREA_ID = 1
+_SPB_AREA_ID = 2
+_RUSSIA_AREA_ID = 113
+# Safety page cap per segment: the window is ~2000/per_page pages today; 120
+# only guards against a pathological lastPage so a server bug can't loop us.
+_FULL_SWEEP_MAX_PAGES = 120
+
+
+def _drain_shards_segment(
+    client: Any,
+    search_kwargs: dict,
+    items: list[dict],
+    label: str,
+) -> tuple[bool, int]:
+    """Drain one shards query to its lastPage, appending into `items`.
+
+    Returns (oversized, pages_done). oversized=True means page 0 shows
+    totalResults beyond the reachable window ((lastPage+1) × per_page): the
+    caller must split the segment into finer ones. Page-0 items are kept even
+    then — duplicates collapse downstream (seen_current_ids / unique()).
+    HHTransientError/RateLimited propagate to the caller.
+    """
+    from src.ingest.hh_shards import extract_vacancies
+
+    pages = 0
+    per_page = int(search_kwargs.get("per_page") or 50)
+    first_total: int | None = None
+    for page_num, data in enumerate(
+        client.iter_pages(start_page=0, max_pages=_FULL_SWEEP_MAX_PAGES, **search_kwargs)
+    ):
+        page_items = extract_vacancies(data)
+        items.extend(page_items)
+        pages += 1
+        if page_num == 0:
+            vsr = data.get("vacancySearchResult") or {}
+            total_raw = vsr.get("totalResults")
+            last_obj = (vsr.get("paging") or {}).get("lastPage") or {}
+            last_raw = last_obj.get("page") if isinstance(last_obj, dict) else None
+            first_total = int(total_raw) if total_raw is not None else None
+            if first_total is not None and last_raw is not None:
+                reachable = (int(last_raw) + 1) * per_page
+                if first_total > reachable:
+                    print(
+                        f"[sweep] {label}: total={first_total} > window={reachable} "
+                        "— segmenting"
+                    )
+                    return True, pages
+    print(f"[sweep] {label}: drained {pages} pages (total={first_total})")
+    return False, pages
+
+
+def _full_sweep_role(
+    client: Any,
+    *,
+    base_kwargs: dict,
+    role_label: str,
+    rest_areas: Callable[[], list[int]],
+) -> tuple[list[dict], bool, int, int]:
+    """Drain one role completely, auto-segmenting window-capped queries.
+
+    Returns (items, role_complete, pages_done, transient_skips).
+    role_complete=False on any transient skip or any leaf still capped after
+    max segmentation — the detect-closed guard then refuses the partial sweep
+    exactly like the non-sweep path.
+    """
+    from src.ingest.hh_shards import HHTransientError, RateLimited
+
+    items: list[dict] = []
+    pages_total = 0
+    transient_skips = 0
+
+    def attempt(kwargs: dict, label: str) -> bool | None:
+        """True=drained, False=window-capped (split me), None=transient."""
+        nonlocal pages_total, transient_skips
+        try:
+            oversized, pages = _drain_shards_segment(client, kwargs, items, label)
+        except (HHTransientError, RateLimited) as exc:
+            print(
+                f"[warn] hh shards transient error {label}, skipping segment: {exc}",
+                file=sys.stderr,
+            )
+            transient_skips += 1
+            return None
+        pages_total += pages
+        return not oversized
+
+    outcome = attempt(base_kwargs, role_label)
+    if outcome is None:
+        return items, False, pages_total, transient_skips
+    if outcome:
+        return items, True, pages_total, transient_skips
+
+    role_complete = True
+    for exp in _EXPERIENCE_BUCKETS:
+        exp_kwargs = {**base_kwargs, "experience": exp}
+        exp_label = f"{role_label} experience={exp}"
+        exp_outcome = attempt(exp_kwargs, exp_label)
+        if exp_outcome:
+            continue
+        if exp_outcome is None:
+            role_complete = False
+            continue
+        if base_kwargs.get("area") != _RUSSIA_AREA_ID:
+            print(
+                f"[warn] uncovered hh segment {exp_label}: "
+                "area partition requires --area 113",
+                file=sys.stderr,
+            )
+            role_complete = False
+            continue
+        try:
+            rest = rest_areas()
+        except Exception as exc:  # noqa: BLE001 — refdata load/fetch failure
+            print(
+                f"[warn] uncovered hh segment {exp_label}: area split unavailable ({exc})",
+                file=sys.stderr,
+            )
+            role_complete = False
+            continue
+
+        def drain_area_subset(
+            area_ids: list[int],
+            exp_label: str = exp_label,
+            exp_kwargs: dict = exp_kwargs,
+        ) -> bool:
+            """Drain the experience bucket within area_ids, bisecting on overflow.
+
+            Junior-heavy roles overflow even the rest-of-RF bucket (live
+            2026-06-05: role=121 noExperience rest[86] > window), so the area
+            list splits recursively until every leaf fits. A single area that
+            still overflows (e.g. Moscow for a future fatter market) cannot
+            be split further — uncovered warn, role incomplete.
+            """
+            area_value: int | list[int] = area_ids[0] if len(area_ids) == 1 else area_ids
+            label = (
+                f"{exp_label} area={area_ids[0]}"
+                if len(area_ids) == 1
+                else f"{exp_label} areas[{area_ids[0]}..{area_ids[-1]}#{len(area_ids)}]"
+            )
+            outcome = attempt({**exp_kwargs, "area": area_value}, label)
+            if outcome is True:
+                return True
+            if outcome is None:
+                return False
+            if len(area_ids) == 1:
+                print(
+                    f"[warn] uncovered hh leaf {label}: "
+                    "single area still window-capped",
+                    file=sys.stderr,
+                )
+                return False
+            mid = len(area_ids) // 2
+            left_ok = drain_area_subset(area_ids[:mid])
+            right_ok = drain_area_subset(area_ids[mid:])
+            return left_ok and right_ok
+
+        for area_subset in ([_MOSCOW_AREA_ID], [_SPB_AREA_ID], rest):
+            if not drain_area_subset(area_subset):
+                role_complete = False
+    return items, role_complete, pages_total, transient_skips
 
 
 def _ingest(args: argparse.Namespace) -> int:
@@ -381,6 +558,13 @@ def _ingest_hh(args: argparse.Namespace) -> int:
     if overlap_pages < 0 or overlap_pages >= args.pages:
         print("[err] --overlap-pages must be >= 0 and lower than --pages", file=sys.stderr)
         return 2
+    full_sweep = bool(getattr(args, "full_sweep", False))
+    if full_sweep and transport != "shards":
+        print("[err] --full-sweep requires --transport shards", file=sys.stderr)
+        return 2
+    if full_sweep and page_start != 1:
+        print("[err] --full-sweep requires --page-start 1", file=sys.stderr)
+        return 2
     page_start_zero = page_start - 1
     page_end = page_start + args.pages - 1
     next_page_start = page_start + args.pages - overlap_pages
@@ -400,10 +584,11 @@ def _ingest_hh(args: argparse.Namespace) -> int:
                 return 2
             role_csv = ",".join(str(role_id) for role_id in role_ids)
             scope_suffix = f" scope={scope_name} professional_role={role_csv}"
+        sweep_suffix = " full-sweep" if full_sweep else ""
         print(
             f"[dry] hh.ru transport={transport} area={args.area} per_page={args.per_page} "
             f"pages={page_start}-{page_end} overlap={overlap_pages}{scope_suffix} "
-            f"next_page_start={next_page_start} → master/lake + events"
+            f"next_page_start={next_page_start}{sweep_suffix} → master/lake + events"
         )
         return 0
     from dotenv import load_dotenv
@@ -441,6 +626,7 @@ def _ingest_hh(args: argparse.Namespace) -> int:
     previous_meta = latest_snapshot_meta(lake_root, source="hh", market_scope=previous_scope)
     items_collected_count = 0
     pages_done = 0
+    transient_skips = 0
     role_sweep_complete: dict[int, bool] = {}
     defer_record_processing = bool(scope_name and args.detect_closed)
     deferred_record_batches: list[list[RawRecord]] = []
@@ -543,7 +729,13 @@ def _ingest_hh(args: argparse.Namespace) -> int:
         _record_event_summary(derive_events(previous, current, fetched_at))
 
     if transport == "shards":
-        from src.ingest.hh_shards import HHShardsClient, HHShardsConfig, extract_vacancies
+        from src.ingest.hh_shards import (
+            HHShardsClient,
+            HHShardsConfig,
+            HHTransientError,
+            RateLimited,
+            extract_vacancies,
+        )
 
         rl = settings.hh.rate_limit
         client = HHShardsClient(
@@ -554,10 +746,66 @@ def _ingest_hh(args: argparse.Namespace) -> int:
                 max_retries=rl.max_retries,
             )
         )
+        rest_areas_cache: list[int] = []
+
+        def _rest_areas() -> list[int]:
+            """RF subjects minus Moscow/SPb for the level-3 area partition."""
+            if not rest_areas_cache:
+                from src.ingest.refdata import (
+                    fetch_areas,
+                    load_areas_yaml,
+                    russia_subjects,
+                    save_areas_yaml,
+                )
+
+                areas_path = Path("data/areas.yaml")
+                if not areas_path.exists():
+                    save_areas_yaml(fetch_areas(), areas_path)
+                subjects = [int(a["id"]) for a in russia_subjects(load_areas_yaml(areas_path))]
+                rest = [a for a in subjects if a not in (_MOSCOW_AREA_ID, _SPB_AREA_ID)]
+                if not rest:
+                    raise ValueError("empty rest-of-Russia area list")
+                rest_areas_cache.extend(rest)
+            return rest_areas_cache
+
         search_role_ids: list[int | None] = list(scope_role_ids) if scope_role_ids else [None]
         for role_id in search_role_ids:
             role_complete = False
             shards_role_items: list[dict] = []
+            if full_sweep:
+                sweep_base: dict = {"area": args.area, "per_page": args.per_page}
+                if role_id is not None:
+                    sweep_base["professional_role"] = role_id
+                sweep_label = f"role={role_id}" if role_id is not None else "all-roles"
+                sweep_items, role_complete, sweep_pages, sweep_skips = _full_sweep_role(
+                    client,
+                    base_kwargs=sweep_base,
+                    role_label=sweep_label,
+                    rest_areas=_rest_areas,
+                )
+                shards_role_items.extend(sweep_items)
+                items_collected_count += len(sweep_items)
+                pages_done += sweep_pages
+                transient_skips += sweep_skips
+                print(
+                    f"[sweep] {sweep_label}: "
+                    f"{'complete' if role_complete else 'INCOMPLETE'} "
+                    f"({len(sweep_items)} items, {sweep_pages} pages)"
+                )
+                if role_id is not None:
+                    role_sweep_complete[role_id] = role_complete
+                if shards_role_items:
+                    _handle_records(
+                        [
+                            RawRecord.from_hh_shards_item(
+                                item,
+                                fetched_at,
+                                market_scope=scope_name,
+                            )
+                            for item in shards_role_items
+                        ]
+                    )
+                continue
             search_kwargs = {
                 "area": args.area,
                 "per_page": args.per_page,
@@ -566,29 +814,43 @@ def _ingest_hh(args: argparse.Namespace) -> int:
             }
             if role_id is not None:
                 search_kwargs["professional_role"] = role_id
-            for page_num, data in enumerate(client.iter_pages(**search_kwargs)):
-                items = extract_vacancies(data)
-                shards_role_items.extend(items)
-                items_collected_count += len(items)
-                pages_done += 1
-                page_label = page_start + page_num
-                role_label = f" role={role_id}" if role_id is not None else ""
-                vsr = data.get("vacancySearchResult") or {}
-                total = vsr.get("totalResults")
-                last_page_obj = (vsr.get("paging") or {}).get("lastPage") or {}
-                last = last_page_obj.get("page") if isinstance(last_page_obj, dict) else None
-                last_page = int(last) if last is not None else None
-                # hh shards returns lastPage=None on the final page (matching
-                # the iter_pages stop condition), so treat that as the role's
-                # last page even though the numeric ceiling is missing.
-                if last_page is None or page_start_zero + page_num >= last_page:
-                    role_complete = True
+            role_label = f" role={role_id}" if role_id is not None else ""
+            try:
+                for page_num, data in enumerate(client.iter_pages(**search_kwargs)):
+                    items = extract_vacancies(data)
+                    shards_role_items.extend(items)
+                    items_collected_count += len(items)
+                    pages_done += 1
+                    page_label = page_start + page_num
+                    vsr = data.get("vacancySearchResult") or {}
+                    total = vsr.get("totalResults")
+                    last_page_obj = (vsr.get("paging") or {}).get("lastPage") or {}
+                    last = last_page_obj.get("page") if isinstance(last_page_obj, dict) else None
+                    last_page = int(last) if last is not None else None
+                    # hh shards returns lastPage=None on the final page (matching
+                    # the iter_pages stop condition), so treat that as the role's
+                    # last page even though the numeric ceiling is missing.
+                    if last_page is None or page_start_zero + page_num >= last_page:
+                        role_complete = True
+                    print(
+                        f"page {page_label}{role_label}: {len(items)} items "
+                        f"(total found: {total}, last page: {last})"
+                    )
+                    if page_num + 1 >= args.pages:
+                        break
+            except (HHTransientError, RateLimited) as exc:
+                # Cloudflare 403 / 429 / 5xx after retries are exhausted. A
+                # transient edge ban on one role must not abort the whole sweep:
+                # skip this role (role_complete stays False so detect-closed will
+                # not fire on a partial sweep) and keep whatever pages we already
+                # collected before the error. The other roles still run.
                 print(
-                    f"page {page_label}{role_label}: {len(items)} items "
-                    f"(total found: {total}, last page: {last})"
+                    f"[warn] hh shards transient error{role_label}, "
+                    f"skipping role: {exc}",
+                    file=sys.stderr,
                 )
-                if page_num + 1 >= args.pages:
-                    break
+                role_complete = False
+                transient_skips += 1
             if role_id is not None:
                 role_sweep_complete[role_id] = role_complete
             if shards_role_items:
@@ -675,21 +937,50 @@ def _ingest_hh(args: argparse.Namespace) -> int:
         and set(role_sweep_complete) == set(scope_role_ids)
         and all(role_sweep_complete.values())
     )
+    if items_collected_count == 0 and transient_skips > 0:
+        # Every attempted role was skipped on a persistent transient error and
+        # nothing was collected. This is a hard collection failure (sustained
+        # Cloudflare/captcha block or dead network), NOT a legitimate empty
+        # result, so it must surface as non-zero: the cron verdict logs FAIL
+        # and the critical-ingest publish gate blocks a stale republish.
+        # Partial success (any role collected rows → items_collected_count > 0)
+        # still exits 0, preserving C1's per-role graceful skip.
+        print(
+            f"[err] hh ingest collected 0 vacancies; {transient_skips} role(s) "
+            f"skipped on persistent transient errors (Cloudflare/captcha block "
+            f"or network failure) — not a real empty result",
+            file=sys.stderr,
+        )
+        return 3
     if items_collected_count == 0 and not (scope_name and args.detect_closed):
         print("[done] empty page — nothing to write")
         return 0
-    if scope_name and args.detect_closed and not scope_sweep_complete:
+    closed_refused = bool(scope_name and args.detect_closed and not scope_sweep_complete)
+    if closed_refused:
+        if not full_sweep:
+            print(
+                "[err] current scoped hh sweep is incomplete; refusing to emit closed events",
+                file=sys.stderr,
+            )
+            return 2
+        # Full sweep with a transient hole or an uncovered leaf: discarding
+        # the whole collection (the pre-sweep behavior) would trade a mostly
+        # fresh corpus for a stale dashboard. Keep the records and events,
+        # skip only the closed emission — absence is unprovable on a partial
+        # view. last_seen advances only for actually-seen rows, so the
+        # active-days window stays honest.
         print(
-            "[err] current scoped hh sweep is incomplete; refusing to emit closed events",
+            "[warn] full sweep incomplete — keeping collected records, "
+            "skipping closed-event emission this run",
             file=sys.stderr,
         )
-        return 2
 
     if defer_record_processing:
         for records in deferred_record_batches:
             _write_and_emit(records)
 
-    _emit_closed_events()
+    if not closed_refused:
+        _emit_closed_events()
 
     if events_appended == 0:
         print("[events] no diff — first run or unchanged snapshot")

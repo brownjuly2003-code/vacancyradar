@@ -62,10 +62,11 @@ def public_base_url(repo_id: str, *, revision: str = "main") -> str:
 
 
 def missing_required_paths(root: Path = Path(".")) -> list[Path]:
+    # weekly_role_salary is the canary for the whole agg/ family — it is what
+    # the storefront's time-dynamics section actually consumes.
     required = [
         Path("derived/slim_active.parquet"),
-        Path("derived/snapshots/facets.json"),
-        Path("derived/agg/weekly_market_pulse.parquet"),
+        Path("derived/agg/weekly_role_salary.parquet"),
     ]
     return [path for path in required if not (root / path).exists()]
 
@@ -75,9 +76,6 @@ def build_upload_plan(root: Path = Path(".")) -> list[HfUploadItem]:
     items = [
         HfUploadItem(derived / "slim_active.parquet", "slim/active.parquet"),
     ]
-    snapshots = derived / "snapshots"
-    if snapshots.exists():
-        items.append(HfUploadItem(snapshots, "slim/snapshots"))
     agg = derived / "agg"
     if agg.exists():
         items.append(HfUploadItem(agg, "agg"))

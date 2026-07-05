@@ -250,6 +250,106 @@ def test_ingest_hh_survives_missing_or_null_last_page(tmp_path, monkeypatch):
     assert sorted(df["vacancy_id"].to_list()) == ["hh:11", "hh:12", "hh:13"]
 
 
+def test_ingest_hh_skips_role_on_transient_error_and_keeps_collected(tmp_path, monkeypatch, capsys):
+    """A persistent Cloudflare 403 (HHTransientError after retries) on one role
+    must not abort the whole ingest. Pages collected before the error are still
+    written, the run exits 0, and a warning is logged.
+    """
+    from src.ingest.hh_shards import HHTransientError
+
+    monkeypatch.chdir(tmp_path)
+
+    class FakeHHShardsClient:
+        def __init__(self, _cfg):
+            pass
+
+        def iter_pages(self, **_kwargs):
+            yield _page([_vacancy(1)])
+            raise HHTransientError("hh.ru shards 403 (Cloudflare anti-bot)")
+
+    monkeypatch.setattr("src.ingest.hh_shards.HHShardsClient", FakeHHShardsClient)
+
+    args = _args()
+    args.pages = 3
+    assert _ingest_hh(args) == 0
+
+    assert "transient error" in capsys.readouterr().err
+    df = pl.read_parquet("master/vacancies_raw.parquet/year=*/month=*/source=hh/*.parquet")
+    assert df["vacancy_id"].to_list() == ["hh:1"]
+
+
+def test_ingest_hh_scope_one_role_transient_error_other_role_continues(tmp_path, monkeypatch):
+    """When one IT role hits a transient edge ban, the sweep continues to the
+    next role. The failed role keeps the sweep marked incomplete (so a later
+    --detect-closed run is rejected), but the healthy role's rows still land.
+    """
+    from src.ingest.hh_shards import HHTransientError
+
+    monkeypatch.chdir(tmp_path)
+    _write_it_scope_config(tmp_path)
+
+    class FakeHHShardsClient:
+        def __init__(self, _cfg):
+            pass
+
+        def iter_pages(self, **kwargs):
+            role_id = kwargs["professional_role"]
+            if role_id == 156:
+                raise HHTransientError("hh.ru shards 403 (Cloudflare anti-bot)")
+            item = {
+                **_vacancy(role_id),
+                "professionalRoles": [{"id": str(role_id), "name": f"Role {role_id}"}],
+            }
+            yield _page([item], last_page=0)
+
+    monkeypatch.setattr("src.ingest.hh_shards.HHShardsClient", FakeHHShardsClient)
+    args = _args()
+    args.scope = "it"
+
+    assert _ingest_hh(args) == 0
+
+    df = pl.read_parquet("master/vacancies_raw.parquet/year=*/month=*/source=hh/*.parquet")
+    assert df["vacancy_id"].to_list() == ["hh:160"]
+
+    # The failed role keeps the sweep from being recorded as complete, so a
+    # later --detect-closed run is rejected (no false closed events).
+    state_path = tmp_path / "master" / "run_state" / "hh_completed_sweeps.json"
+    assert not state_path.exists()
+
+
+def test_ingest_hh_scope_all_roles_transient_error_fails_loudly(tmp_path, monkeypatch, capsys):
+    """When EVERY attempted role is skipped on a transient error and nothing is
+    collected, the run must exit non-zero (not the silent OK that masked a 6-day
+    Cloudflare/captcha block). This is the total-failure counterpart to C1's
+    partial-failure graceful skip: 0 collected + a transient skip is a hard
+    collection failure, so the cron verdict logs FAIL and the publish gate blocks
+    a stale republish. Distinguished from a legitimate empty sweep (no error),
+    which still exits 0.
+    """
+    from src.ingest.hh_shards import HHTransientError
+
+    monkeypatch.chdir(tmp_path)
+    _write_it_scope_config(tmp_path)
+
+    class FakeHHShardsClient:
+        def __init__(self, _cfg):
+            pass
+
+        def iter_pages(self, **_kwargs):
+            raise HHTransientError("hh.ru shards 403 (Cloudflare anti-bot)")
+            yield  # pragma: no cover - generator marker
+
+    monkeypatch.setattr("src.ingest.hh_shards.HHShardsClient", FakeHHShardsClient)
+    args = _args()
+    args.scope = "it"
+
+    assert _ingest_hh(args) == 3
+
+    err = capsys.readouterr().err
+    assert "collected 0 vacancies" in err
+    assert not (tmp_path / "master" / "vacancies_raw.parquet").exists()
+
+
 def test_ingest_hh_does_not_emit_closed_by_default(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     _install_fake_shards(

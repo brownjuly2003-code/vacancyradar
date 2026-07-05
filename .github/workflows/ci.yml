@@ -41,20 +41,9 @@ jobs:
       - name: mypy (strict slice — src only, per pyproject.toml)
         run: uv run mypy
 
-      - name: pytest (excludes slow markers; test_neon_parity self-skips без NEON_DATABASE_URL)
-        # --cov-fail-under=97 ratchets the 2026-05-28 local baseline
-        # (latest measured TOTAL: 97.69%). Session 26 added +12 tests + prune-events cron wiring:
-        # - test_snapshots.py (+4) — _latest_seen_at null-max + non-datetime
-        #   fallback, _fmt_date none/date/str, _latest_week_filter без
-        #   week_start column. snapshots 92.3 → 100.
-        # - test_raw_lake.py (+5) — _role_id_from_value unparseable strings +
-        #   list edges, _shards_iso non-str/dict, _parse_iso garbage,
-        #   read_lake ComputeError fallback. raw_lake 94.1 → 100.
-        # - test_weekly_aggregates.py (+3) — _utc_today, employer_top с
-        #   events но empty slim, skill_velocity ниже min_mentions.
-        #   weekly_aggregates 96.2 → 100.
-        # 2026-05-28 coverage pass raised the floor from 95.49% to 97.69%
-        # across publish/blob/hf/ops/refdata/auth/enrich/embeddings/cbr/skills/events/dedup tests.
+      - name: pytest (excludes slow markers)
+        # --cov-fail-under=97: local baseline after the 2026-07-06 Neon/Vercel
+        # excision is 98.42% (767 tests).
         run: |
           mkdir -p .tmp
           uv run pytest -q -m "not slow" --basetemp=.tmp/pytest-ci \
@@ -67,57 +56,5 @@ jobs:
         with:
           name: coverage-xml
           path: coverage.xml
-          if-no-files-found: ignore
-          retention-days: 14
-
-  web:
-    name: tsc / vitest
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: web
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-
-      - name: npm ci
-        run: npm ci
-
-      - name: tsc --noEmit
-        run: npm run lint
-
-      - name: next build (catch deploy-time errors locally)
-        # tsc + vitest проверяют только статическую корректность и юнит-логику.
-        # Без `next build` Next.js-specific ошибки (RSC boundaries, dynamic
-        # server usage, route handler signatures, постмонтаж runtime config)
-        # пройдут CI и упадут только на Vercel deploy. Kimi audit 2026-05-25 P1-4.
-        # NEXT_TELEMETRY_DISABLED gate keeps CI noise low.
-        env:
-          NEXT_TELEMETRY_DISABLED: "1"
-          BLOB_PUBLIC_BASE_URL: "https://example.invalid"
-        run: npm run build
-
-      - name: vitest run (with coverage)
-        # 2026-05-18 vitest thresholds enforce 100% statements/lines/functions
-        # on web/lib/** (see vitest.config.ts). Branches floor at 98% — the
-        # two missing 1.15% are unreachable defensive checks kept for
-        # readability. duckdb.ts now unit-tested via @duckdb/node-api mock
-        # (closes the Kimi P2-1 gap).
-        run: npx vitest run --coverage
-
-      - name: Upload vitest coverage
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-vitest
-          path: web/coverage/
           if-no-files-found: ignore
           retention-days: 14

@@ -1,4 +1,4 @@
-"""`vradar prune {events}` impl. Extracted from src/cli.py (Kimi P1-1)."""
+"""`vradar prune {events,lake}` impl. Extracted from src/cli.py (Kimi P1-1)."""
 from __future__ import annotations
 
 import argparse
@@ -10,7 +10,55 @@ from pathlib import Path
 def _prune(args: argparse.Namespace) -> int:
     if args.target == "events":
         return _prune_events(args)
+    if args.target == "lake":
+        return _prune_lake(args)
     return 1
+
+
+def _prune_lake(args: argparse.Namespace) -> int:
+    """Compact closed-month raw-lake partitions (many small batch files → one).
+
+    WHY: ~19.7k мелких файлов после двух месяцев сбора → каждый
+    `latest_snapshot_meta` (events diff на старте ingest) открывает все футеры,
+    3-8 минут на запуск на iMac. Данные не меняются: merge → row-count verify →
+    atomic swap; оригиналы уходят в trash-директорию (вне глоба лейка) и
+    удаляются вручную после спокойной проверки. Детали crash-safety — в
+    docstring `src/transform/lake_compact.py`.
+    """
+    from src.transform.lake_compact import compact_lake
+
+    lake_root = Path(args.lake_root)
+    if not lake_root.exists():
+        print(f"[err] {lake_root} does not exist", file=sys.stderr)
+        return 2
+    trash_root = Path(args.trash_dir) / datetime.now(timezone.utc).strftime(
+        "%Y-%m-%dT%H-%M-%S"
+    )
+
+    results = compact_lake(lake_root, trash_root, dry=args.dry)
+    if not results:
+        print("[prune] lake: nothing to compact (no closed-month multi-file partitions)")
+        return 0
+
+    label = "[prune dry-run]" if args.dry else "[prune]"
+    total_files = 0
+    total_rows = 0
+    for plan, rows, n_files in results:
+        rel = plan.partition_dir.relative_to(lake_root)
+        verb = "would compact" if args.dry else "compacted"
+        print(f"{label} lake: {verb} {rel} — {n_files} files, {rows} rows → 1 file")
+        total_files += n_files
+        total_rows += rows
+    print(
+        f"{label} lake: {total_files} files → {len(results)} "
+        f"({total_rows} rows total)"
+    )
+    if not args.dry:
+        print(
+            f"[prune] originals preserved in {trash_root} — verify reads, then "
+            "delete it manually to reclaim disk"
+        )
+    return 0
 
 
 def _prune_events(args: argparse.Namespace) -> int:

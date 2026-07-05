@@ -3,11 +3,10 @@
 `tests/` is a peer of `src/` rather than a package, so we splice the project
 root onto `sys.path` before any imports. Shared fixtures live here so each
 test file can pull in the minimal set it needs without duplicating boilerplate
-(blob env stub, polars frame builders, fake CBR rate maps).
+(polars frame builders, fake CBR rate maps).
 """
 from __future__ import annotations
 
-import os
 import sys
 from collections.abc import Iterator
 from datetime import datetime, timezone
@@ -20,23 +19,6 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-
-
-@pytest.fixture()
-def blob_env(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
-    """Set BLOB_READ_WRITE_TOKEN + BLOB_PUBLIC_BASE_URL to safe placeholder values.
-
-    Use this whenever a unit test imports `src.publish.blob_push` or calls into
-    a `vradar publish *` code path without actually hitting Vercel. Returns the
-    same values it set so callers can assert against them.
-    """
-    values = {
-        "BLOB_READ_WRITE_TOKEN": "vercel_blob_rw_TEST_TOKEN",
-        "BLOB_PUBLIC_BASE_URL": "https://test.public.blob.vercel-storage.com",
-    }
-    for key, value in values.items():
-        monkeypatch.setenv(key, value)
-    return values
 
 
 @pytest.fixture()
@@ -159,21 +141,3 @@ def clean_cwd(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     """
     monkeypatch.chdir(tmp_path)
     return tmp_path
-
-
-def _ensure_var(name: str) -> str | None:
-    return os.environ.get(name)
-
-
-@pytest.fixture(autouse=True)
-def _strip_blob_token_from_real_env(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Hard guard: real `.env` BLOB_READ_WRITE_TOKEN must not leak into tests.
-
-    Pytest loads project root onto sys.path before importing, so a stray
-    `os.getenv("BLOB_READ_WRITE_TOKEN")` in collection-time module code would
-    hit the developer's real prod token. Tests that need a token use the
-    `blob_env` fixture to set a placeholder.
-    """
-    real_token = _ensure_var("BLOB_READ_WRITE_TOKEN")
-    if real_token and real_token.startswith("vercel_blob_rw_") and "TEST" not in real_token:
-        monkeypatch.delenv("BLOB_READ_WRITE_TOKEN", raising=False)

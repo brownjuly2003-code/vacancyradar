@@ -1,7 +1,7 @@
 [project]
 name = "vacancy-radar"
 version = "0.0.1"
-description = "Russian job market analytics — local pipeline + Vercel dashboards"
+description = "Russian job market analytics — local pipeline + static storefront"
 requires-python = ">=3.12"
 dependencies = [
     "duckdb>=1.0",
@@ -14,7 +14,6 @@ dependencies = [
     "pydantic>=2.0",
     "python-dotenv>=1.0",
     "loguru>=0.7",
-    "psycopg[binary]>=3.2",
     "telethon>=1.36",
     "datasketch>=1.6",
     "beautifulsoup4>=4.12",
